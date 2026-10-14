@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/version-0.1.4-blue?style=flat&amp;logo=github" alt="Version 0.1.4"></a>
- <a href="#the-skills"><img src="https://img.shields.io/badge/skills-15-blue?style=flat" alt="15 skills"></a>
- <a href="#tools-you-can-use"><img src="https://img.shields.io/badge/optional_tools-4-green?style=flat" alt="4 optional tools"></a>
- <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
- <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green?style=flat" alt="Software license: Apache-2.0"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.1.4-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.1.4"></a>
+ <a href="#the-skills"><img src="https://img.shields.io/badge/Skills-15-64748B?style=flat&amp;labelColor=24292F" alt="15 Skills"></a>
+ <a href="#tools-you-can-use"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Optional Tools"></a>
+ <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
+ <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-5C6670?style=flat&amp;labelColor=24292F" alt="Software License: Apache-2.0"></a>
 </p>
 
 <p align="center">
@@ -26,9 +26,7 @@ Documents, source captures, logs and browser-history exports become a portable
 case with preserved evidence, referenced findings and explicit unknowns.
 You choose the assistant and model; the included Python tools work offline.
 
-<p align="center">
- <strong>Preserve evidence</strong> &rarr; Examine sources and contradictions &rarr; Share a reviewed report
-</p>
+![Preserve selected evidence, examine sources and contradictions, share a reviewed report.](assets/workflow.en.svg)
 
 <a id="start-in-five-minutes"></a>
 

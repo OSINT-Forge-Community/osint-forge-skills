@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/version-0.1.4-blue?style=flat&amp;logo=github" alt="Version 0.1.4"></a>
- <a href="#les-skills"><img src="https://img.shields.io/badge/skills-15-blue?style=flat" alt="15 skills"></a>
- <a href="#les-outils-utilisables"><img src="https://img.shields.io/badge/optional_tools-4-green?style=flat" alt="4 outils optionnels"></a>
- <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
- <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green?style=flat" alt="Licence du logiciel : Apache-2.0"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.1.4-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.1.4"></a>
+ <a href="#les-skills"><img src="https://img.shields.io/badge/Skills-15-64748B?style=flat&amp;labelColor=24292F" alt="15 Skills"></a>
+ <a href="#les-outils-utilisables"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Outils Optionnels"></a>
+ <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
+ <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-5C6670?style=flat&amp;labelColor=24292F" alt="Licence : Apache-2.0"></a>
 </p>
 
 <p align="center">
@@ -26,9 +26,7 @@ Documents, captures de sources, journaux et exports d’historique deviennent un
 dossier portable : pièces conservées, conclusions référencées et inconnues explicites.
 Vous choisissez l’assistant et le modèle ; les outils Python inclus restent hors ligne.
 
-<p align="center">
- <strong>Conserver les pièces</strong> &rarr; Examiner les sources et contradictions &rarr; Transmettre un rapport relu
-</p>
+![Conserver les pièces sélectionnées, examiner les sources et contradictions, transmettre un rapport relu.](assets/workflow.fr.svg)
 
 <a id="démarrer-en-cinq-minutes"></a>
 

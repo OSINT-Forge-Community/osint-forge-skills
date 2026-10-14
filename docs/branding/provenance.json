@@ -44,5 +44,23 @@
   ],
   "owner": "OSINT Forge",
   "rights": "All rights reserved; excluded from Apache-2.0",
-  "rights_notice": "assets/LICENSE.txt"
+  "rights_notice": "assets/LICENSE.txt",
+  "readme_vectors": [
+    {
+      "asset": "assets/workflow.en.svg",
+      "sha256": "cd05a07f76388dd5da59eb8ef6cbd36a4da477461104e657eca337425936e4d0",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/workflow.fr.svg",
+      "sha256": "10b74cbb93fb0ed480d2debcac8f97542c6bc595730092fa6fdb921ccc61b53a",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    }
+  ]
 }

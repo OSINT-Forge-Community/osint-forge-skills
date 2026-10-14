@@ -13,6 +13,7 @@ The illustrations are synthetic artwork, not investigation evidence.
 
 - [English banner](../../assets/readme-banner.en.png)
 - [French banner](../../assets/readme-banner.png)
+- Investigation workflow: [English](../../assets/workflow.en.svg) · [French](../../assets/workflow.fr.svg)
 - [File provenance](provenance.json): dimensions, dates and integrity hashes
 
 Both banners measure 2170 × 725 pixels and are stored locally.
@@ -21,6 +22,7 @@ The README uses standard [Shields.io badges](https://shields.io/badges/static-ba
 embedded with HTML links and images. Their remote images display package
 version, skill count, optional tools, Python requirements and software license.
 They are not OSINT Forge artwork or part of the offline Python runtime.
-The investigation workflow is plain HTML text.
+The local investigation workflow retains its original SVG design. Badge labels
+use title case, with charcoal backgrounds and muted copper, slate and blue accents.
 
 Generation prompts, creative briefs and source references remain private.
