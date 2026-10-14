@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="109" height="28" viewBox="0 0 109 28" role="img" aria-label="Skills: 15">
-  <title>Skills: 15</title>
-  <rect x="0.5" y="0.5" width="108" height="27" rx="6" fill="#1C1C1C" stroke="#2A2F36"/>
-  <path d="M65 1H103Q108 1 108 6V22Q108 27 103 27H65Z" fill="#E7A86E"/>
-  <g font-family="ui-monospace,Consolas,monospace" font-size="12" text-anchor="middle">
-    <text x="32.5" y="18" fill="#F5F5F5">Skills</text>
-    <text x="87" y="18" fill="#111111">15</text>
-  </g>
-</svg>

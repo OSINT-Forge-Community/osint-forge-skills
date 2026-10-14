@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="assets/badges/version.svg" alt="Version 0.1.4"></a>
- <img src="assets/badges/skills.svg" alt="15 skills">
- <img src="assets/badges/tools.svg" alt="4 adaptateurs d’outils optionnels">
- <img src="assets/badges/python.svg" alt="Python 3.11+">
- <img src="assets/badges/license.svg" alt="Logiciel : Apache-2.0">
+ <a href="VERSION"><img src="https://img.shields.io/badge/version-0.1.4-blue?style=flat&amp;logo=github" alt="Version 0.1.4"></a>
+ <a href="#les-skills"><img src="https://img.shields.io/badge/skills-15-blue?style=flat" alt="15 skills"></a>
+ <a href="#les-outils-utilisables"><img src="https://img.shields.io/badge/optional_tools-4-green?style=flat" alt="4 outils optionnels"></a>
+ <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
+ <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green?style=flat" alt="Licence du logiciel : Apache-2.0"></a>
 </p>
 
 <p align="center">
@@ -26,11 +26,13 @@ Documents, captures de sources, journaux et exports d’historique deviennent un
 dossier portable : pièces conservées, conclusions référencées et inconnues explicites.
 Vous choisissez l’assistant et le modèle ; les outils Python inclus restent hors ligne.
 
-![Conserver les pièces sélectionnées, examiner les sources et contradictions, transmettre un rapport relu.](assets/workflow.fr.svg)
+<p align="center">
+ <strong>Conserver les pièces</strong> &rarr; Examiner les sources et contradictions &rarr; Transmettre un rapport relu
+</p>
 
 <a id="démarrer-en-cinq-minutes"></a>
 
-## 🚀 Essayer un dossier
+## Essayer un dossier
 
 Depuis la racine du dépôt source, avec **Python 3.11+**. Aucun compte ni clé API requis.
 
@@ -66,15 +68,15 @@ les événements annotés et les relations candidates. [Guide de relecture et d�
 
 <a id="les-outils-utilisables"></a>
 
-## 🧰 Les outils à disposition
+## Les outils à disposition
 
 | Outil | Utilisation |
 | --- | --- |
-| 🟠 **Forge · inclus** | Conserver les pièces, trier, créer des chronologies, corréler et exporter |
-| 🔵 **ExifTool · optionnel** | Métadonnées PNG, JPEG et PDF |
-| 🟢 **pdftotext · optionnel** | Texte d’une sélection de pages PDF |
-| 🟣 **Tesseract · optionnel** | OCR sur les images PNG/JPEG |
-| 🟡 **ffprobe · optionnel** | Métadonnées des conteneurs et flux audio/vidéo |
+| **Forge · inclus** | Conserver les pièces, trier, créer des chronologies, corréler et exporter |
+| **ExifTool · optionnel** | Métadonnées PNG, JPEG et PDF |
+| **pdftotext · optionnel** | Texte d’une sélection de pages PDF |
+| **Tesseract · optionnel** | OCR sur les images PNG/JPEG |
+| **ffprobe · optionnel** | Métadonnées des conteneurs et flux audio/vidéo |
 
 ```bash
 python3 scripts/forge.py tools
@@ -92,7 +94,7 @@ Recherche web, DNS/RDAP et cartes dépendent des outils disponibles et autorisé
 
 <a id="installer-dans-son-assistant-ia"></a>
 
-## 🔌 Connecter son assistant
+## Connecter son assistant
 
 Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 
@@ -106,7 +108,7 @@ Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 <a id="les-12-skills"></a>
 <a id="les-skills"></a>
 
-## 🧭 Choisir son étape d’enquête
+## Choisir son étape d’enquête
 
 | Étape | Skills |
 | --- | --- |
@@ -119,7 +121,7 @@ Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 <a id="ce-qui-est-vérifié-aujourdhui"></a>
 <a id="benchmarks"></a>
 
-## 🧪 Tests et benchmarks
+## Tests et benchmarks
 
 Consigné le **14 octobre 2026** : **117 tests réussis** sous Linux/WSL, dont
 **15 tests synthétiques des adaptateurs**. [Benchmarks et essais réels →](benchmarks/README.md)
@@ -143,13 +145,13 @@ Consigné le **14 octobre 2026** : **117 tests réussis** sous Linux/WSL, dont
 Les empreintes vérifient les octets, pas l’authenticité. Relisez les exports avant partage ;
 le masquage ne garantit pas l’anonymisation. [Sécurité](SECURITY.md) · [Formats et limites](docs/cli.md#capabilities-and-limits)
 
-## 💬 Participer au projet
+## Participer au projet
 
 Avis, bug ou amélioration ? **[Ouvrez une issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)**
 et choisissez un label. [Guide de contribution](CONTRIBUTING.md)
 
-🔒 Sécurité : [security@osint-forge.com](mailto:security@osint-forge.com)<br>
-🛡️ Données personnelles : [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
+Sécurité : [security@osint-forge.com](mailto:security@osint-forge.com)<br>
+Données personnelles : [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
 
 ---
 

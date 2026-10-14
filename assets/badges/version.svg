@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="146" height="28" viewBox="0 0 146 28" role="img" aria-label="Version: 0.1.4">
-  <title>Version: 0.1.4</title>
-  <rect x="0.5" y="0.5" width="145" height="27" rx="6" fill="#1C1C1C" stroke="#2A2F36"/>
-  <path d="M76 1H140Q145 1 145 6V22Q145 27 140 27H76Z" fill="#E7A86E"/>
-  <g font-family="ui-monospace,Consolas,monospace" font-size="12" text-anchor="middle">
-    <text x="38" y="18" fill="#F5F5F5">Version</text>
-    <text x="111" y="18" fill="#111111">0.1.4</text>
-  </g>
-</svg>

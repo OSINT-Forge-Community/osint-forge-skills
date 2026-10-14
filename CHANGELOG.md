@@ -2,6 +2,9 @@
 
 ## Unreleased - evidence review and interoperability
 
+- Use standard Shields.io badges embedded in HTML in both README editions.
+  Replace the custom SVG workflow with plain HTML and remove decorative emojis.
+
 - Add schema 2 cases with precise claim locators, append-only corrections,
   research coverage, evidence-backed entities/relations and event annotations.
   Read v1 cases and explicitly upgrade into a new verified copy.

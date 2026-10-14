@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="assets/badges/version.svg" alt="Version 0.1.4"></a>
- <img src="assets/badges/skills.svg" alt="15 skills">
- <img src="assets/badges/tools.svg" alt="4 optional tool adapters">
- <img src="assets/badges/python.svg" alt="Python 3.11+">
- <img src="assets/badges/license.svg" alt="Software: Apache-2.0">
+ <a href="VERSION"><img src="https://img.shields.io/badge/version-0.1.4-blue?style=flat&amp;logo=github" alt="Version 0.1.4"></a>
+ <a href="#the-skills"><img src="https://img.shields.io/badge/skills-15-blue?style=flat" alt="15 skills"></a>
+ <a href="#tools-you-can-use"><img src="https://img.shields.io/badge/optional_tools-4-green?style=flat" alt="4 optional tools"></a>
+ <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
+ <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green?style=flat" alt="Software license: Apache-2.0"></a>
 </p>
 
 <p align="center">
@@ -26,11 +26,13 @@ Documents, source captures, logs and browser-history exports become a portable
 case with preserved evidence, referenced findings and explicit unknowns.
 You choose the assistant and model; the included Python tools work offline.
 
-![Preserve selected evidence, examine sources and contradictions, share a reviewed report.](assets/workflow.en.svg)
+<p align="center">
+ <strong>Preserve evidence</strong> &rarr; Examine sources and contradictions &rarr; Share a reviewed report
+</p>
 
 <a id="start-in-five-minutes"></a>
 
-## 🚀 Try a case
+## Try a case
 
 From the source repository root, with **Python 3.11+**. No account or API key needed.
 
@@ -65,15 +67,15 @@ candidate relations. [Review and exchange guide](shared/review-workflows.md).
 
 <a id="tools-you-can-use"></a>
 
-## 🧰 Tools at your fingertips
+## Tools at your fingertips
 
 | Tool | Use it for |
 | --- | --- |
-| 🟠 **Forge · included** | Preserve evidence, triage files, build timelines, correlate and export |
-| 🔵 **ExifTool · optional** | PNG, JPEG and PDF metadata |
-| 🟢 **pdftotext · optional** | Text from selected PDF pages |
-| 🟣 **Tesseract · optional** | OCR on PNG/JPEG images |
-| 🟡 **ffprobe · optional** | Audio/video container and stream metadata |
+| **Forge · included** | Preserve evidence, triage files, build timelines, correlate and export |
+| **ExifTool · optional** | PNG, JPEG and PDF metadata |
+| **pdftotext · optional** | Text from selected PDF pages |
+| **Tesseract · optional** | OCR on PNG/JPEG images |
+| **ffprobe · optional** | Audio/video container and stream metadata |
 
 ```bash
 python3 scripts/forge.py tools
@@ -90,7 +92,7 @@ Web search, DNS/RDAP and maps depend on your client's available, authorized tool
 
 <a id="install-in-your-ai-assistant"></a>
 
-## 🔌 Connect your assistant
+## Connect your assistant
 
 Build with `python3 scripts/package.py`, then install from `dist/`:
 
@@ -104,7 +106,7 @@ Build with `python3 scripts/package.py`, then install from `dist/`:
 <a id="the-12-skills"></a>
 <a id="the-skills"></a>
 
-## 🧭 Pick your investigation stage
+## Pick your investigation stage
 
 | Stage | Skills |
 | --- | --- |
@@ -117,7 +119,7 @@ Build with `python3 scripts/package.py`, then install from `dist/`:
 <a id="what-has-been-verified"></a>
 <a id="benchmarks"></a>
 
-## 🧪 Tests & benchmarks
+## Tests & benchmarks
 
 Recorded on **October 14, 2026**: **117 tests passed** on Linux/WSL, including
 **15 synthetic adapter tests**. [Benchmarks and real trials →](benchmarks/README.md)
@@ -141,13 +143,13 @@ Recorded on **October 14, 2026**: **117 tests passed** on Linux/WSL, including
 Hashes check bytes, not authenticity. Review exports before sharing; masking
 is not guaranteed anonymization. [Security](SECURITY.md) · [Supported formats & limits](docs/cli.md#capabilities-and-limits)
 
-## 💬 Help shape the project
+## Help shape the project
 
 Ideas, bugs or improvements? **[Open an issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)**
 and choose a label. [Contribution guide](CONTRIBUTING.md)
 
-🔒 Security: [security@osint-forge.com](mailto:security@osint-forge.com)<br>
-🛡️ Personal data: [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
+Security: [security@osint-forge.com](mailto:security@osint-forge.com)<br>
+Personal data: [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
 
 ---
 
