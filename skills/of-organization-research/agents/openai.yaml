@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investigate organizations"
+  short_description: "Trace organizations and evidenced relationships"
+  default_prompt: "Use $of-organization-research on the supplied synthetic evidence and report supported observations and unknowns."

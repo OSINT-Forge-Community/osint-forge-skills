@@ -135,3 +135,26 @@ reproduction. Do not attach real investigations, credentials or complete logs.
 Follow [SECURITY.md](../SECURITY.md) for sensitive defects. The list above covers
 common codes; the runtime can return others. A generic `IO_OR_FORMAT_ERROR`
 requires checking permissions, encoding and structure before changing code.
+
+## Schema 2 review errors
+
+| Code | Meaning and recovery |
+| --- | --- |
+| `CASE_UPGRADE_REQUIRED` | Use upgrade into a new case before adding v2 records; preserve the old case. |
+| `INVALID_CLAIM_REVISION` / `CLAIM_ALREADY_REVISED` | Select an existing current claim; corrections cannot branch or point forward. |
+| `INVALID_REVIEW_REVISION` | Research/annotation corrections must replace a current record of the same kind. |
+| `INVALID_CITATION_REFERENCE` / `INVALID_CITATION_RANGE` | Cite a supported/contradicting E ID and valid inclusive locator; page/line starts at 1, record/time_ms at 0. |
+| `ANALYSIS_DIGEST_MISMATCH` | The referenced analysis changed. Preserve it, investigate and reproduce; do not silently replace its digest. |
+| `ANALYSIS_PROVENANCE_MISMATCH` | The analysis input does not match the cited evidence. Recompute from the correct piece. |
+| `INVALID_INTAKE_MANIFEST` | Supply explicit paths and per-file provenance; paths are relative to the manifest. |
+| `INVALID_CSV_INPUT` / `INVALID_CAPTURE_ENCODING` | Malformed CSV or unsupported capture text encoding; supply a valid bounded export without modifying the original. |
+| `INVALID_EVENT_MAPPING` | Inspect CSV headers and select distinct existing timestamp and event columns. |
+| `AMBIGUOUS_CAPTURE_DOCUMENT` | The supplied MHTML has zero or multiple main HTML documents; supply a selected unambiguous capture. |
+| `TEXT_DIFF_LIMIT` | Supply bounded selected UTF-8 text exports, retaining originals and derivation notes. |
+| `REUSE_IDENTITY_MISMATCH` / `REUSE_OUTPUT_MISMATCH` | Reuse is not valid for these bytes/options; reproduce with --reuse omitted. |
+| `HTML_PUBLIC_VIEW_REJECTED` | The HTML viewer is private. Generate Markdown and prepare a reviewed minimized view instead. |
+| `REPORT_TOO_LARGE` | Select fewer timeline analyses or split the investigation scope; nothing is silently truncated to pass. |
+
+The HTML viewer is private. Filter by translated type labels; machine-readable
+state identifiers remain in details. History is hidden by default when JavaScript
+runs and retained in the file. No JavaScript means all rows are visible.

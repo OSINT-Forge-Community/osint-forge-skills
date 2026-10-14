@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="184" height="28" viewBox="0 0 184 28" role="img" aria-label="License: Apache-2.0">
   <title>License: Apache-2.0</title>
   <rect x="0.5" y="0.5" width="183" height="27" rx="6" fill="#1C1C1C" stroke="#2A2F36"/>
-  <path d="M76 1H178Q183 1 183 6V22Q183 27 178 27H76Z" fill="#B87333"/>
+  <path d="M76 1H178Q183 1 183 6V22Q183 27 178 27H76Z" fill="#80D1B0"/>
   <g font-family="ui-monospace,Consolas,monospace" font-size="12" text-anchor="middle">
     <text x="38" y="18" fill="#F5F5F5">License</text>
     <text x="130" y="18" fill="#111111">Apache-2.0</text>

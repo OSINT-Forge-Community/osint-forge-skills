@@ -263,3 +263,62 @@ Publish aggregate scores and permitted task identifiers, respecting dataset
 conditions. Do not publish private cases, credentials, hidden answers or complete
 GAIA/BrowseComp fixtures. Label adapted/subset runs explicitly. Only an accepted
 upstream submission can be described as an official leaderboard result.
+
+## Schema 2 review and real-tool qualification
+
+The new review demo exercises precise citations, append-only correction, research
+coverage, event annotations, candidate relations, HTML, GraphML, CSV omissions
+and private export/restoration. It is scripted and makes no model calls.
+Run `python3 examples/review_demo.py --out cases/review-demo` with a new path.
+
+The complete CLI intake benchmark uses ten distinct synthetic files of different
+sizes and individual provenance, three samples per mode in a fixed shuffled
+order, with Python startup included. On Linux/WSL, Python 3.12.3, the measured
+medians were **4,851.938 ms sequential** and **678.493 ms through an intake
+manifest**. Original bytes and registered counts were checked. This is a small
+local filesystem measurement, not a general latency or performance guarantee.
+[Results](results/2026-10-14-review-cli/results.json) ·
+[Source hashes](results/2026-10-14-review-cli/source-manifest.json).
+Reproduce with `python3 benchmarks/review.py --out NEW_RESULTS_DIRECTORY`.
+
+Real ExifTool 12.57, pdftotext 22.12.0, Tesseract 5.3.0 and ffprobe 5.1.9 were
+run against original synthetic PNG/PDF/WAV fixtures in an isolated Debian 12
+container with network disabled. Expected text/metadata and unchanged source
+bytes were checked; explicit reuse was exercised for each adapter. This tests
+those versions and fixtures, not all supported input formats or hostile binaries.
+Chromium 155 exercised EN/FR local HTML filters, history, annotations and inert
+hostile display text, with no remote page requests. Setup failures are recorded
+separately from the successful browser checks.
+[Qualification record](results/2026-10-14-review-integration/results.json).
+
+Native Windows/macOS and actual imports into Timesketch, Maltego, Aleph or OGI
+remain unperformed. A GraphML parser or documented CSV field layout is not a
+real interoperability trial. Model evaluation remains a separate track.
+
+## Six real review sessions, October 14, 2026
+
+Codex CLI 0.162.1 with `gpt-6.1-sol`, reasoning effort `xhigh`, completed six
+authorized sessions on original synthetic inputs: source correction, organization
+namesakes and Windows CSV interpretation, once with and once without project
+skills. Both conditions had offline helpers. Each session had a 420-second limit;
+two ran concurrently. No session was retried. These are six client sessions,
+not six API requests. Raw traces and cases remain private maintainer artifacts.
+
+All six answers and requested artifacts passed a non-blind engineering review:
+preserved originals, evidence references, uncertainty, research gaps and the
+scenario-specific checks described in the [results](results/2026-10-14-review-model/results.json).
+The project-skill sessions explicitly read source provenance/reporting,
+organization research or Windows artifacts instructions and used local helpers.
+Both conditions were accepted in all three scenarios; no quality improvement is
+demonstrated. The source scenario retained the correction despite an embedded
+hostile instruction, which is only a fixture-specific observation.
+
+This was a functional development pilot, not a controlled performance benchmark.
+The last baseline helper copy includes two later hardenings; its hashes differ
+from the frozen helpers in the other five sessions. Global client metadata and
+parent repository instructions were not fully isolated, and two sessions queried
+parent Git status. There was no independent blinded reviewer or held-out sample.
+Latency and token usage are descriptive only; price and API request counts were
+not collected. [Source and input hashes](results/2026-10-14-review-model/source-manifest.json)
+record the exact copies. The frozen model snapshots precede later runtime
+hardening, which is checked separately by regression and browser tests.

@@ -14,9 +14,13 @@ The illustrations are synthetic artwork, not investigation evidence.
 - [English banner](../../assets/readme-banner.en.png)
 - [French banner](../../assets/readme-banner.png)
 - [Local badges](../../assets/badges/)
+- Investigation workflow: [English](../../assets/workflow.en.svg) · [French](../../assets/workflow.fr.svg)
 - [File provenance](provenance.json): dimensions, dates and integrity hashes
 
 Both banners measure 2170 × 725 pixels. Assets are included locally and require
 no external image, font or badge service at runtime.
+
+The original SVG workflow uses copper, blue and mint accents with text labels.
+Badges describe capabilities and the package version, synchronized with [VERSION](../../VERSION).
 
 Generation prompts, creative briefs and source references remain private.

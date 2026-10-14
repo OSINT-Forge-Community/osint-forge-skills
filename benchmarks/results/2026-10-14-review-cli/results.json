@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "python": "3.12.3",
+  "platform": "linux",
+  "files": 10,
+  "repetitions_per_mode": 3,
+  "order": [
+    "manifest",
+    "sequential",
+    "sequential",
+    "manifest",
+    "sequential",
+    "manifest"
+  ],
+  "samples_ms": {
+    "sequential": [
+      4516.049,
+      5100.997,
+      4851.938
+    ],
+    "manifest": [
+      493.769,
+      678.493,
+      1024.591
+    ]
+  },
+  "median_ms": {
+    "sequential": 4851.938,
+    "manifest": 678.493
+  },
+  "originals_unchanged": true,
+  "network_calls": false,
+  "model_calls": false,
+  "scope": "End-to-end CLI intake of 10 distinct synthetic text files with per-file provenance, on the host temporary filesystem; includes Python startup. No general speedup or native Windows/macOS claim."
+}

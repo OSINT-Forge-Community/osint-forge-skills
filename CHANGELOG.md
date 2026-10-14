@@ -1,6 +1,30 @@
 # Changelog
 
-## Unreleased - 2026-10-14
+## Unreleased - evidence review and interoperability
+
+- Add schema 2 cases with precise claim locators, append-only corrections,
+  research coverage, evidence-backed entities/relations and event annotations.
+  Read v1 cases and explicitly upgrade into a new verified copy.
+- Add private offline HTML review in EN/FR, timeline filters and relation diagrams;
+  preserve all history, with no remote scripts or resources.
+- Add per-file intake manifests, supplied HTML/MHTML text extraction, bounded
+  UTF-8 version comparison, mapped forensic CSV, GraphML and Timesketch-field CSV.
+- Add explicit external-tool result reuse with input/binary/version/argument
+  checks and a visible reuse status distinct from fresh execution.
+- Add organization, document-version and Windows-export investigation skills
+  (15 total), selective routing and an original synthetic review demo.
+- Add complete CLI intake measurements; real-tool/browser and model trial
+  observations are scoped separately in the compatibility and benchmark guides.
+
+
+## 0.1.4 - 2026-10-14
+
+Local package version alignment; no tag or publication is implied.
+
+- Reduced both README editions by about half, added colored local SVG workflow
+  diagrams and badges, and moved detailed validation notes into disclosures.
+- Synchronized package, marketplace, skill and runtime version metadata at 0.1.4.
+  Historical benchmark and compatibility observations retain their original scope.
 
 - Published contribution guidance for GitHub feedback, bugs and suggestions,
   with issue labels and separate security and personal-data email contacts.

@@ -55,3 +55,16 @@ dist/
 /docs/branding/*
 !/docs/branding/README.md
 !/docs/branding/provenance.json
+
+!/benchmarks/review.py
+!/benchmarks/results/2026-10-14-review-cli/
+/benchmarks/results/2026-10-14-review-cli/*
+!/benchmarks/results/2026-10-14-review-cli/results.json
+!/benchmarks/results/2026-10-14-review-cli/source-manifest.json
+!/benchmarks/results/2026-10-14-review-integration/
+/benchmarks/results/2026-10-14-review-integration/*
+!/benchmarks/results/2026-10-14-review-integration/results.json
+!/benchmarks/results/2026-10-14-review-model/
+/benchmarks/results/2026-10-14-review-model/*
+!/benchmarks/results/2026-10-14-review-model/results.json
+!/benchmarks/results/2026-10-14-review-model/source-manifest.json

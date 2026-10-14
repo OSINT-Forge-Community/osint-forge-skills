@@ -20,7 +20,7 @@ python3 scripts/package.py --check
 ```
 
 On Windows/PowerShell, use `py -3` in place of `python3`. The build creates the
-full plugin, twelve standalone archives and `SHA256SUMS` in `dist/`. The second
+full plugin, fifteen standalone archives and `SHA256SUMS` in `dist/`. The second
 command checks that the generated files match the current sources. Do not
 install the authoring folders in `skills/`: their runtime is added at build time.
 

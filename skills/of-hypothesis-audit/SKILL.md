@@ -4,7 +4,7 @@ description: "Audit alternative explanations, confirmation bias and contradictio
 license: Apache-2.0
 metadata:
   author: "OSINT Forge"
-  version: "0.1.0"
+  version: "0.1.4"
   requirements: "Local helpers require Python 3.11+. Use a generated package; research uses separately authorized host capabilities."
 ---
 
@@ -30,10 +30,14 @@ For utility commands and record semantics, read [the case contract](references/c
 
 4. Remove the strongest uncertain assumption or source group and reassess the result. Retain contradictions and revise claims; never rewrite evidence to fit the story.
 
-5. Record claims as observed, inferred or unconfirmed with a rationale and E references. Give the smallest next observation that would discriminate between candidates.
+5. Record claims as observed, inferred or unconfirmed with a rationale, E references and precise locators when available. Use `--supersedes` for corrections; retain contrary evidence and research limitations. Give the smallest next observation that would discriminate between candidates.
 
 ## Deliverable
 
 An evidence-to-hypothesis matrix, unresolved contradictions, revised conclusions and discriminating next steps.
 
 If evidence, a parser or verification is missing, describe the gap and the smallest useful export/acquisition request. Do not invent a result or expand collection to compensate.
+
+Read [review commands](references/review-workflows.md) when recording precise
+citations, corrections, research coverage, entities or event annotations, or
+preparing the private HTML viewer and interoperability exports.

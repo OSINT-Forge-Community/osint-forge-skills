@@ -4,7 +4,7 @@ description: "Scope an authorized OSINT or forensic investigation and create a p
 license: Apache-2.0
 metadata:
   author: "OSINT Forge"
-  version: "0.1.0"
+  version: "0.1.4"
   requirements: "Local helpers require Python 3.11+. Use a generated package; research uses separately authorized host capabilities."
 ---
 
@@ -30,10 +30,16 @@ For utility commands and record semantics, read [the case contract](references/c
 
 4. Register each explicitly selected file with `add --case CASE --source FILE`. Preserve source time separately from acquisition time. Origin labels need a documented basis.
 
-5. Run `verify --case CASE`. List registered E identifiers, known gaps and the next discriminating observation. A copied-file hash does not prove its source's truth.
+5. Use `plan --kind` for the supplied material (documents, media, domain, organization, versions, windows-export, browser or logs). Select the skills that can answer the question, load only their relevant instructions, and record missing capabilities as research records. A plan does not authorize network access or installation. Stop at the agreed bounds or when evidence cannot discriminate further.
+
+6. Run `verify --case CASE`. List registered E identifiers, known gaps and the next discriminating observation. A copied-file hash does not prove its source's truth.
 
 ## Deliverable
 
 A private case, registered evidence IDs, a bounded investigation brief and missing inputs.
 
 If evidence, a parser or verification is missing, describe the gap and the smallest useful export/acquisition request. Do not invent a result or expand collection to compensate.
+
+Read [review commands](references/review-workflows.md) when recording precise
+citations, corrections, research coverage, entities or event annotations, or
+preparing the private HTML viewer and interoperability exports.

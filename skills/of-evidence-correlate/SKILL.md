@@ -4,7 +4,7 @@ description: "Review candidate timestamp or URL relationships between evidence-l
 license: Apache-2.0
 metadata:
   author: "OSINT Forge"
-  version: "0.1.0"
+  version: "0.1.4"
   requirements: "Local helpers require Python 3.11+. Use a generated package; research uses separately authorized host capabilities."
 ---
 
@@ -37,3 +37,7 @@ For utility commands and record semantics, read [the case contract](references/c
 Candidate links, supporting references, rejected matches and attribution limits.
 
 If evidence, a parser or verification is missing, describe the gap and the smallest useful export/acquisition request. Do not invent a result or expand collection to compensate.
+
+Read [review commands](references/review-workflows.md) when recording precise
+citations, corrections, research coverage, entities or event annotations, or
+preparing the private HTML viewer and interoperability exports.

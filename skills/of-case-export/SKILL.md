@@ -4,7 +4,7 @@ description: "Export verified private cases, resume investigations or prepare a 
 license: Apache-2.0
 metadata:
   author: "OSINT Forge"
-  version: "0.1.0"
+  version: "0.1.4"
   requirements: "Local helpers require Python 3.11+. Use a generated package; research uses separately authorized host capabilities."
 ---
 

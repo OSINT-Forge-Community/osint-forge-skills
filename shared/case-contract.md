@@ -1,4 +1,4 @@
-# Case contract v1
+# Case contract v2 (v1 readable)
 
 The bundled utility runs without network access or optional Python packages.
 Use `python scripts/forge.py --help` relative to the loaded skill directory.
@@ -7,7 +7,7 @@ The authoring repository also exposes `python scripts/forge.py` at its root.
 
 ## Private case layout
 
-- `case.json`: schema version 1, scope, title and creation time.
+- `case.json`: schema version 2, scope, title and creation time.
 - `evidence.jsonl`: stable E000001 identifiers, relative raw paths, SHA-256,
   size, original basename, acquisition time, optional HTTPS source URL and
   analyst origin label. A label never establishes source independence.
@@ -15,6 +15,7 @@ The authoring repository also exposes `python scripts/forge.py` at its root.
   evidence IDs; `observed`, `inferred` or `unconfirmed` state; qualitative
   confidence; rationale containing assumptions, limitations and what would
   distinguish competing explanations.
+- `review.jsonl`: v2 research coverage, entities, relations and event annotations.
 - `raw/`: exact private copies of explicitly selected source files.
 - `analysis/`, `reports/`, `exports/`: derived local outputs.
 
@@ -94,6 +95,32 @@ binds the export to its approved bytes. The digest is operator-supplied, not a
 cryptographically authenticated human approval. Any edit changes it and blocks
 export. Public bundles contain the reviewed view and its export manifest only.
 
+## Versioned review records
+
+New cases use schema 2. Readers retain schema 1 support; older v1 clients reject
+v2 cases. `upgrade --case OLD --out NEW` creates a verified v2 copy without
+modifying OLD. Never change schema metadata by hand. V2 private exports include
+review.jsonl; the archive manifest format remains version 1.
+
+Claims may add precise `citations` and `supersedes`. Citations locate pages,
+lines, source records or milliseconds; analysis citations bind a case-relative
+path and digest to the original evidence. References and ranges are validated,
+not semantic relevance or excerpt accuracy. Corrections append new claims and
+can replace only a current earlier claim. History remains available.
+
+Review records have R identifiers, kind, recorded_at and rationale. Research
+records distinguish not_searched, no_result, partial, unavailable and completed.
+Entities require evidence; relationships connect existing entities, carry evidence
+and state observed or candidate, and never automatically merge identities.
+Annotations bind an event index to a hashed analysis. Research and annotation
+corrections append a same-kind superseding entry. Unknown fields are rejected.
+
+The private HTML report escapes evidence, blocks remote resources and retains
+history. It is not a public minimized view. Use Markdown for prepare-share.
+GraphML and mapped CSV exports report their scope and omissions; format validity
+does not establish a successful import in another product. Commands and record
+examples are in the shared review-workflows guide bundled with every skill.
+
 ## Commands
 
 ```text
@@ -102,7 +129,7 @@ add --case CASE --source FILE [--url HTTPS_URL] [--origin-group LABEL]
 add-many --case CASE --source FILE --source OTHER_FILE [--url HTTPS_URL] [--origin-group LABEL]
 claim --case CASE --text TEXT --state observed|inferred|unconfirmed
       --rationale TEXT [--support E000001] [--contradict E000002]
-      [--confidence low|medium|high]
+      [--confidence low|medium|high] [--citations JSON_FILE] [--supersedes C_ID]
 verify --case CASE
 provenance --case CASE
 triage --case CASE --evidence E000001 --out CASE/analysis/triage.json
@@ -111,7 +138,7 @@ timeline --case CASE --evidence E000001 --format json|jsonl|csv
 browser --case CASE --evidence E000001 --out CASE/analysis/browser.json
 correlate --case CASE --input CASE/analysis/a.json --input CASE/analysis/b.json
           --out CASE/analysis/correlation.json
-report --case CASE --lang en|fr [--replace]
+report --case CASE --lang en|fr [--format md|html] [--input analysis/events.json] [--replace]
 prepare-share --input FILE --out NEW_FILE
 export --case CASE --mode private --out NEW_ARCHIVE
 export --case CASE --mode public --view REVIEWED_FILE
@@ -122,5 +149,9 @@ doctor
 tools
 tool-run --case CASE --evidence E000001 --tool exiftool|pdftotext|tesseract|ffprobe
          --executable ABSOLUTE_PATH --out CASE/analysis/tool.json
-         [--first-page N --last-page M] [--language eng]
+         [--first-page N --last-page M] [--language eng] [--reuse analysis/previous.json]
 ```
+
+Additional commands: `plan`, `intake`, `record`, `upgrade`, `capture`, `compare`,
+`import-events`, `export-events`, and `graph`. Use each command's --help and the
+bundled review workflow guide. No command performs automatic remote collection.

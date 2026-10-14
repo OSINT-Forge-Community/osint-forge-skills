@@ -14,3 +14,10 @@ The media fixture is a supplied metadata statement, not an image or verified
 EXIF extraction. This deliberate absence tests whether a model fabricates an
 authenticity or geolocation result. The untrusted note deliberately contains
 hostile instructions as passive data.
+
+The review_demo.py generator adds original synthetic company labels, before/after
+notices and a Windows-shaped CSV. It exercises schema 2 corrections, research
+coverage, candidate entities/relations, timeline annotations, private HTML,
+GraphML and CSV export losses. Its findings are scripted, not model discoveries.
+Run `python3 examples/review_demo.py --out cases/review-demo` from a public
+checkout or complete extracted plugin, choosing a new output directory.

@@ -1,0 +1,98 @@
+{
+  "pdftotext": {
+    "status": "passed",
+    "version": "pdftotext version 22.12.0",
+    "original_unchanged": true,
+    "explicit_reuse": "passed"
+  },
+  "tesseract": {
+    "status": "passed",
+    "version": "tesseract 5.3.0",
+    "original_unchanged": true,
+    "explicit_reuse": "passed"
+  },
+  "exiftool": {
+    "status": "passed",
+    "version": "12.57",
+    "original_unchanged": true,
+    "explicit_reuse": "passed"
+  },
+  "ffprobe": {
+    "status": "passed",
+    "version": "ffprobe version 5.1.9-0+deb12u1 Copyright (c) 2007-2026 the FFmpeg developers",
+    "original_unchanged": true,
+    "explicit_reuse": "passed"
+  },
+  "browser": {
+    "status": "passed",
+    "version": "Chromium 155.0.8059.39 built on Debian GNU/Linux 12 (bookworm)",
+    "checks": [
+      {
+        "language": "en",
+        "history": "passed",
+        "filters": "passed",
+        "hostile_text": "inert",
+        "annotations": "passed"
+      },
+      {
+        "language": "fr",
+        "history": "passed",
+        "filters": "passed",
+        "hostile_text": "inert",
+        "annotations": "passed"
+      }
+    ],
+    "remote_page_requests": 0,
+    "translated_type_labels": "passed_en_fr"
+  },
+  "case_verification": {
+    "status": "verified",
+    "evidence_count": 7,
+    "claim_count": 3,
+    "scope": "registered_bytes_and_references",
+    "authenticity": "not_established",
+    "semantic_claim_validation": "not_performed"
+  },
+  "scope": "Synthetic fixtures; container network disabled; Linux only; no model invocation.",
+  "setup_attempts": [
+    {
+      "stage": "browser",
+      "status": "setup_error",
+      "reason": "Read-only default Chromium configuration path; used writable isolated XDG directories."
+    },
+    {
+      "stage": "browser",
+      "status": "harness_error",
+      "reason": "WebSocket status phrase check was overly strict; corrected to HTTP status code."
+    }
+  ],
+  "date": "2026-10-14",
+  "image_id": "sha256:fb7d2201898e962ff2a715db7086bd14dea0bbec9e9d36e0885af2beec49d3b4",
+  "source_snapshot": {
+    "shared/forgekit/__init__.py": "3ce96960f622c762b8d68ec88499dd7f73ccf1ef69a23c9d9d85bd4eff1f282e",
+    "shared/forgekit/analysis.py": "f4180434ceb6743fedda71ecf0aae742ba1fef6bca17ecec61a4d3235f4aea37",
+    "shared/forgekit/casefiles.py": "8a0bbc8f086ec0f3289cc8a2daef11b219541a1bf5d641ee4d75e62d27f30479",
+    "shared/forgekit/cli.py": "21af5a21f59dde4b59b93e6a34af28fe8b8ab8b6ffcfd458d518ff04b4321869",
+    "shared/forgekit/exchange.py": "aab0bf7a9b3428f85577e08bed6cd8b5238feb95b96848f27eec56a998112bbf",
+    "shared/forgekit/reporting.py": "5badc4b442cee03096e69856ec9795e41e17e648cb07632a0d1f9cdc7a09e6cd",
+    "shared/forgekit/review.py": "637c8d015bb9f25a6d222effcedad918248b7e31040d802702c4cb4a70db00ec",
+    "shared/forgekit/safeio.py": "6945d2941985a8c66770e7beed1fe48982f337358c316eb77a4b2cfe2d080c62",
+    "shared/forgekit/timestamps.py": "44faababf2894d66bd0c8e3578121c578f5b69e59bf82b226bc5c27924c0ac10",
+    "shared/forgekit/tooling.py": "eddc45047d3be9e2c6890e8c499f2dd2cbce7d29039a0f0e96e28ddad9d2754f",
+    "shared/forgekit/viewer.py": "d400f145dcd16ac73f888069cfadcaedf3795f0a243c8a2fdbc8c479dcaaba0c"
+  },
+  "source_snapshot_note": "Earlier runtime snapshot used during qualification; tooling.py is unchanged. The last browser pass regenerated both pages using browser_source_snapshot. Other subsequent hardenings are covered by separate unit tests.",
+  "browser_source_snapshot": {
+    "shared/forgekit/__init__.py": "3ce96960f622c762b8d68ec88499dd7f73ccf1ef69a23c9d9d85bd4eff1f282e",
+    "shared/forgekit/analysis.py": "f4180434ceb6743fedda71ecf0aae742ba1fef6bca17ecec61a4d3235f4aea37",
+    "shared/forgekit/casefiles.py": "8a0bbc8f086ec0f3289cc8a2daef11b219541a1bf5d641ee4d75e62d27f30479",
+    "shared/forgekit/cli.py": "21af5a21f59dde4b59b93e6a34af28fe8b8ab8b6ffcfd458d518ff04b4321869",
+    "shared/forgekit/exchange.py": "d4520f996cc4d1af64dfdfb38342c3b52710da8e480e074c97a1495040ef9e3a",
+    "shared/forgekit/reporting.py": "5badc4b442cee03096e69856ec9795e41e17e648cb07632a0d1f9cdc7a09e6cd",
+    "shared/forgekit/review.py": "637c8d015bb9f25a6d222effcedad918248b7e31040d802702c4cb4a70db00ec",
+    "shared/forgekit/safeio.py": "6945d2941985a8c66770e7beed1fe48982f337358c316eb77a4b2cfe2d080c62",
+    "shared/forgekit/timestamps.py": "44faababf2894d66bd0c8e3578121c578f5b69e59bf82b226bc5c27924c0ac10",
+    "shared/forgekit/tooling.py": "eddc45047d3be9e2c6890e8c499f2dd2cbce7d29039a0f0e96e28ddad9d2754f",
+    "shared/forgekit/viewer.py": "0a4a9b38c068ab8da70559379018f6289f22e7678a42c24e7db0be7720354ace"
+  }
+}

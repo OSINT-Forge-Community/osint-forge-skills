@@ -49,3 +49,18 @@ Describe the concern privately without posting identifying details on GitHub.
 General feedback, non-sensitive bugs and suggestions belong in
 [GitHub Issues](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues).
 See [Contributing](CONTRIBUTING.md) for reporting guidance and issue labels.
+
+## Private review views and schema 2
+
+The local HTML viewer escapes supplied text and uses a hash-based Content
+Security Policy for its bundled script/style. It loads no external resources.
+Filters hide rows visually, not from the file: the entire HTML remains private.
+HTML documents/scripts are refused by prepare-share and public export; prepare
+a minimized Markdown view instead. This is not a general HTML sanitizer.
+
+Schema 2 citations and review records check references and bind selected derived
+analyses by digest. They do not authenticate an analyst, timestamp or logical
+conclusion. A person able to rewrite all case files can recompute hashes.
+Explicit tool-result reuse checks consistency but is not independent reproduction.
+HTML/MHTML extraction never executes the page; hostile parsing remains bounded
+by input/output limits and should use an appropriate isolated environment.

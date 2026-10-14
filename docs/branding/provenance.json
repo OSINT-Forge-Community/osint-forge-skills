@@ -44,5 +44,63 @@
   ],
   "owner": "OSINT Forge",
   "rights": "All rights reserved; excluded from Apache-2.0",
-  "rights_notice": "assets/LICENSE.txt"
+  "rights_notice": "assets/LICENSE.txt",
+  "readme_vectors": [
+    {
+      "asset": "assets/badges/license.svg",
+      "sha256": "c43c74e4ca8a8f1e8ab872895886714ff65110921bf4327f4472ec50c943fed6",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/badges/python.svg",
+      "sha256": "808e973c37ab96591d82a60f87984cec20c6ab5662110c5c98ea2d40167bf140",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/badges/skills.svg",
+      "sha256": "baaae8b0f96e8bc5c3eca286fbdd6d975953e040c834a5092becba2c81200d4c",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/badges/tools.svg",
+      "sha256": "6ce48152d60253c7f81453aa8a27e1c9bf2104519d0d832797e86238e73671e4",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/workflow.en.svg",
+      "sha256": "cd05a07f76388dd5da59eb8ef6cbd36a4da477461104e657eca337425936e4d0",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/workflow.fr.svg",
+      "sha256": "10b74cbb93fb0ed480d2debcac8f97542c6bc595730092fa6fdb921ccc61b53a",
+      "tool": "original SVG markup",
+      "purpose": "readme_navigation_and_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/badges/version.svg",
+      "sha256": "876dccceab01a7df622031a04afbbf2f9cf9e170ea22a18c33f8ce6cec69003b",
+      "tool": "original SVG markup",
+      "purpose": "readme_package_version",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-14"
+    }
+  ]
 }

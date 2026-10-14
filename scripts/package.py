@@ -20,6 +20,12 @@ PUBLIC_DOCUMENTS = (
     "branding/provenance.json",
 )
 PUBLIC_BENCHMARKS = (
+    "review.py", "results/2026-10-14-review-cli/results.json",
+    "results/2026-10-14-review-cli/source-manifest.json",
+    "results/2026-10-14-review-integration/results.json",
+    "results/2026-10-14-review-model/results.json",
+    "results/2026-10-14-review-model/source-manifest.json",
+
     "README.md", "runtime.py", "results/2026-10-14-runtime/results.json",
     "results/2026-10-14-runtime/source-manifest.json",
     "results/2026-10-14-runtime-cleanup/results.json",
@@ -74,12 +80,14 @@ def expected_files() -> dict[str, bytes]:
                if key.endswith(".py")}
     contract = read_bytes(ROOT / "shared" / "case-contract.md")
     tool_workflows = read_bytes(ROOT / "shared" / "tool-workflows.md")
+    review_workflows = read_bytes(ROOT / "shared" / "review-workflows.md")
     skill_archives = {}
     for folder in sorted((ROOT / "skills").iterdir()):
         require(folder.is_dir(), "INVALID_SKILL_ENTRY")
         source = collect(folder)
         source["references/case-contract.md"] = contract
         source["references/tool-workflows.md"] = tool_workflows
+        source["references/review-workflows.md"] = review_workflows
         for path, content in runtime.items():
             source["scripts/forgekit/" + path] = content
         source["LICENSE"] = read_bytes(ROOT / "LICENSE")
@@ -95,6 +103,7 @@ def expected_files() -> dict[str, bytes]:
         files[plugin + "assets/" + relative] = data
     files[plugin + "shared/case-contract.md"] = contract
     files[plugin + "shared/tool-workflows.md"] = tool_workflows
+    files[plugin + "shared/review-workflows.md"] = review_workflows
     for relative in PUBLIC_DOCUMENTS:
         files[plugin + "docs/" + relative] = read_bytes(ROOT / "docs" / relative)
     for relative in PUBLIC_BENCHMARKS:
@@ -111,7 +120,7 @@ def expected_files() -> dict[str, bytes]:
         files[relative] = json_bytes(catalog)
     files["README.md"] = ("![OSINT Forge Skills](plugins/osint-forge-skills/assets/readme-banner.en.png)\n\n"
         "# OSINT Forge Skills distribution " + version + "\n\n"
-        "12 skills for evidence-based investigation, with self-contained local tools.\n"
+        "15 skills for evidence-based investigation, with self-contained local tools.\n"
         "This marketplace is already built. Start from this extracted directory.\n\n"
         "## Choose your next step\n\n"
         "| I want to… | Guide |\n"
@@ -128,8 +137,8 @@ def expected_files() -> dict[str, bytes]:
         "## Validation and data control\n\n"
         "[Recorded compatibility](plugins/osint-forge-skills/docs/compatibility.json) ·\n"
         "[Helper benchmarks](plugins/osint-forge-skills/benchmarks/README.md)\n\n"
-        "A single-task Codex pilot is recorded in the benchmark guide. Full skill\n"
-        "invocation and other clients remain unevaluated. Client setup\n"
+        "Codex pilots and observed reads of selected project skills are recorded\n"
+        "in the benchmark guide. Full catalogue coverage and other clients remain unevaluated. Client setup\n"
         "is an explicit operator action. A remote assistant may transmit what it reads.\n\n"
         "[Documentation](plugins/osint-forge-skills/docs/README.md) ·\n"
         "[License](plugins/osint-forge-skills/LICENSE)\n").encode()
@@ -159,8 +168,8 @@ def build(check: bool = False) -> dict:
             safe_path(target.parent, exists=False)
             target.parent.mkdir(parents=True, exist_ok=True)
             atomic_write(target, data, replace=target.exists())
-    return {"status": "verified" if check else "built", "skills": 12,
-            "files": len(files), "version": "0.1.0", "network_calls": False}
+    return {"status": "verified" if check else "built", "skills": len(list((ROOT / "skills").iterdir())),
+            "files": len(files), "version": (ROOT / "VERSION").read_text().strip(), "network_calls": False}
 
 
 def main():

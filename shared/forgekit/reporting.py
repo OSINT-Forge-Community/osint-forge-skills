@@ -11,6 +11,7 @@ from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_TOTAL, atomic_write, di
                      json_bytes, markdown, read_bytes, relative_path, require,
                      safe_path, visible)
 from .safeio import zip_directory_guard
+from .review import current, records
 import json
 import os
 import tempfile
@@ -19,6 +20,7 @@ SECRET = re.compile(r"(?i)(?:bearer\s+|(?:api(?:\\?[_-])?key|password|secret|tok
 EMAIL = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.I)
 IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])")
 PRIVATE_KEY = re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----")
+ACTIVE_HTML = re.compile(r"<!doctype\s+html\b|<html(?:\s|>)|<script(?:\s|>)", re.I)
 
 
 def mask_credentials(text: str) -> tuple[str, int]:
@@ -42,6 +44,8 @@ def mask_credentials(text: str) -> tuple[str, int]:
 def render_report(case: str | Path, language: str = "en") -> bytes:
     verify(case)
     _, info, evidence, claims = load_case(case)
+    root, _, _, _ = load_case(case)
+    review = records(root, info)
     require(language in ("en", "fr"), "UNSUPPORTED_LANGUAGE")
     labels = ({"title": "Rapport d'enquête", "scope": "Périmètre", "claims": "Conclusions",
                "support": "Pièces favorables", "against": "Pièces contradictoires",
@@ -66,6 +70,22 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
                       f"{labels['support']}: {citations('supports')}", "",
                       f"{labels['against']}: {citations('contradicts')}", "",
                       f"{labels['why']}: {markdown(claim['rationale'], 8000)}", ""])
+        if claim.get("supersedes"):
+            lines.extend([f"Supersedes: {claim['supersedes']}", ""])
+        successors = [row["id"] for row in claims if row.get("supersedes") == claim["id"]]
+        if successors:
+            lines.extend([f"Historical / Historique: replaced by {', '.join(successors)}", ""])
+        for citation in claim.get("citations", []):
+            lines.append(f"- {citation['evidence_id']} {citation['kind']} "
+                         f"{citation['start']}–{citation['end']}: {markdown(citation.get('quote', ''))}"
+                         + (f" ({markdown(citation['analysis'])}; SHA-256 {citation['sha256']})"
+                            if 'analysis' in citation else ""))
+    if review:
+        lines.extend(["", "## Recherches et annotations" if language == "fr" else "## Research and annotations", ""])
+        for row in current(review):
+            lines.append(f"- {row['id']} [{row['kind']} / {row.get('status', row.get('state', 'recorded'))}] "
+                         f"{markdown(row.get('question', row.get('label', row.get('note', ''))))}: "
+                         f"{markdown(row['rationale'], 8000)}")
     lines.extend([f"## {labels['evidence']}", ""])
     for row in evidence:
         lines.append(f"- [{row['id']}](../{row['path']}): {markdown(row['original_name'])}; "
@@ -91,6 +111,7 @@ def prepare_share(source: str | Path, output: str | Path) -> dict:
     require("raw" not in destination.parts, "RAW_OUTPUT_REJECTED")
     original = read_bytes(source, MAX_JSON)
     text = visible(original.decode("utf-8"), MAX_JSON)
+    require(not ACTIVE_HTML.search(text), "HTML_PUBLIC_VIEW_REJECTED")
     require(not PRIVATE_KEY.search(text), "PRIVATE_KEY_INPUT_REJECTED")
     counts = {}
     text, counts["credentials"] = mask_credentials(text)
@@ -134,6 +155,7 @@ def export_case(case: str | Path, output: str | Path, mode: str,
         data = read_bytes(view, MAX_JSON)
         require(digest(data) == approved_sha256, "APPROVAL_DIGEST_MISMATCH")
         text = data.decode("utf-8")
+        require(not ACTIVE_HTML.search(text), "HTML_PUBLIC_VIEW_REJECTED")
         require(not (SECRET.search(text) or PRIVATE_KEY.search(text) or EMAIL.search(text)
                      or IPV4.search(text)), "PUBLIC_VIEW_REQUIRES_REDACTION")
         require(visible(text, MAX_JSON) == text, "PUBLIC_VIEW_HAS_CONTROLS")
@@ -147,6 +169,8 @@ def export_case(case: str | Path, output: str | Path, mode: str,
         require(view is None and approved_sha256 is None, "INVALID_PRIVATE_EXPORT_OPTIONS")
         members = {name: read_bytes(root / name, MAX_JSON)
                    for name in ("case.json", "evidence.jsonl", "claims.jsonl")}
+        if load_case(root)[1]["schema_version"] == 2:
+            members["review.jsonl"] = read_bytes(root / "review.jsonl", MAX_JSON)
         for row in evidence:
             members[row["path"]] = read_bytes(root / row["path"])
         for folder in ("analysis", "reports"):
@@ -224,7 +248,8 @@ def restore_case(path: str | Path, destination: str | Path) -> dict:
     require(required <= members.keys(), "CASE_RECORDS_MISSING")
     for name in members:
         parts = Path(name).parts
-        require(name in required or len(parts) == 2 and parts[0] in ("raw", "analysis", "reports"),
+        require(name in required or name == "review.jsonl"
+                or len(parts) == 2 and parts[0] in ("raw", "analysis", "reports"),
                 "UNEXPECTED_CASE_MEMBER")
     output = safe_path(destination, exists=False)
     require(not output.exists(), "OUTPUT_EXISTS")
@@ -243,3 +268,24 @@ def restore_case(path: str | Path, destination: str | Path) -> dict:
         os.rename(root, output)
     return {"status": "restored", "evidence_count": checked["evidence_count"],
             "authenticity": "not_established"}
+
+
+def upgrade_case(case, destination):
+    root, info, _, _ = load_case(case)
+    require(info["schema_version"] == 1, "CASE_ALREADY_CURRENT")
+    output = safe_path(destination, exists=False)
+    require(not output.exists() and not output.is_relative_to(root), "INVALID_UPGRADE_DESTINATION")
+    with tempfile.TemporaryDirectory(prefix=".forge-upgrade-", dir=safe_path(output.parent)) as temporary:
+        archive = Path(temporary) / "original.zip"
+        converted = Path(temporary) / "case"
+        export_case(root, archive, "private")
+        restore_case(archive, converted)
+        metadata = json.loads(read_bytes(converted / "case.json", MAX_JSON))
+        metadata["schema_version"] = 2
+        metadata["upgraded_from"] = {"schema_version": 1, "export_sha256": digest(read_bytes(archive, MAX_TOTAL + MAX_JSON))}
+        atomic_write(converted / "case.json", json_bytes(metadata), replace=True)
+        atomic_write(converted / "review.jsonl", b"")
+        verify(converted)
+        require(not output.exists(), "OUTPUT_EXISTS")
+        os.rename(converted, output)
+    return {"status": "upgraded_copy", "schema_version": 2, "original_unchanged": True}

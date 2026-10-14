@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compare document versions"
+  short_description: "Compare versions without inventing chronology"
+  default_prompt: "Use $of-version-compare on the supplied synthetic evidence and report supported observations and unknowns."

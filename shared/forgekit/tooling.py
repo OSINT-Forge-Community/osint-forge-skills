@@ -14,7 +14,8 @@ import time
 
 from .analysis import save_analysis
 from .casefiles import evidence_bytes, load_case, utc_now, verify
-from .safeio import ForgeError, digest, read_bytes, require, safe_path
+from .safeio import ForgeError, MAX_JSON, digest, json_bytes, read_bytes, read_json, require, safe_path
+from .review import checked_analysis
 
 TOOLS = {
     "exiftool": ("Image and PDF metadata", ["-config", "", "-ver"]),
@@ -154,7 +155,7 @@ def parse_output(tool: str, stdout: bytes):
 
 def run_tool(case: str | Path, identifier: str, tool: str, executable: str,
              output: str | Path, *, first_page: int = 1, last_page: int = 1,
-             language: str = "eng") -> dict:
+             language: str = "eng", reuse: str | None = None) -> dict:
     require(tool in TOOLS, "UNKNOWN_TOOL")
     require(Path(executable).is_absolute(), "ABSOLUTE_EXECUTABLE_REQUIRED")
     binary = safe_path(executable)
@@ -169,6 +170,7 @@ def run_tool(case: str | Path, identifier: str, tool: str, executable: str,
     row, data = evidence_bytes(root, identifier)
     kind = input_kind(data)
     options = arguments(tool, kind, first_page=first_page, last_page=last_page, language=language)
+    binary_digest = digest(read_bytes(binary))
     started = utc_now()
     with tempfile.TemporaryDirectory(prefix="forge-tool-") as temporary:
         work = Path(temporary)
@@ -181,12 +183,30 @@ def run_tool(case: str | Path, identifier: str, tool: str, executable: str,
             require(code == 0, "TOOL_VERSION_FAILED")
             version = (version_out + version_error).decode("utf-8", errors="replace").strip()
             require(bool(version), "TOOL_VERSION_FAILED")
+            identity = {"evidence_sha256": row["sha256"], "executable_sha256": binary_digest,
+                        "tool": tool, "version_output": version, "arguments": options}
+            if reuse is not None:
+                _, _, evidence, _ = load_case(root)
+                previous, previous_digest = checked_analysis(root, reuse, evidence, evidence_id=identifier)
+                require(previous.get("reuse_identity") == identity
+                        and previous.get("analysis_type") == "external_tool"
+                        and isinstance(previous.get("stdout"), str)
+                        and digest(previous["stdout"].encode()) == previous.get("stdout_sha256"),
+                        "REUSE_IDENTITY_MISMATCH")
+                require(parse_output(tool, previous["stdout"].encode()) == previous.get("result"),
+                        "REUSE_OUTPUT_MISMATCH")
+                result = {**previous, "execution": "reused_not_independent_reproduction",
+                          "reused_at": utc_now(), "reused_from": {"path": reuse, "sha256": previous_digest}}
+                require(digest(read_bytes(binary)) == binary_digest, "TOOL_EXECUTABLE_CHANGED")
+                return {**save_analysis(root, destination, result), "tool": tool,
+                        "evidence_id": identifier, "execution": result["execution"]}
             with copied.open("rb") as source:
                 code, stdout, stderr = bounded_process([str(binary), *options], work,
                                                       stdin=source if tool == "ffprobe" else None)
             require(code == 0, "TOOL_FAILED")
             require(digest(read_bytes(copied)) == row["sha256"], "TOOL_CHANGED_COPY")
             parsed = parse_output(tool, stdout)
+            require(digest(read_bytes(binary)) == binary_digest, "TOOL_EXECUTABLE_CHANGED")
         finally:
             verify(root)
     result = {"analysis_type": "external_tool", "input": {"evidence_id": identifier,
@@ -195,6 +215,7 @@ def run_tool(case: str | Path, identifier: str, tool: str, executable: str,
               "started_at": started, "finished_at": utc_now(),
               "stdout_sha256": digest(stdout), "stderr_sha256": digest(stderr),
               "stdout": stdout.decode("utf-8"),
+              "reuse_identity": identity, "execution": "executed",
               "stderr": stderr.decode("utf-8", errors="replace"), "result": parsed,
               "coverage": {"first_page": first_page, "last_page": last_page}
                   if tool == "pdftotext" else {"mode": "single_selected_file"},

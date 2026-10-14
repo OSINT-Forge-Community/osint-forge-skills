@@ -88,3 +88,19 @@ validated integration.
 
 Next steps: [CLI reference](cli.md), [data formats](formats.md),
 [troubleshooting](depannage.md) and [compatibility](compatibility.json).
+
+## Review a corrected case visually
+
+From the public checkout or complete extracted plugin, choose a new directory:
+
+```bash
+python3 examples/review_demo.py --out cases/review-demo
+```
+
+Open `cases/review-demo/case/reports/report.en.html` (or report.fr.html) locally.
+Filter conclusions, evidence, research and events; enable History to inspect
+the replaced claim. The example includes a candidate organization relationship,
+a missing timezone and a CSV exchange with one omitted uncertain event.
+The generator also verifies a private export and restores a copy. Everything
+is original synthetic material; no model, account or network is involved.
+[Review command examples](../shared/review-workflows.md).

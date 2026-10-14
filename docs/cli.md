@@ -1,6 +1,6 @@
 # Command reference
 
-This reference describes helper version **0.1.0**. The [contract v1](../shared/case-contract.md)
+This reference describes helper version **0.1.4**. The [contract v2](../shared/case-contract.md)
 defines invariants; [data formats](formats.md) describes the records.
 From source, prefix commands with `python3 scripts/forge.py`; on PowerShell,
 use `py -3 scripts/forge.py`. In a package, run a complete skill's
@@ -112,9 +112,9 @@ Both commands retain source, WAL, path, size and record-limit protections.
 A claim accepts at most 100 references per list, with no duplicates or evidence
 both supporting and contradicting it. An unresolved contradiction blocks
 `high`. Text is limited to 4,000 characters and rationale to 8,000.
-The helper checks structure, not citation relevance. V1 appends claims but
-has no revision or deletion command. Document corrections in new claims;
-preserve the history.
+The helper checks structure, not citation relevance. Schema 2 adds precise
+citations and append-only corrections with --supersedes; old claims remain
+historical. Schema 1 retains its original behavior until an explicit upgrade.
 
 ## Verify and analyze
 
@@ -129,7 +129,7 @@ preserve the history.
 
 Every analysis `--out` must be a **new file under the case's `analysis/`**.
 Its parent must exist; these commands do not create subdirectories. Flat
-outputs simplify V1 private exports, which include only files directly
+outputs simplify private exports, which include only files directly
 under `analysis/` and `reports/`.
 
 `triage` executes no file and extracts no archive. For PDF and JPEG it reports
@@ -225,7 +225,7 @@ or overwritten. Reports and evidence remain confidential after restoration.
 `doctor` describes version, Python, formats and limits without collection.
 It does not test AI client permissions or a remote model.
 
-| V1 limit | Value |
+| Runtime limit | Value |
 | --- | --- |
 | Raw file | 64 MiB, or 67,108,864 bytes |
 | Total raw case evidence | 256 MiB, or 268,435,456 bytes |
@@ -241,3 +241,32 @@ A private export must also fit the 256 MiB limit for members excluding its
 manifest, **including evidence and derived files**. A case near the raw limit
 can therefore fail to export. ZIP64, multi-disk ZIP and compressed imported
 exports are unsupported. Errors are explicit; limits never increase automatically.
+
+## Review, routing and interoperability
+
+[Review workflows and JSON examples](../shared/review-workflows.md) describe
+the fields, indexing, limits and interpretation of these offline commands.
+
+| Command | Required arguments | Result |
+| --- | --- | --- |
+| `plan` | `--kind one supported input kind` | Suggested skills and stop conditions; executes nothing |
+| `intake` | `--case`, `--manifest` | Explicit files with individual provenance; committed prefix retained on failure |
+| `record` | `--case`, `--input` | Append validated research/entity/relation/annotation JSON |
+| `upgrade` | `--case`, `--out` | Verified new schema 2 copy of a schema 1 case |
+| `capture` | `--case`, `--evidence`, `--format html or mhtml`, `--out` | Inert capture text, up to 4 MiB input and 100 MIME parts |
+| `compare` | `--case`, `--left`, `--right`, `--out` | UTF-8 changes, at most 200,000 bytes and 1,000 lines per input |
+| `import-events` | `--case`, `--evidence`, `--time-field`, `--event-field`, `--out` | Selected CSV fields, original indices and unmapped-column list |
+| `export-events` | `--case`, `--input analysis/events.json`, `--out` | Timesketch-field CSV, normalized times only; reports omissions |
+| `graph` | `--case`, `--out`; optional `--format json or graphml` | Evidence-linked relations and candidate status |
+
+`claim` accepts `--citations FILE` (JSON array) and `--supersedes C_ID` in schema 2.
+`report --format html` writes the fixed private report path; repeat
+`--input analysis/events.json` for up to 20 selected event analyses (5,000 events
+total). `--lang en` is default; FR translates interface labels, not evidence.
+The diagram displays at most 150 nodes and 500 edges; larger graphs remain
+available in the complete graph export and relation list. All HTML is bounded
+to 4 MiB. No network resource or external library is loaded.
+
+`tool-run --reuse analysis/previous.json` explicitly reuses a compatible previous
+analysis after identity checks and a version probe. Omit it for fresh execution.
+No automatic cache, model call or tool installation is performed.

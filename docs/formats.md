@@ -1,6 +1,6 @@
 # Data formats and semantics
 
-The [contract v1](../shared/case-contract.md) defines the invariants.
+The [contract v2](../shared/case-contract.md) defines the invariants.
 This guide provides fields and examples for reviewing or preparing inputs.
 Journal examples illustrate the format; create records with `init`, `add`
 and `claim`, never by inventing hashes.
@@ -12,6 +12,7 @@ case/
 ├── case.json
 ├── evidence.jsonl
 ├── claims.jsonl
+├── review.jsonl
 ├── raw/E000001.bin
 ├── analysis/timeline.json
 ├── reports/report.en.md
@@ -27,7 +28,7 @@ without content conversion.
 
 | Created field | Value or meaning |
 | --- | --- |
-| `schema_version` | Integer `1`, separate from the product version |
+| `schema_version` | Integer `2` for new cases; `1` remains readable, separate from product version |
 | `tool_version` | Tool version at creation |
 | `title` | Investigation title, 1 to 300 characters |
 | `scope` | Objective and limits, 1 to 8,000 characters |
@@ -106,7 +107,7 @@ JSON example:
 
 `event` must be a string of 1 to 4,000 characters. `timestamp` may be a string,
 `null` or absent. An unparseable string becomes `invalid`; incompatible types
-are rejected. Extra fields are not retained by the V1 timeline: keep the raw
+are rejected. Extra fields are not retained by the timeline: keep the raw
 evidence to recover them.
 
 | Derived `time_status` | `utc` | Interpretation |
@@ -193,7 +194,45 @@ investigation cases.
 
 ## Contract evolution
 
-V1 provides no automatic migration. Another `schema_version` is rejected.
-Before distribution, an evolution must identify compatible readers, changes,
-validation and treatment of older cases. Do not change a case's schema number
-to bypass a rejection.
+Readers accept versions 1 and 2. New cases use 2; versions outside this set are
+rejected. V1 remains usable for its original operations. `upgrade --case OLD
+--out NEW` copies a verified private case, records the old export digest and
+creates the v2 journal in NEW. OLD remains unchanged. Older readers reject v2.
+Never edit the schema number to bypass compatibility checks.
+
+## Review extension (schema 2)
+
+Claims optionally contain `citations` and `supersedes`, and new v2 claims record
+`recorded_at`. Citations include evidence_id, kind, inclusive start/end, optional
+quote and, for derived analyses, analysis plus sha256. Page/line numbering starts
+at 1; record/time_ms at 0. Excerpts are capped at 2,000 characters, 100 locators
+per claim. `supersedes` points to an earlier current C ID; cycles and forks are
+rejected. An old claim is retained as historical.
+
+`review.jsonl` contains R IDs and kinds research, entity, relation and annotation.
+Each record has recorded_at and rationale; evidence references are checked.
+Research requires question, query, scope, tool and a coverage status. Entities
+require a type, label and evidence; relations require two existing entities,
+a label, evidence and observed/candidate state. An annotation requires analysis,
+sha256, zero-based record_index, tags, note and rationale. Its analysis digest
+and original input are checked. Research/annotation revisions use supersedes.
+
+See [review workflows](../shared/review-workflows.md) for complete examples.
+No record is an authenticated signature, automatic identity resolution or proof
+that a conclusion follows from its citations.
+
+## New derived formats
+
+Mapped CSV analyses retain original record_index, normalized or uncertain time,
+selected event text and unmapped column names. HTML/MHTML capture analyses retain
+text and untrusted declared locations, never execute scripts or fetch resources.
+Text comparisons reference both original inputs and one-based changed ranges.
+Graph JSON/GraphML retains local evidence/claim/entity IDs and relation status.
+Timesketch CSV omits uncertain times and reports the count; other fields and
+annotations remain in the original analysis. All such outputs remain private.
+
+Tool analyses record reuse_identity (input digest, executable digest, version
+and arguments), execution and, when reused, reused_from and reused_at. Reuse
+checks stored stdout and parsed output consistency. It is not fresh execution
+or independent verification; runtime libraries and OCR language data are not
+part of the identity. Reproduce untrusted results instead.

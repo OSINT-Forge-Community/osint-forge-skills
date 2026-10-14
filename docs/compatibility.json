@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "as_of": "2026-10-14",
-  "skill_version": "0.1.0",
-  "evidence_policy": "Record performed checks separately; never infer real model behavior from packaging.",
+  "skill_version": "0.1.4",
+  "evidence_policy": "Historical observations retain their recorded source snapshots. The review pilot and isolated integrations below use 0.1.4 development snapshots; final source checks are separate. Packaging does not establish real model behavior.",
   "clients": {
     "claude": {
       "observed_version": "2.1.220",
@@ -25,8 +25,8 @@
       "package_structure": "passed",
       "offline_standalone_installation": "passed_synthetic_workspace",
       "native_manifest": "schema_structure_only",
-      "actual_discovery_and_invocation": "not_demonstrated_in_skillsbench_pilot",
-      "model_trials": "completed_citation_check_three_repeats_per_arm",
+      "actual_discovery_and_invocation": "selected_project_skills_read_and_helpers_used_in_three_review_sessions",
+      "model_trials": "historical_citation_pilot_and_six_review_sessions_completed",
       "model_trial_evidence": {
         "date": "2026-10-14",
         "model": "gpt-6.1-sol",
@@ -40,6 +40,18 @@
         "explicit_skill_reads_observed": 0,
         "result": "../benchmarks/results/2026-10-14-skillsbench/results.json",
         "scope": "one public task, no demonstrated skill benefit or all-skill coverage"
+      },
+      "review_trial_evidence": {
+        "date": "2026-10-14",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh",
+        "codex_cli": "0.162.1",
+        "sessions": 6,
+        "with_project_skills_accepted": 3,
+        "without_project_skills_accepted": 3,
+        "project_skill_sessions_with_explicit_reads": 3,
+        "result": "../benchmarks/results/2026-10-14-review-model/results.json",
+        "scope": "Three synthetic scenarios, one run per condition, non-blind review, helper drift in one baseline; no demonstrated quality gain."
       }
     },
     "opencode": {
@@ -70,16 +82,40 @@
     "macos": "not_run"
   },
   "optional_tools": {
-    "adapter_safeguards": "passed_13_synthetic_process_tests_linux_wsl",
+    "adapter_safeguards": "passed_15_synthetic_process_tests_linux_wsl",
     "real_executable_trials": {
-      "exiftool": "not_run_executable_not_found",
-      "ffprobe": "not_run_executable_not_found",
-      "pdftotext": "not_run_executable_not_found",
-      "tesseract": "not_run_executable_not_found"
+      "exiftool": "passed_synthetic_linux_container",
+      "ffprobe": "passed_synthetic_linux_container",
+      "pdftotext": "passed_synthetic_linux_container",
+      "tesseract": "passed_synthetic_linux_container"
     },
     "host_web_dns_rdap_maps": "workflow_instructions_only_not_run",
     "model_tool_invocation": "not_run",
     "automatic_installation": false,
-    "executables_bundled": false
+    "executables_bundled": false,
+    "qualification_record": "../benchmarks/results/2026-10-14-review-integration/results.json"
+  },
+  "recorded_evidence_skill_version": "mixed_0.1.0_historical_and_0.1.4_review_snapshots",
+  "case_schema": {
+    "new_cases": 2,
+    "readable": [
+      1,
+      2
+    ],
+    "upgrade": "explicit_verified_copy",
+    "older_v1_readers": "reject_v2"
+  },
+  "html_viewer": {
+    "chromium": "155.0.8059.39",
+    "platform": "Debian 12 isolated container",
+    "en_fr_filters_history_annotations": "passed",
+    "hostile_text_display": "inert_in_synthetic_trial",
+    "remote_page_requests": 0,
+    "native_windows_macos": "not_run"
+  },
+  "interoperability": {
+    "graphml": "standard_library_xml_parse_passed",
+    "timesketch_csv": "documented_field_mapping_and_omissions_tested",
+    "external_application_imports": "not_run"
   }
 }

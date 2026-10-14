@@ -11,11 +11,25 @@ from .analysis import browser, save_analysis, timeline, timeline_csv, triage
 from .casefiles import (add_claim, add_evidence, add_many, evidence_bytes, initialize,
                         load_case, provenance, verify)
 from .reporting import (export_case, prepare_share, render_report, restore_case,
-                        verify_export)
+                        upgrade_case, verify_export)
+from .review import append_review, intake_manifest
+from .exchange import capture, compare_text, graph, graphml, import_events, timesketch_csv
+from .viewer import render_html
 from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
                      atomic_write, digest, json_bytes, read_json, require, safe_path)
 from .timestamps import timestamp
 from .tooling import TOOLS, inventory, run_tool
+
+ROUTES = {
+    "documents": ["of-document-triage", "of-source-provenance"],
+    "media": ["of-media-forensics", "of-geolocation"],
+    "domain": ["of-domain-infrastructure", "of-source-provenance"],
+    "organization": ["of-organization-research", "of-source-provenance"],
+    "versions": ["of-version-compare", "of-source-provenance"],
+    "windows-export": ["of-windows-artifacts", "of-log-timeline"],
+    "browser": ["of-browser-artifacts", "of-evidence-correlate"],
+    "logs": ["of-log-timeline", "of-evidence-correlate"],
+}
 
 
 class Parser(argparse.ArgumentParser):
@@ -49,6 +63,43 @@ def parser() -> argparse.ArgumentParser:
     claim.add_argument("--state", choices=("observed", "inferred", "unconfirmed"), required=True)
     claim.add_argument("--confidence", choices=("low", "medium", "high"), default="low")
     claim.add_argument("--rationale", required=True)
+    claim.add_argument("--citations", help="Selected JSON array of evidence locators")
+    claim.add_argument("--supersedes", help="Current C identifier replaced by this new claim")
+    intake = commands.add_parser("intake", help="Import an explicit per-file provenance manifest")
+    intake.add_argument("--case", required=True)
+    intake.add_argument("--manifest", required=True)
+    review = commands.add_parser("record", help="Append a research, entity, relation or annotation record")
+    review.add_argument("--case", required=True)
+    review.add_argument("--input", required=True)
+    upgrade = commands.add_parser("upgrade", help="Create a schema v2 copy of a v1 case")
+    upgrade.add_argument("--case", required=True)
+    upgrade.add_argument("--out", required=True)
+    plan = commands.add_parser("plan", help="Suggest a bounded workflow without running it")
+    plan.add_argument("--kind", choices=tuple(ROUTES), required=True)
+    imported = commands.add_parser("import-events", help="Map two columns of a supplied forensic CSV")
+    imported.add_argument("--case", required=True)
+    imported.add_argument("--evidence", required=True)
+    imported.add_argument("--time-field", required=True)
+    imported.add_argument("--event-field", required=True)
+    imported.add_argument("--out", required=True)
+    captured = commands.add_parser("capture", help="Extract inert text from supplied HTML or MHTML")
+    captured.add_argument("--case", required=True)
+    captured.add_argument("--evidence", required=True)
+    captured.add_argument("--format", choices=("html", "mhtml"), required=True)
+    captured.add_argument("--out", required=True)
+    compare = commands.add_parser("compare", help="Compare two selected UTF-8 text versions")
+    compare.add_argument("--case", required=True)
+    compare.add_argument("--left", required=True)
+    compare.add_argument("--right", required=True)
+    compare.add_argument("--out", required=True)
+    network = commands.add_parser("graph", help="Export evidence and analyst relations")
+    network.add_argument("--case", required=True)
+    network.add_argument("--format", choices=("json", "graphml"), default="json")
+    network.add_argument("--out", required=True)
+    events = commands.add_parser("export-events", help="Export normalized times as Timesketch CSV")
+    events.add_argument("--case", required=True)
+    events.add_argument("--input", required=True, help="Case-relative analysis path")
+    events.add_argument("--out", required=True)
     for name in ("verify", "provenance"):
         child = commands.add_parser(name)
         child.add_argument("--case", required=True)
@@ -63,6 +114,8 @@ def parser() -> argparse.ArgumentParser:
     report = commands.add_parser("report")
     report.add_argument("--case", required=True)
     report.add_argument("--lang", choices=("en", "fr"), default="en")
+    report.add_argument("--format", choices=("md", "html"), default="md")
+    report.add_argument("--input", action="append", default=[], help="Selected case-relative event analysis for HTML")
     report.add_argument("--replace", action="store_true", help="Replace only the fixed generated report")
     share = commands.add_parser("prepare-share")
     share.add_argument("--input", required=True)
@@ -93,6 +146,7 @@ def parser() -> argparse.ArgumentParser:
     external.add_argument("--first-page", type=int, default=1)
     external.add_argument("--last-page", type=int, default=1)
     external.add_argument("--language", default="eng", help="Installed OCR language, for example eng or fra+eng")
+    external.add_argument("--reuse", help="Explicit previous case-relative analysis; verify before reusing")
     return root
 
 
@@ -148,7 +202,41 @@ def dispatch(args) -> dict:
                 "INVALID_ARGUMENTS")
         require(args.tool == "tesseract" or args.language == "eng", "INVALID_ARGUMENTS")
         return run_tool(args.case, args.evidence, args.tool, args.executable, args.out,
-                        first_page=args.first_page, last_page=args.last_page, language=args.language)
+                        first_page=args.first_page, last_page=args.last_page, language=args.language,
+                        reuse=args.reuse)
+    if command == "plan":
+        return {"kind": args.kind, "start": "of-case-start", "selected_skills": ROUTES[args.kind],
+                "review": ["of-hypothesis-audit", "of-investigation-report"],
+                "stop_conditions": ["Question answered within scope", "Required capability or evidence absent",
+                                    "Remaining observations cannot discriminate hypotheses"],
+                "loading": "Read only the selected skill and references needed for the current step",
+                "executed": False, "network_authorized": False}
+    if command == "intake":
+        return intake_manifest(args.case, args.manifest)
+    if command == "record":
+        return append_review(args.case, read_json(args.input))
+    if command == "upgrade":
+        return upgrade_case(args.case, args.out)
+    if command == "import-events":
+        return save_analysis(args.case, args.out, import_events(args.case, args.evidence,
+                                                               args.time_field, args.event_field))
+    if command == "capture":
+        return save_analysis(args.case, args.out, capture(args.case, args.evidence, args.format))
+    if command == "compare":
+        return save_analysis(args.case, args.out, compare_text(args.case, args.left, args.right))
+    if command in ("graph", "export-events"):
+        root, _, _, _ = load_case(args.case)
+        destination = safe_path(args.out, exists=False)
+        require(destination.parent == root / "analysis", "ANALYSIS_OUTPUT_REQUIRED")
+        if command == "graph":
+            if args.format == "json":
+                return save_analysis(args.case, destination, graph(args.case))
+            data, details = graphml(args.case), {"format": "graphml"}
+        else:
+            data, details = timesketch_csv(args.case, args.input)
+        require(len(data) <= MAX_JSON, "ANALYSIS_OUTPUT_TOO_LARGE")
+        atomic_write(destination, data)
+        return {"status": "written", "sha256": digest(data), **details}
     if command == "init":
         return initialize(args.case, args.title, args.scope)
     if command == "add":
@@ -157,7 +245,9 @@ def dispatch(args) -> dict:
         return add_many(args.case, args.source, source_url=args.url, origin_group=args.origin_group)
     if command == "claim":
         return add_claim(args.case, args.text, args.support, args.contradict,
-                         args.state, args.confidence, args.rationale)
+                         args.state, args.confidence, args.rationale,
+                         citations=read_json(args.citations) if args.citations else None,
+                         supersedes=args.supersedes)
     if command in ("verify", "provenance"):
         return (verify if command == "verify" else provenance)(args.case)
     if command in ("triage", "timeline", "browser"):
@@ -182,8 +272,10 @@ def dispatch(args) -> dict:
                 "event_count": result.get("event_count", 0)}
     if command == "report":
         root, _, _, _ = load_case(args.case)
-        data = render_report(args.case, args.lang)
-        atomic_write(root / "reports" / f"report.{args.lang}.md", data, replace=args.replace)
+        require(args.format == "html" or not args.input, "INVALID_ARGUMENTS")
+        data = (render_html(args.case, args.lang, args.input) if args.format == "html"
+                else render_report(args.case, args.lang))
+        atomic_write(root / "reports" / f"report.{args.lang}.{args.format}", data, replace=args.replace)
         return {"status": "written", "sha256": digest(data), "language": args.lang}
     if command == "prepare-share":
         return prepare_share(args.input, args.out)

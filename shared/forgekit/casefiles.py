@@ -57,6 +57,7 @@ def initialize(path: str | Path, title: str, scope: str) -> dict:
     atomic_write(root / "case.json", json_bytes(case))
     atomic_write(root / "evidence.jsonl", b"")
     atomic_write(root / "claims.jsonl", b"")
+    atomic_write(root / "review.jsonl", b"")
     return {"status": "created", "schema_version": SCHEMA_VERSION}
 
 
@@ -67,7 +68,7 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
         require(safe_path(root / folder).is_dir(), "INVALID_CASE_DIRECTORY")
     case = read_json(root / "case.json")
     require(isinstance(case, dict) and type(case.get("schema_version")) is int
-            and case["schema_version"] == SCHEMA_VERSION,
+            and case["schema_version"] in (1, SCHEMA_VERSION),
             "UNSUPPORTED_CASE_SCHEMA")
     bounded_text(case.get("title"), 300, "INVALID_TITLE")
     bounded_text(case.get("scope"), 8000, "INVALID_SCOPE")
@@ -93,13 +94,26 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
                 "INVALID_ORIGIN_GROUP")
         validate_url(row.get("source_url"))
     require(total <= MAX_TOTAL, "CASE_TOO_LARGE")
-    claim_ids = set()
+    claim_ids, replaced = set(), set()
     for row in claims:
         identifier = row.get("id")
         require(isinstance(identifier, str) and bool(CLAIM_ID.fullmatch(identifier))
                 and identifier not in claim_ids, "INVALID_CLAIM_ID")
-        claim_ids.add(identifier)
         validate_claim(row, ids)
+        previous = row.get("supersedes")
+        require(previous is None or isinstance(previous, str) and previous in claim_ids,
+                "INVALID_CLAIM_REVISION")
+        require(previous is None or previous not in replaced, "CLAIM_ALREADY_REVISED")
+        if previous is not None:
+            replaced.add(previous)
+        require(case["schema_version"] == 2 or not (row.get("citations") or previous),
+                "CASE_UPGRADE_REQUIRED")
+        claim_ids.add(identifier)
+    if case["schema_version"] == 2:
+        from .review import validate_review
+        validate_review(root, evidence, claims, read_jsonl(root / "review.jsonl"))
+    else:
+        require(not (root / "review.jsonl").exists(), "CASE_UPGRADE_REQUIRED")
     return root, case, evidence, claims
 
 
@@ -138,6 +152,27 @@ def validate_claim(row: dict, evidence_ids: set[str]) -> None:
             "UNCONFIRMED_CONFIDENCE")
     require(not row["contradicts"] or row["confidence"] != "high",
             "UNRESOLVED_CONTRADICTION")
+    citations = row.get("citations", [])
+    require(isinstance(citations, list) and len(citations) <= 100, "INVALID_CITATIONS")
+    for citation in citations:
+        require(isinstance(citation, dict)
+                and set(citation) <= {"evidence_id", "kind", "start", "end", "quote", "analysis", "sha256"}
+                and citation.get("evidence_id") in row["supports"] + row["contradicts"],
+                "INVALID_CITATION_REFERENCE")
+        require(citation.get("kind") in ("page", "line", "record", "time_ms"), "INVALID_CITATION_KIND")
+        lower = 1 if citation["kind"] in ("page", "line") else 0
+        require(type(citation.get("start")) is int and type(citation.get("end")) is int
+                and lower <= citation["start"] <= citation["end"] <= 10**12, "INVALID_CITATION_RANGE")
+        if "quote" in citation:
+            bounded_text(citation["quote"], 2000, "INVALID_CITATION_QUOTE")
+        if "analysis" in citation:
+            relative_path(citation["analysis"])
+            require(Path(citation["analysis"]).parts[0] == "analysis"
+                    and len(Path(citation["analysis"]).parts) == 2
+                    and isinstance(citation.get("sha256"), str)
+                    and bool(SHA256.fullmatch(citation["sha256"])), "INVALID_CITATION_ANALYSIS")
+        else:
+            require("sha256" not in citation, "INVALID_CITATION_ANALYSIS")
 
 
 def verify(path: str | Path) -> dict:
@@ -158,6 +193,12 @@ def _verify_records(root: Path, evidence: list[dict], claims: list[dict]) -> dic
         content = read_bytes(root / row["path"])
         require(len(content) == row["size"] and digest(content) == row["sha256"],
                 "EVIDENCE_INTEGRITY_MISMATCH")
+    for row in claims:
+        for citation in row.get("citations", []):
+            if "analysis" in citation:
+                from .review import checked_analysis
+                checked_analysis(root, citation["analysis"], evidence,
+                                 citation["sha256"], citation["evidence_id"])
     return {"status": "verified", "evidence_count": len(evidence),
             "claim_count": len(claims), "scope": "registered_bytes_and_references",
             "authenticity": "not_established", "semantic_claim_validation": "not_performed"}
@@ -195,13 +236,21 @@ def add_evidence(path: str | Path, source: str | Path, *, source_url: str | None
 
 
 def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | None = None,
-             origin_group: str | None = None) -> dict:
+             origin_group: str | None = None, metadata: list[dict] | None = None) -> dict:
     require(isinstance(sources, list) and 0 < len(sources) <= MAX_RECORDS, "INVALID_BATCH_SIZE")
     validate_url(source_url)
     if origin_group is not None:
         bounded_text(origin_group, 100, "INVALID_ORIGIN_GROUP")
     root, _, _, _ = load_case(path)
     selected = [safe_path(source) for source in sources]
+    if metadata is None:
+        metadata = [{"source_url": source_url, "origin_group": origin_group} for _ in selected]
+    require(isinstance(metadata, list) and len(metadata) == len(selected), "INVALID_INTAKE_MANIFEST")
+    for item in metadata:
+        require(isinstance(item, dict) and set(item) <= {"source_url", "origin_group"}, "INVALID_INTAKE_MANIFEST")
+        validate_url(item.get("source_url"))
+        if item.get("origin_group") is not None:
+            bounded_text(item["origin_group"], 100, "INVALID_ORIGIN_GROUP")
     require(all(not source.is_relative_to(root) for source in selected), "SOURCE_MUST_BE_OUTSIDE_CASE")
     added = []
     with case_lock(root):
@@ -210,7 +259,7 @@ def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | N
         require(len(evidence) + len(selected) <= MAX_RECORDS, "TOO_MANY_RECORDS")
         total = sum(row["size"] for row in evidence)
         next_id = max((int(row["id"][1:]) for row in evidence), default=0) + 1
-        for source in selected:
+        for source, item in zip(selected, metadata):
             content = read_bytes(source)
             if content.startswith(b"SQLite format 3\x00"):
                 require(not Path(str(source) + "-wal").exists(), "SQLITE_WAL_PRESENT")
@@ -220,8 +269,8 @@ def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | N
             require(bool(EVIDENCE_ID.fullmatch(identifier)), "EVIDENCE_LIMIT_REACHED")
             row = {"id": identifier, "path": f"raw/{identifier}.bin", "sha256": digest(content),
                    "size": len(content), "original_name": source.name,
-                   "collected_at": utc_now(), "source_url": source_url,
-                   "origin_group": origin_group, "origin_independence": "unverified"}
+                   "collected_at": utc_now(), "source_url": item.get("source_url"),
+                   "origin_group": item.get("origin_group"), "origin_independence": "unverified"}
             journal = jsonl_bytes(evidence + [row])
             atomic_write(root / row["path"], content)
             atomic_write(root / "evidence.jsonl", journal, replace=True)
@@ -236,17 +285,34 @@ def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | N
 
 
 def add_claim(path: str | Path, text: str, supports: list[str], contradicts: list[str],
-              state: str, confidence: str, rationale: str) -> dict:
+              state: str, confidence: str, rationale: str, *, citations: list[dict] | None = None,
+              supersedes: str | None = None) -> dict:
+    require(citations is None or isinstance(citations, list), "INVALID_CITATIONS")
     verify(path)
     root, _, _, _ = load_case(path)
     with case_lock(root):
-        _, _, evidence, claims = load_case(root)
+        _, info, evidence, claims = load_case(root)
         identifier = f"C{max((int(row['id'][1:]) for row in claims), default=0) + 1:06d}"
         require(bool(CLAIM_ID.fullmatch(identifier)), "CLAIM_LIMIT_REACHED")
         row = {"id": identifier, "text": text, "supports": supports,
                "contradicts": contradicts, "state": state,
                "confidence": confidence, "rationale": rationale}
+        if citations or supersedes:
+            require(info["schema_version"] == 2, "CASE_UPGRADE_REQUIRED")
+        if citations:
+            row["citations"] = citations
+        if supersedes is not None:
+            require(supersedes in {c["id"] for c in claims}, "INVALID_CLAIM_REVISION")
+            require(not any(c.get("supersedes") == supersedes for c in claims), "CLAIM_ALREADY_REVISED")
+            row["supersedes"] = supersedes
+        if info["schema_version"] == 2:
+            row["recorded_at"] = utc_now()
         validate_claim(row, {entry["id"] for entry in evidence})
+        for citation in row.get("citations", []):
+            if "analysis" in citation:
+                from .review import checked_analysis
+                checked_analysis(root, citation["analysis"], evidence,
+                                 citation["sha256"], citation["evidence_id"])
         atomic_write(root / "claims.jsonl", jsonl_bytes(claims + [row]), replace=True)
     return {"id": identifier, "state": state}
 

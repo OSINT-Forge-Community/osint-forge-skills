@@ -1,6 +1,6 @@
 # OSINT Forge Skills user documentation
 
-These guides cover the twelve skills in version **0.1.0**: install the tools,
+These guides cover the fifteen skills in version **0.1.4**: install the tools,
 try a synthetic case, analyze selected evidence, and hand off findings with
 references and limitations. The [main README](../README.md) introduces the
 catalogue and overall workflow. English is the primary documentation language.
@@ -13,6 +13,7 @@ catalogue and overall workflow. English is the primary documentation language.
 | **Install the skills** in my assistant | [Choose a client](installation.md) |
 | **Analyze or share evidence** with the local tools | [Commands and limits](cli.md) |
 | **Use metadata, PDF, OCR and media tools** | [Optional adapters](cli.md#optional-local-tools) · [Tool workflows](../shared/tool-workflows.md) |
+| **Review corrections, graphs or forensic exports** | [Review workflows](../shared/review-workflows.md) · [Synthetic viewer demo](../examples/review_demo.py) |
 | **Understand a case** and its references | [Data formats](formats.md) |
 | **Resolve an error** or interrupted operation | [Troubleshooting](depannage.md) |
 | **Share feedback or suggest an improvement** | [Contributing](../CONTRIBUTING.md) |
@@ -24,7 +25,7 @@ and [security model](../SECURITY.md). Asset notices are in the
 
 ## Private cases and the host environment
 
-The [contract v1](../shared/case-contract.md) describes preservation invariants.
+The [contract v2](../shared/case-contract.md) describes preservation invariants.
 Python helpers work offline on selected files. Assistant permissions, model
 choice and other tools depend on the host client. A hash verifies bytes; it
 does not establish authenticity.

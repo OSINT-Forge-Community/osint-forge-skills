@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Windows artifact exports"
+  short_description: "Review supplied Windows forensic CSV exports"
+  default_prompt: "Use $of-windows-artifacts on the supplied synthetic evidence and report supported observations and unknowns."
