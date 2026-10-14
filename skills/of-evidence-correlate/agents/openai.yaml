@@ -1,0 +1,4 @@
+interface:
+  display_name: "Correlate case evidence"
+  short_description: "Find links without asserting identity or causation"
+  default_prompt: "Use $of-evidence-correlate for my authorized investigation and explain the evidence and remaining uncertainty."

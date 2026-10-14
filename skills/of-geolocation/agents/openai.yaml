@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review geolocation hypotheses"
+  short_description: "Verify location clues without false precision"
+  default_prompt: "Use $of-geolocation for my authorized investigation and explain the evidence and remaining uncertainty."

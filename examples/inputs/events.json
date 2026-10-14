@@ -1,0 +1,6 @@
+[
+  {"timestamp": "2026-10-01T08:05:00Z", "event": "Synthetic terminal status captured: Dock 7 open"},
+  {"timestamp": "2026-10-01T09:00:00", "event": "Bulletin lists planned closure; timezone omitted"},
+  {"timestamp": "2026-10-01T10:15:00+02:00", "event": "Synthetic operator note: closure not yet observed"},
+  {"timestamp": null, "event": "Un-timed follow-up says status should be checked"}
+]

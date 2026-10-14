@@ -1,0 +1,9 @@
+{
+  "name": "osint-forge",
+  "plugins": [{
+    "name": "osint-forge-skills",
+    "source": {"source": "local", "path": "./dist/plugins/osint-forge-skills"},
+    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+    "category": "Productivity"
+  }]
+}

@@ -1,0 +1,168 @@
+# Data formats and semantics
+
+The [contract v1](../shared/case-contract.md) defines the invariants.
+This guide provides fields and examples for reviewing or preparing inputs.
+Journal examples illustrate the format; create records with `init`, `add`
+and `claim`, never by inventing hashes.
+
+## Private case layout
+
+```text
+case/
+├── case.json
+├── evidence.jsonl
+├── claims.jsonl
+├── raw/E000001.bin
+├── analysis/timeline.json
+├── reports/report.en.md
+└── exports/private.zip
+```
+
+Structured data is UTF-8 JSON. JSONL uses one JSON object per nonempty line.
+IDs are local to the case: `E` or `C` followed by six digits. Recorded paths
+use `/` on every platform. The `.bin` extension preserves original bytes
+without content conversion.
+
+## `case.json`
+
+| Created field | Value or meaning |
+| --- | --- |
+| `schema_version` | Integer `1`, separate from the product version |
+| `tool_version` | Tool version at creation |
+| `title` | Investigation title, 1 to 300 characters |
+| `scope` | Objective and limits, 1 to 8,000 characters |
+| `created_at` | Local acquisition time recorded in UTC |
+| `acquisition_authenticity` | `not_established` |
+| `model_trials` | Empty at creation; no model proof generated automatically |
+
+The loader checks schema version, title and scope, among other fields.
+It does not authenticate all free-form metadata. A local timestamp is not
+external attestation and may depend on the workstation clock.
+
+## `evidence.jsonl`
+
+Every appended row contains:
+
+| Field | Meaning |
+| --- | --- |
+| `id` | For example `E000001`, unique within the case |
+| `path` | Exactly `raw/<id>.bin` |
+| `sha256` | 64 lowercase hexadecimal characters for the copied file |
+| `size` | Byte size, a nonnegative integer |
+| `original_name` | Source basename, not its full path |
+| `collected_at` | Recorded copy time, separate from event time |
+| `source_url` | HTTPS URL meeting CLI restrictions, or `null` |
+| `origin_group` | Analyst label, or `null` |
+| `origin_independence` | `unverified` at intake |
+
+Equal hashes group identical bytes. Equal `origin_group` labels group evidence
+assigned by the analyst to a shared origin. Grouping is transitive. Separate
+groups do not automatically become independent. Labels need a basis in observed
+attribution, chronology and editorial ownership.
+
+## `claims.jsonl`
+
+Schematic example, valid once the cited evidence has been registered:
+
+```json
+{
+  "id": "C000001",
+  "text": "Both captures mention the same attribution.",
+  "supports": ["E000001", "E000002"],
+  "contradicts": [],
+  "state": "observed",
+  "confidence": "medium",
+  "rationale": "Observation of the text; the event itself remains unestablished."
+}
+```
+
+In the real file, this object occupies one line. `supports` and `contradicts`
+contain existing IDs without duplicates or overlap. `state` is `observed`,
+`inferred` or `unconfirmed`; `confidence` is `low`, `medium` or `high`.
+Constraints are in the [CLI reference](cli.md). These states are qualitative;
+the runtime computes no probability score.
+
+## Timeline input
+
+`timeline` accepts three representations:
+
+- JSON: an object array or an object whose `events` field is an array.
+- JSONL: one object per nonempty line.
+- CSV: `timestamp,event` headers, then one row per event.
+
+JSON example:
+
+```json
+[
+  {"timestamp": "2026-10-01T09:00:00+02:00", "event": "Announcement published"},
+  {"timestamp": "2026-10-01T09:00:00", "event": "Stated time without a timezone"},
+  {"timestamp": null, "event": "State observed without a recorded time"}
+]
+```
+
+`event` must be a string of 1 to 4,000 characters. `timestamp` may be a string,
+`null` or absent. An unparseable string becomes `invalid`; incompatible types
+are rejected. Extra fields are not retained by the V1 timeline: keep the raw
+evidence to recover them.
+
+| Derived `time_status` | `utc` | Interpretation |
+| --- | --- | --- |
+| `normalized` | UTC time | Explicit offset converted, or recognized browser epoch |
+| `timezone_unknown` | `null` | Parseable date without an explicit offset |
+| `missing` | `null` | Absent or empty value |
+| `invalid` | `null` | Unparseable value |
+
+Each derived event retains `evidence_id`, zero-based `record_index`, `event`,
+`original_timestamp`, `utc` and `time_status`. Displayed text may neutralize
+invisible control characters; raw evidence remains intact.
+
+## Analysis outputs and correlation
+
+CLI analyses have an input block:
+
+```json
+{
+  "input": {
+    "evidence_id": "E000001",
+    "sha256": "actual evidence digest, 64 hexadecimal characters"
+  }
+}
+```
+
+This illustration is not a usable digest. The CLI supplies the real value.
+A timeline adds `events`, `event_count`, `uncertain_time_count` and `limitations`.
+Browser analysis also adds `family`, `granularity`, `snapshot_completeness` and
+`truncated`; its events contain `url`, `title` and `timestamp_encoding`.
+
+Chromium encodes visits in microseconds since January 1, 1601 UTC; Firefox
+uses microseconds since January 1, 1970 UTC. Queries cover only supported tables.
+Conversion establishes neither clock accuracy nor history completeness.
+
+`correlate` receives referenced event analyses and returns `candidate_links`:
+`basis` (`same_utc` or `same_url`), a common value and references to input rows.
+The result is an investigative lead, with no proof of identity, causation or
+independent sources.
+
+## Case archives
+
+| Archive | Contents | Can it restore a case? |
+| --- | --- | --- |
+| Private | Journals, evidence, flat derived files, `sharing.json`, manifest | Yes, into a new directory |
+| Public | Reviewed view as `report.md`, `sharing.json`, manifest | No |
+
+`export-manifest.json` has `schema_version: 1`, `tool_version`, `integrity_scope`
+and `files`. Each member except the manifest is described by `path`, `size` and
+`sha256`. Internal hashes check consistency; independently retain the archive
+hash if detecting replacement of the entire archive is required.
+
+ZIP members are stored without compression and use a fixed technical date,
+**with no acquisition meaning**. No encryption or release signature is added.
+Skill distribution archives are separate products: they are not restorable
+investigation cases.
+
+## Contract evolution
+
+V1 provides no automatic migration. Another `schema_version` is rejected.
+Before distribution, an evolution must identify compatible readers, changes,
+validation and treatment of older cases. Do not change a case's schema number
+to bypass a rejection.

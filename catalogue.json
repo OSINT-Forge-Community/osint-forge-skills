@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "version": "0.1.0",
+  "skills": [
+    {
+      "name": "of-case-start",
+      "title": "Start an investigation",
+      "description": "Scope an authorized OSINT or forensic investigation and create a private portable case. Use for starting an enquiry, case setup or selected evidence intake; not for bulk collection or live acquisition."
+    },
+    {
+      "name": "of-source-provenance",
+      "title": "Check source provenance",
+      "description": "Check publication origins, recycled reporting and source independence. Use for corroboration, source verification or identifying articles that repeat one origin; not for automatic credibility scores."
+    },
+    {
+      "name": "of-hypothesis-audit",
+      "title": "Audit competing hypotheses",
+      "description": "Audit alternative explanations, confirmation bias and contradictions in investigation evidence. Use for competing-hypothesis review or hypothesis review; not for treating model consensus as independent confirmation."
+    },
+    {
+      "name": "of-domain-infrastructure",
+      "title": "Investigate domain infrastructure",
+      "description": "Interpret public DNS/RDAP and certificate captures for a scoped OSINT question. Use for domain investigation or DNS analysis; not for active scans, exploit testing, user enumeration or attribution from shared hosting."
+    },
+    {
+      "name": "of-geolocation",
+      "title": "Review geolocation hypotheses",
+      "description": "Test location hypotheses from authorized public-place imagery and contextual evidence. Use for geolocation or image geolocation; not for biometrics, stalking or disclosing a private person's sensitive whereabouts."
+    },
+    {
+      "name": "of-media-forensics",
+      "title": "Triage media evidence",
+      "description": "Inspect media provenance, supplied metadata and visible inconsistencies. Use for image/video verification, EXIF review or image analysis; not for guaranteed AI detection or an authenticity verdict from absent metadata."
+    },
+    {
+      "name": "of-document-triage",
+      "title": "Triage documents and files",
+      "description": "Triage selected files, archives, documents and exported email headers while preserving originals. Use for document forensics or file triage; not for macros, malware execution, unknown-archive extraction or treating sender headers as verified identity."
+    },
+    {
+      "name": "of-browser-artifacts",
+      "title": "Analyze browser history copies",
+      "description": "Analyze explicitly supplied Chromium or Firefox SQLite history copies. Use for browser forensics or browsing history; not for live profile collection, cookies, passwords or inferring user intent from recorded URLs."
+    },
+    {
+      "name": "of-log-timeline",
+      "title": "Build an evidence timeline",
+      "description": "Build evidence-linked timelines from JSON, JSONL or CSV exports while preserving timestamp uncertainty. Use for incident timelines or log analysis; not for live production collection or binary EVTX parsing."
+    },
+    {
+      "name": "of-evidence-correlate",
+      "title": "Correlate case evidence",
+      "description": "Review candidate timestamp or URL relationships between evidence-linked event analyses. Use for artifact correlation or combining OSINT and forensic events; not for automatic identity matching or causal attribution."
+    },
+    {
+      "name": "of-investigation-report",
+      "title": "Write an investigation report",
+      "description": "Write a private report distinguishing evidence-supported observations, inferences and unknowns. Use for OSINT reports, forensic findings or analyst handoff; not for legal certification or summaries hiding unsupported claims."
+    },
+    {
+      "name": "of-case-export",
+      "title": "Export or resume a case",
+      "description": "Export verified private cases, resume investigations or prepare a digest-bound public view. Use for case handoff or investigation sharing; not for automatic publication, uploads or treating masking as anonymization."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "publisher": "Synthetic Outlet C",
+  "source_url": "https://outlet-c.invalid/update",
+  "attribution": "Harbor Bulletin",
+  "text": "Harbor Bulletin: a closure is expected for Dock 7 at 09:00.",
+  "publication_time": "2026-10-01T08:20:00Z",
+  "event_time": "2026-10-01T09:00:00",
+  "synthetic": true
+}

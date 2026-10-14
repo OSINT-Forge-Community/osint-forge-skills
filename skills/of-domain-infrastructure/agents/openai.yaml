@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investigate domain infrastructure"
+  short_description: "Interpret authorized DNS and RDAP evidence"
+  default_prompt: "Use $of-domain-infrastructure for my authorized investigation and explain the evidence and remaining uncertainty."

@@ -1,0 +1,9 @@
+{
+  "publisher": "Synthetic Outlet B",
+  "source_url": "https://outlet-b.invalid/news",
+  "attribution": "Harbor Bulletin",
+  "text": "Dock 7 closure at 09:00, according to the Harbor Bulletin.",
+  "publication_time": "2026-10-01T08:10:00Z",
+  "event_time": "2026-10-01T09:00:00",
+  "synthetic": true
+}

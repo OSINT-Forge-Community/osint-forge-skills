@@ -1,0 +1,4 @@
+interface:
+  display_name: "Start an investigation"
+  short_description: "Scope a case and preserve selected evidence"
+  default_prompt: "Use $of-case-start for my authorized investigation and explain the evidence and remaining uncertainty."

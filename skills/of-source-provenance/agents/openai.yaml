@@ -1,0 +1,4 @@
+interface:
+  display_name: "Check source provenance"
+  short_description: "Find shared origins and unverified independence"
+  default_prompt: "Use $of-source-provenance for my authorized investigation and explain the evidence and remaining uncertainty."

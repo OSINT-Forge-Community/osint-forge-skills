@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build an evidence timeline"
+  short_description: "Normalize offsets while retaining unknown times"
+  default_prompt: "Use $of-log-timeline for my authorized investigation and explain the evidence and remaining uncertainty."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write an investigation report"
+  short_description: "Link conclusions to pieces and disclose gaps"
+  default_prompt: "Use $of-investigation-report for my authorized investigation and explain the evidence and remaining uncertainty."

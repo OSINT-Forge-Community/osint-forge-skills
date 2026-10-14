@@ -1,0 +1,57 @@
+{
+  "aspect_ratio": 2.993103,
+  "asset": "assets/readme-banner.png",
+  "created_on": "2026-10-13",
+  "dimensions": {
+    "height": 725,
+    "width": 2170
+  },
+  "publication": "not_performed",
+  "purpose": "synthetic_promotional_illustration_not_investigation_evidence",
+  "references": [
+    {
+      "brand_reference": "silex.png",
+      "mascot": "Silex",
+      "sha256": "1ab413c5636b24e875c9a5d4dddcd902825e2b8992133d84a63da6216e09b29d"
+    },
+    {
+      "brand_reference": "rivet.png",
+      "mascot": "Rivet",
+      "sha256": "e939f0aab59548e3967e418dc9904784ab962d2c7a6ab39474c626b5ef83cda9"
+    }
+  ],
+  "revision": 2,
+  "runtime_dependency": false,
+  "schema_version": 1,
+  "sha256": "b35213d44b5f194fdbef02d54ea8467639570592ebf9157fed3cc3bc4f9fba02",
+  "tool": "built-in imagegen",
+  "transparent_background": false,
+  "typography": "generated_approximation_not_font_verification",
+  "localized_variants": [
+    {
+      "asset": "assets/readme-banner.en.png",
+      "created_on": "2026-10-14",
+      "dimensions": {
+        "height": 725,
+        "width": 2170
+      },
+      "aspect_ratio": 2.993103,
+      "sha256": "5cfc5d3ac47c33a420f691243e72e225840782339f65859db0a5591e722ca79a",
+      "source_asset": "assets/readme-banner.png",
+      "source_sha256": "b35213d44b5f194fdbef02d54ea8467639570592ebf9157fed3cc3bc4f9fba02",
+      "language": "en",
+      "text": [
+        "OSINT Forge",
+        "AI Skills",
+        "OSINT · Forensics · Evidence"
+      ],
+      "revision": 3,
+      "tool": "built-in imagegen",
+      "purpose": "synthetic_promotional_illustration_not_investigation_evidence",
+      "transparent_background": false,
+      "runtime_dependency": false,
+      "publication": "not_performed",
+      "typography": "generated_approximation_not_font_verification"
+    }
+  ]
+}

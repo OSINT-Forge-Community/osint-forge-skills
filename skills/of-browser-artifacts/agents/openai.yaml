@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analyze browser history copies"
+  short_description: "Interpret history with explicit completeness gaps"
+  default_prompt: "Use $of-browser-artifacts for my authorized investigation and explain the evidence and remaining uncertainty."

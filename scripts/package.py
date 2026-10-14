@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Build reproducible local plugins and independently installable skills."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import io
+import json
+from pathlib import Path
+import sys
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "shared"))
+from forgekit.safeio import ForgeError, atomic_write, json_bytes, read_bytes, require, safe_path
+
+# Keep distribution independent of local maintainer notes and assistant files.
+# This list matches the public documentation exceptions in .gitignore.
+PUBLIC_DOCUMENTS = (
+    "README.md", "installation.md", "demarrage.md", "cli.md", "formats.md",
+    "depannage.md", "compatibility.json", "branding/README.md",
+    "branding/provenance.json",
+)
+
+
+def collect(directory: Path, *, release: bool = False) -> dict[str, bytes]:
+    result = {}
+    safe_path(directory)
+    for path in sorted(directory.rglob("*")):
+        if "__pycache__" in path.parts or path.suffix == ".pyc":
+            continue
+        safe_path(path)
+        if path.is_dir():
+            continue
+        require(path.suffix in (".py", ".md", ".json", ".yaml", ".csv", ".txt", ".svg", ".png", ".jpg")
+                or release and (path.suffix == ".zip" or path.name in ("LICENSE", "NOTICE", "VERSION", "SHA256SUMS")),
+                "UNEXPECTED_PACKAGE_INPUT")
+        require(not any(part in (".git", ".codex", ".claude", "envs", "cases")
+                        for part in path.relative_to(directory).parts), "UNEXPECTED_PACKAGE_INPUT")
+        result[path.relative_to(directory).as_posix()] = read_bytes(path)
+    return result
+
+
+def archive(members: dict[str, bytes]) -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as result:
+        for name, content in sorted(members.items()):
+            info = zipfile.ZipInfo(name, (2000, 1, 1, 0, 0, 0))
+            info.create_system = 3
+            info.external_attr = 0o100644 << 16
+            result.writestr(info, content)
+    return output.getvalue()
+
+
+def expected_files() -> dict[str, bytes]:
+    identity = json.loads(read_bytes(ROOT / "plugin.json"))
+    name, version = identity["name"], identity["version"]
+    require(version == (ROOT / "VERSION").read_text().strip(), "VERSION_MISMATCH")
+    plugin = "plugins/" + name + "/"
+    files = {plugin + "plugin.json": json_bytes(identity)}
+    metadata = {key: identity[key] for key in ("name", "version", "description", "author", "license")}
+    files[plugin + ".claude-plugin/plugin.json"] = json_bytes(metadata)
+    files[plugin + ".codex-plugin/plugin.json"] = json_bytes({**metadata, "skills": "./skills/"})
+    runtime = {key: value for key, value in collect(ROOT / "shared" / "forgekit").items()
+               if key.endswith(".py")}
+    contract = read_bytes(ROOT / "shared" / "case-contract.md")
+    skill_archives = {}
+    for folder in sorted((ROOT / "skills").iterdir()):
+        require(folder.is_dir(), "INVALID_SKILL_ENTRY")
+        source = collect(folder)
+        source["references/case-contract.md"] = contract
+        for path, content in runtime.items():
+            source["scripts/forgekit/" + path] = content
+        source["LICENSE"] = read_bytes(ROOT / "LICENSE")
+        source["NOTICE"] = read_bytes(ROOT / "NOTICE")
+        for path, content in source.items():
+            files[plugin + "skills/" + folder.name + "/" + path] = content
+        skill_archives[f"skills/{folder.name}-{version}.zip"] = archive({
+            folder.name + "/" + path: content for path, content in source.items()})
+    for name in ("LICENSE", "NOTICE", "README.md", "README.fr.md", "README.en.md", "VERSION",
+                 "SECURITY.md", "CHANGELOG.md"):
+        files[plugin + name] = read_bytes(ROOT / name)
+    for relative, data in collect(ROOT / "assets").items():
+        files[plugin + "assets/" + relative] = data
+    files[plugin + "shared/case-contract.md"] = contract
+    for relative in PUBLIC_DOCUMENTS:
+        files[plugin + "docs/" + relative] = read_bytes(ROOT / "docs" / relative)
+    for relative, data in collect(ROOT / "examples").items():
+        files[plugin + "examples/" + relative] = data
+    for relative in (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"):
+        catalog = json.loads(read_bytes(ROOT / relative))
+        entry = catalog["plugins"][0]
+        if relative.startswith(".claude-plugin"):
+            entry["source"] = "./plugins/" + identity["name"]
+        else:
+            entry["source"]["path"] = "./plugins/" + identity["name"]
+        files[relative] = json_bytes(catalog)
+    files["README.md"] = ("![OSINT Forge Skills](plugins/osint-forge-skills/assets/readme-banner.en.png)\n\n"
+        "# OSINT Forge Skills distribution " + version + "\n\n"
+        "This is a ready-to-install local marketplace, not the authoring checkout.\n"
+        "The plugin is under plugins/osint-forge-skills.\n\n"
+        "Claude: run claude plugin marketplace add . then\n"
+        "claude plugin install osint-forge-skills@osint-forge --scope local\n\n"
+        "Codex: run codex plugin marketplace add . then\n"
+        "codex plugin add osint-forge-skills@osint-forge\n\n"
+        "OpenCode: copy selected complete skill folders into your workspace's\n"
+        ".opencode/skills after checking that no same-name skill already exists.\n"
+        "Gemini: use gemini skills install on a complete skill folder with\n"
+        "--scope workspace. Each folder has its own offline Python runtime.\n\n"
+        "Run Python on a skill's scripts/forge.py to use the case utilities.\n"
+        "See [the plugin README](plugins/osint-forge-skills/README.md),\n"
+        "[documentation](plugins/osint-forge-skills/docs/README.md), and\n"
+        "[installation](plugins/osint-forge-skills/docs/installation.md).\n"
+        "Client configuration changes are deliberate operator actions; no model\n"
+        "trial or provider connection is performed by unpacking this archive.\n").encode()
+    files.update(skill_archives)
+    files[f"osint-forge-skills-{version}.zip"] = archive({
+        path: content for path, content in files.items() if not path.startswith("skills/")})
+    files["SHA256SUMS"] = "".join(
+        hashlib.sha256(content).hexdigest() + "  " + path + "\n"
+        for path, content in sorted(files.items()) if path.endswith(".zip")).encode()
+    return files
+
+
+def build(check: bool = False) -> dict:
+    files = expected_files()
+    destination = safe_path(ROOT / "dist", exists=False)
+    if check:
+        actual = collect(destination, release=True)
+        require(actual == files, "PACKAGE_DRIFT")
+    else:
+        if destination.exists():
+            actual = collect(destination, release=True)
+            require(set(actual) <= set(files), "UNEXPECTED_BUILD_FILE")
+        else:
+            destination.mkdir(mode=0o700)
+        for relative, data in files.items():
+            target = destination / relative
+            safe_path(target.parent, exists=False)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            atomic_write(target, data, replace=target.exists())
+    return {"status": "verified" if check else "built", "skills": 12,
+            "files": len(files), "version": "0.1.0", "network_calls": False}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    try:
+        print(json.dumps(build(args.check), sort_keys=True))
+    except (ForgeError, OSError, ValueError) as exc:
+        print(json.dumps({"status": "error", "code": str(exc) if isinstance(exc, ForgeError) else "BUILD_IO_ERROR"}))
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

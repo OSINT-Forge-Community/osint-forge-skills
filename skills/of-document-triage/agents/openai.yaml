@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triage documents and files"
+  short_description: "Inspect files without executing active content"
+  default_prompt: "Use $of-document-triage for my authorized investigation and explain the evidence and remaining uncertainty."

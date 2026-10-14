@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit competing hypotheses"
+  short_description: "Test conclusions against contradictory evidence"
+  default_prompt: "Use $of-hypothesis-audit for my authorized investigation and explain the evidence and remaining uncertainty."

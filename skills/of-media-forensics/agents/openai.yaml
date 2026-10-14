@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triage media evidence"
+  short_description: "Inspect metadata and transformation limits"
+  default_prompt: "Use $of-media-forensics for my authorized investigation and explain the evidence and remaining uncertainty."

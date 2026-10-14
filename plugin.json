@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "osint-forge-skills",
+  "version": "0.1.0",
+  "description": "Evidence-linked OSINT and forensic investigations with portable, offline case utilities.",
+  "author": {"name": "OSINT Forge"},
+  "license": "Apache-2.0",
+  "keywords": ["osint", "forensics", "evidence", "investigation", "agent-skills"]
+}

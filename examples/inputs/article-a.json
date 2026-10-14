@@ -1,0 +1,9 @@
+{
+  "publisher": "Synthetic Outlet A",
+  "source_url": "https://outlet-a.invalid/bulletin",
+  "attribution": "Harbor Bulletin",
+  "text": "The Harbor Bulletin states that Dock 7 closes at 09:00.",
+  "publication_time": "2026-10-01T08:00:00Z",
+  "event_time": "2026-10-01T09:00:00",
+  "synthetic": true
+}

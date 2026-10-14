@@ -1,0 +1,4 @@
+interface:
+  display_name: "Export or resume a case"
+  short_description: "Verify bundles and review minimized public views"
+  default_prompt: "Use $of-case-export for my authorized investigation and explain the evidence and remaining uncertainty."
