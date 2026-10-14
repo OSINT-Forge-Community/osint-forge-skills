@@ -12,8 +12,10 @@ catalogue and overall workflow. English is the primary documentation language.
 | **Try a first case** without an account or model | [Guided demo](demarrage.md) |
 | **Install the skills** in my assistant | [Choose a client](installation.md) |
 | **Analyze or share evidence** with the local tools | [Commands and limits](cli.md) |
+| **Use metadata, PDF, OCR and media tools** | [Optional adapters](cli.md#optional-local-tools) · [Tool workflows](../shared/tool-workflows.md) |
 | **Understand a case** and its references | [Data formats](formats.md) |
 | **Resolve an error** or interrupted operation | [Troubleshooting](depannage.md) |
+| **Share feedback or suggest an improvement** | [Contributing](../CONTRIBUTING.md) |
 | **Review validation evidence** | [Client compatibility](compatibility.json) · [Benchmarks](../benchmarks/README.md) |
 
 For preservation and sharing rules, see the [case contract](../shared/case-contract.md)

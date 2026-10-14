@@ -73,11 +73,13 @@ def expected_files() -> dict[str, bytes]:
     runtime = {key: value for key, value in collect(ROOT / "shared" / "forgekit").items()
                if key.endswith(".py")}
     contract = read_bytes(ROOT / "shared" / "case-contract.md")
+    tool_workflows = read_bytes(ROOT / "shared" / "tool-workflows.md")
     skill_archives = {}
     for folder in sorted((ROOT / "skills").iterdir()):
         require(folder.is_dir(), "INVALID_SKILL_ENTRY")
         source = collect(folder)
         source["references/case-contract.md"] = contract
+        source["references/tool-workflows.md"] = tool_workflows
         for path, content in runtime.items():
             source["scripts/forgekit/" + path] = content
         source["LICENSE"] = read_bytes(ROOT / "LICENSE")
@@ -87,11 +89,12 @@ def expected_files() -> dict[str, bytes]:
         skill_archives[f"skills/{folder.name}-{version}.zip"] = archive({
             folder.name + "/" + path: content for path, content in source.items()})
     for name in ("LICENSE", "NOTICE", "README.md", "README.fr.md", "README.en.md", "VERSION",
-                 "SECURITY.md", "CHANGELOG.md"):
+                 "SECURITY.md", "CHANGELOG.md", "CONTRIBUTING.md"):
         files[plugin + name] = read_bytes(ROOT / name)
     for relative, data in collect(ROOT / "assets").items():
         files[plugin + "assets/" + relative] = data
     files[plugin + "shared/case-contract.md"] = contract
+    files[plugin + "shared/tool-workflows.md"] = tool_workflows
     for relative in PUBLIC_DOCUMENTS:
         files[plugin + "docs/" + relative] = read_bytes(ROOT / "docs" / relative)
     for relative in PUBLIC_BENCHMARKS:

@@ -6,4 +6,4 @@ Archive directories describe claimed names and sizes, not validated decompressed
 
 Email headers can contain personal data and forged assertions. Authentication results require evidence of which trusted receiver added them and what they cover.
 
-PDF signature recognition is not text extraction, signature verification or authenticity validation. Use an already approved parser or an operator export.
+PDF signature recognition is not text extraction, signature verification or authenticity validation. The optional `pdftotext` adapter extracts a selected page range; `exiftool` reads metadata and `tesseract` handles selected PNG/JPEG images. Follow [tool workflows](tool-workflows.md) for execution and provenance. These executables are not bundled. No adapter decrypts documents, bypasses permissions or extracts embedded attachments.

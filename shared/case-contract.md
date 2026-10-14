@@ -49,10 +49,14 @@ Different domains, models or hashes do not establish independent confirmation.
 ## Limits and recovery
 
 Maximum file: 64 MiB. Maximum raw case: 256 MiB. Structured records/output:
-4 MiB. Event limit: 5,000. Runtime has no acquisition, sandbox, EXIF decoder,
-PDF text parser, binary EVTX parser, malware execution or authenticity detector.
-Use an already approved local tool or request a trusted export for these formats;
-never install a provider or tool as a silent fallback.
+4 MiB. Event limit: 5,000. Runtime has no acquisition, sandbox, built-in EXIF
+decoder or PDF text parser, binary EVTX parser, malware execution or authenticity
+detector. Optional `tool-run` adapters invoke already approved local ExifTool,
+pdftotext, Tesseract or ffprobe executables on temporary evidence copies.
+They cap time/output, not all host resources, and preserve version, parameters
+and input provenance in a new analysis. External executables are not bundled.
+Request a trusted export when unavailable; never install a provider or tool
+as a silent fallback. Web research uses separately authorized host tools.
 Browser SQLite values/rows are bounded to 32 KiB inside SQLite, URLs to 16 KiB
 and titles to 8 KiB of UTF-8. Oversize fields or cumulative output are rejected;
 display titles over 1,000 characters have `title_truncated: true`.
@@ -115,4 +119,8 @@ export --case CASE --mode public --view REVIEWED_FILE
 verify-export --archive ARCHIVE
 restore --archive PRIVATE_ARCHIVE --case NEW_CASE
 doctor
+tools
+tool-run --case CASE --evidence E000001 --tool exiftool|pdftotext|tesseract|ffprobe
+         --executable ABSOLUTE_PATH --out CASE/analysis/tool.json
+         [--first-page N --last-page M] [--language eng]
 ```

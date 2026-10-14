@@ -154,6 +154,26 @@ independent sources.
 Regenerate those browser analyses; old clipped values cannot establish equality.
 UTC equality uses normalized instants, including equivalent fractional notation.
 
+## External-tool analyses
+
+`tool-run` adds `analysis_type: external_tool` and the same original `input`
+reference. `tool` records the selected name, absolute executable path, reported
+`version_output`, argument array and zero return code. `started_at` and
+`finished_at` are local UTC observations, not trusted timestamps.
+
+`stdout` retains UTF-8 output and `stdout_sha256` hashes its original bytes.
+`result` contains parsed JSON for ExifTool/ffprobe or text for pdftotext/Tesseract.
+`stderr` is decoded diagnostic text; invalid UTF-8 is replaced, while
+`stderr_sha256` refers to the original diagnostic bytes. `coverage` records
+requested PDF pages or single-file mode; it does not certify completeness.
+`limits` and `limitations` preserve the execution bounds and interpretation gaps.
+
+Input-copy filesystem timestamps describe a derived working file. OCR, tags,
+tool paths and diagnostic output can be sensitive or misleading. Keep them
+private, verify relevant fields and cite the original E ID with the analysis
+path. A transformed output is not independent corroboration. No case schema
+change or migration is needed; these are derived JSON files.
+
 ## Case archives
 
 | Archive | Contents | Can it restore a case? |

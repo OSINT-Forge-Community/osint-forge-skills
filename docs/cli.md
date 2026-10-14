@@ -31,6 +31,47 @@ results can contain private metadata: apply the case's data policy.
 immediately after the command; in Bash, read `$?`.
 [Troubleshooting](depannage.md) maps codes to actions.
 
+## Optional local tools
+
+`tools` discovers ExifTool, ffprobe, Poppler `pdftotext` and Tesseract on absolute
+PATH entries, excluding the current directory. It executes and installs nothing.
+`found_unverified` is a discovery result, not permission or compatibility proof.
+`doctor` describes built-in parsers; its unsupported-format list does not test
+the optional executables. Use `tools` for discovery and a selected synthetic
+case for an actual executable trial.
+
+```text
+python3 scripts/forge.py tools
+python3 scripts/forge.py tool-run --case CASE --evidence E000001 --tool exiftool --executable /absolute/path/to/exiftool --out CASE/analysis/metadata.json
+```
+
+`tool-run` requires `--case`, `--evidence`, `--tool`, `--executable` and `--out`.
+Use a trusted absolute executable path without symlinks, outside the case.
+The input is a registered piece; output is a new JSON file under `analysis/`.
+On Windows, use `py -3` and the approved executable's absolute Windows path.
+
+| `--tool` | Inputs | Optional arguments | Result |
+| --- | --- | --- | --- |
+| `exiftool` | PNG, JPEG, PDF | None | Grouped numeric metadata JSON |
+| `pdftotext` | PDF | `--first-page N --last-page M` | Layout-preserving text with page separators; defaults to page 1, at most 20 pages |
+| `tesseract` | PNG, JPEG | `--language eng` or `fra+eng` | OCR text; up to 3 installed three-letter language codes |
+| `ffprobe` | WAV, AVI, MP4-family `ftyp`, Matroska/WebM | None | Container/stream JSON; pipe input only, no video frame extraction |
+
+The adapter probes the executable's version (5 seconds), then analyzes a
+temporary copy (30 seconds, 512 KiB stdout, 16 KiB stderr). It disables default
+ExifTool config loading and restricts ffprobe to a recognized demuxer and the
+`pipe` protocol. Some media need seeking unavailable through this input mode.
+Executable failures, timeouts, oversized output and malformed JSON fail without
+saving a successful analysis. The case is verified before and after execution.
+The source is never passed as the working file. Diagnostics can contain private
+data; successful stderr is stored only in the local analysis.
+
+These controls do not sandbox third-party binaries or cap their memory and
+general filesystem access. Use an appropriate isolated host for hostile files.
+The package neither installs binaries/language data nor enables network research.
+Missing capabilities remain explicit. See [tool workflows](../shared/tool-workflows.md)
+for provenance, output interpretation and separately authorized host web tools.
+
 ## Create and populate a case
 
 | Command | Required arguments | Options and behavior |

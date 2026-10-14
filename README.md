@@ -22,6 +22,7 @@
  <a href="#start-in-five-minutes">Quick start</a> ·
  <a href="#install-in-your-ai-assistant">Installation</a> ·
  <a href="#the-12-skills">Catalogue</a> ·
+ <a href="#tools-you-can-use">Tools</a> ·
  <a href="docs/README.md">Documentation</a> ·
  <a href="#benchmarks">Benchmarks</a>
 </p>
@@ -48,6 +49,34 @@ flowchart LR
 **Your inputs:** selected documents, source captures, logs or browser-history
 exports. **Your output:** a case with preserved evidence, reasoned findings
 and explicit unknowns, ready for review and handoff.
+
+## Tools you can use
+
+**Preserve evidence with the included Python tools, then use optional specialist
+tools for metadata, document text, OCR and media inspection.** Skills explain
+when to call each tool and how to retain its results in the case.
+
+| Tool | What you can do | Availability |
+| --- | --- | --- |
+| **Forge utilities** | Register and hash evidence, triage files, build timelines, read browser-history copies, correlate and export | Included; Python 3.11+, standard library only |
+| **ExifTool** | Extract grouped metadata from PNG, JPEG and PDF files | Optional local executable; adapter included |
+| **Poppler pdftotext** | Extract text from a selected PDF page range | Optional local executable; adapter included |
+| **Tesseract OCR** | Read text in PNG/JPEG images using installed language packs | Optional local executable and language data; adapter included |
+| **ffprobe** | Inspect audio/video container and stream metadata | Optional local executable; adapter included |
+| **Web search, page fetch, DNS/RDAP and maps** | Trace public sources, inspect domain records and test location hypotheses | Host-client capabilities, when available and authorized |
+
+Discover local tools with `python3 scripts/forge.py tools`. Run an adapter with
+`tool-run` on a registered E ID and an explicitly selected executable. Each saved
+analysis includes the source hash, tool version, arguments and output. Nothing
+is installed automatically. Web capabilities belong to your client; no lookup
+service or MCP server is bundled.
+
+Forensic adapters are used by document triage, media forensics and geolocation;
+host web workflows support source provenance, infrastructure and geolocation.
+Adapter safeguards have synthetic-process tests; actual third-party binaries
+and client/model tool invocation still require integration trials.
+[Commands and limits](docs/cli.md#optional-local-tools) ·
+[Tool workflows](shared/tool-workflows.md)
 
 ## See a concrete result
 
@@ -152,7 +181,7 @@ Version **0.1.0**, local checks recorded on **October 14, 2026**:
 
 | Checked locally on Linux/WSL | Still to evaluate |
 | --- | --- |
-| 81 automated tests passed | Real skill discovery and invocation in the four clients |
+| 95 automated tests passed, including 13 synthetic tool-adapter tests | Real third-party tool trials and client/model tool invocation |
 | 12 standalone runtimes and 4 installation adapters checked | Model investigation quality and prompt-injection resistance |
 | Synthetic demo export and restoration verified | Native Windows and macOS execution |
 
@@ -187,6 +216,12 @@ six runs, with and without the package.
 [Sharing and restoration](docs/cli.md#export-verification-and-restoration)
 
 ## Go further
+
+Feedback, improvements and suggestions are welcome in
+[GitHub Issues](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues).
+See [Contributing](CONTRIBUTING.md) for issue labels and useful reporting details.
+For security reports, email [security@osint-forge.com](mailto:security@osint-forge.com).
+For a personal-data concern, use [privacy@osint-forge.com](mailto:privacy@osint-forge.com).
 
 [Documentation](docs/README.md) · [Commands](docs/cli.md) ·
 [Case format](docs/formats.md) · [Troubleshooting](docs/depannage.md)

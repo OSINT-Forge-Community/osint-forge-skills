@@ -30,7 +30,9 @@ For utility commands and record semantics, read [the case contract](references/c
 
 4. Inspect bounded archive directory metadata only. Never automatically extract, execute or follow evidence-provided member paths.
 
-5. Record observations with E IDs. Request a trusted text/metadata export for unsupported formats such as PDF text, and state extraction has not run.
+5. For PDF text, metadata or image OCR, read [optional tool workflows](references/tool-workflows.md) and use the `pdftotext`, `exiftool` or `tesseract` adapter when the local executable is available and authorized. Select only the needed PDF pages; verify OCR against the image. If unavailable, request an export and state extraction has not run.
+
+6. Record observations with original E IDs and the derived analysis path. Metadata and extracted text do not verify document signatures or sender identity.
 
 ## Deliverable
 

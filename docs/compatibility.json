@@ -68,5 +68,18 @@
     "linux_wsl_python_3_12": "passed_local_checks",
     "windows_native": "not_run",
     "macos": "not_run"
+  },
+  "optional_tools": {
+    "adapter_safeguards": "passed_13_synthetic_process_tests_linux_wsl",
+    "real_executable_trials": {
+      "exiftool": "not_run_executable_not_found",
+      "ffprobe": "not_run_executable_not_found",
+      "pdftotext": "not_run_executable_not_found",
+      "tesseract": "not_run_executable_not_found"
+    },
+    "host_web_dns_rdap_maps": "workflow_instructions_only_not_run",
+    "model_tool_invocation": "not_run",
+    "automatic_installation": false,
+    "executables_bundled": false
   }
 }

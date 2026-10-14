@@ -90,6 +90,25 @@ complete success by manually editing outputs.
 SQLite limit. A failed `add-many` can leave a successfully registered prefix:
 run `verify`, inspect IDs, then resume only unregistered selections.
 
+## Optional local tools
+
+| Code or status | Action |
+| --- | --- |
+| `not_found` | Tool is absent from the searched PATH; use an approved absolute path or request an export, without automatic installation |
+| `found_unverified` | Inspect the discovery result; it does not establish trust, version or successful execution |
+| `ABSOLUTE_EXECUTABLE_REQUIRED` / `INVALID_TOOL_EXECUTABLE` | Select an approved regular executable by absolute path; shell batch files are rejected |
+| `TOOL_EXECUTABLE_INSIDE_CASE` | Never execute a file from the evidence case; use the operator's trusted tool installation |
+| `TOOL_INPUT_UNSUPPORTED` | Supply a supported file or qualified export; no playlist, URL or arbitrary format fallback |
+| `INVALID_PAGE_RANGE` / `INVALID_OCR_LANGUAGE` | Choose 1-20 PDF pages with positive indices, or up to 3 installed three-letter OCR language codes |
+| `TOOL_VERSION_FAILED` | Version probe failed; verify the executable and its local dependencies outside evidence processing |
+| `TOOL_FAILED` / `TOOL_REPORTED_ERROR` / `INVALID_TOOL_OUTPUT` | Record the failed step; inspect tool compatibility or a qualified export, without treating failure as empty success |
+| `TOOL_TIMEOUT` / `TOOL_OUTPUT_TOO_LARGE` | Analysis exceeded time or output bounds; narrow the input/range and document coverage |
+| `TOOL_CHANGED_COPY` | Tool modified its working copy; stop, verify the case and review the executable and invocation |
+
+No successful analysis is saved on these failures. Error JSON does not expose
+tool stderr or evidence text. A file requiring seeking may fail the ffprobe
+pipe-only profile; do not enable additional protocols to bypass that restriction.
+
 ## Sharing and restoration
 
 | Code | Action |

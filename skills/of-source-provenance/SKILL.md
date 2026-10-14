@@ -24,7 +24,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 1. Inspect the literal assertion and qualifications before paraphrasing. Distinguish a captured statement from the event it describes.
 
-2. Trace explicit attribution, original publication and revisions. Keep capture time separate from claimed publication time. Inaccessible primary material remains unavailable.
+2. Trace explicit attribution, original publication and revisions. For authorized public research, follow the public OSINT section of [tool workflows](references/tool-workflows.md): use available host search and page-fetch tools, open primary sources and register bounded captures. Search snippets are leads. Keep capture time separate from claimed publication time. Inaccessible primary material remains unavailable.
 
 3. Run `provenance --case CASE` for identical-byte groups and analyst origin labels. Different domains, hashes, wording or models do not establish independence.
 

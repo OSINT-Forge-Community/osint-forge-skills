@@ -2,6 +2,18 @@
 
 ## Unreleased - 2026-10-14
 
+- Published contribution guidance for GitHub feedback, bugs and suggestions,
+  with issue labels and separate security and personal-data email contacts.
+  Included the public guide in the full plugin; maintainer notes remain local.
+
+- Added optional local adapters for ExifTool, ffprobe, Poppler pdftotext and
+  Tesseract, with explicit executable selection, evidence copies, bounded
+  execution and provenance-bearing analyses. No third-party binary is bundled
+  or installed. Synthetic adapter tests are distinct from real-binary trials.
+- Added host-tool workflows for authorized public-source, DNS/RDAP and map
+  research. Updated five skills and both README editions with tool capabilities,
+  prerequisites and integration-test limits. Python helpers make no web lookup.
+
 - Preserved source row index `0` in timeline CSV exports after chronological
   sorting, while retaining empty missing timestamps and spreadsheet formula
   neutralization. Original evidence and JSON analyses remain unchanged.

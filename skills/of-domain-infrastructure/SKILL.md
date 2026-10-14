@@ -22,7 +22,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 ## Workflow
 
-1. Confirm the exact subject and offline or authorized-lookup mode. Use already approved client capabilities within that scope.
+1. Confirm the exact subject and offline or authorized-lookup mode. For live research, read the public OSINT section of [tool workflows](references/tool-workflows.md). Use available host DNS/RDAP, fetch or browser tools for the exact domain, record types and relevant registry. The Python helper does not perform network lookups.
 
 2. Separate registrar, registrant, authoritative DNS, hosting provider and current network address. Redacted registration is an unknown.
 

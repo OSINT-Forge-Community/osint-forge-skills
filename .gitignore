@@ -16,7 +16,6 @@ dist/
 # Local assistant and maintainer material
 /AGENTS.md
 /CLAUDE.md
-/CONTRIBUTING.md
 /tests/
 /evals/
 /scripts/validate.py

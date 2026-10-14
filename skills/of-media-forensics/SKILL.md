@@ -12,7 +12,7 @@ metadata:
 
 ## Inputs
 
-Selected media copies, acquisition context and metadata/frame exports from already approved tools.
+Selected media copies, acquisition context, optional local analysis tools and existing metadata/frame exports.
 
 ## Scope and resources
 
@@ -24,9 +24,9 @@ For utility commands and record semantics, read [the case contract](references/c
 
 1. Register unchanged media and run `triage` for signatures and PNG header dimensions. Check integrity before and after analysis.
 
-2. Read supplied metadata exports as data. Separate capture fields, editing/transcoding fields and filesystem times; attribute every interpretation to a piece.
+2. Read [optional tool workflows](references/tool-workflows.md) to use `exiftool` for PNG/JPEG metadata, `ffprobe` for container/stream information or `tesseract` for image text when available and authorized. Otherwise use supplied exports. Separate capture fields, editing/transcoding fields and temporary-copy filesystem times; attribute interpretations to the original piece and derived output.
 
-3. For video, examine relevant sequences using trusted frame exports. One frame does not prove a transient feature persists across a clip.
+3. For video, use stream metadata to identify relevant sequences, then examine trusted frame exports. The ffprobe adapter does not extract frames. One frame does not prove a transient feature persists across a clip.
 
 4. Compare claimed context with observed content and prior authorized captures. Missing EXIF, recompression or anomalies do not alone prove forgery or AI generation.
 

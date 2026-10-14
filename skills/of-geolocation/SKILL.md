@@ -22,11 +22,11 @@ For utility commands and record semantics, read [the case contract](references/c
 
 ## Workflow
 
-1. Describe observable features before naming a location: text, layout, terrain, road markings, architecture and orientation. OCR and visual-model descriptions are unverified leads.
+1. Describe observable features before naming a location: text, layout, terrain, road markings, architecture and orientation. When needed, use the optional local `tesseract` adapter described in [tool workflows](references/tool-workflows.md). OCR and visual-model descriptions are unverified leads; compare extracted text to the image.
 
 2. Intersect constraints to build candidates. Account for mirrored imagery, cropping, recaptioning and age. Retain measurement ranges instead of false coordinate precision.
 
-3. Predict additional visible features at each candidate and test them against separate authorized evidence. Record mismatches and inaccessible verification.
+3. Predict additional visible features at each candidate and test them against separate authorized evidence. Use available host map, search or browser tools within the authorized public-research scope, following the same tool guide. Image upload requires authorization for that transmission. Record imagery dates, mismatches and inaccessible verification.
 
 4. Register image/map captures and claims. Match disclosure precision to evidence and lawful purpose; avoid sensitive private locations.
 

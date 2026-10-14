@@ -22,6 +22,7 @@
  <a href="#démarrer-en-cinq-minutes">Démarrage</a> ·
  <a href="#installer-dans-son-assistant-ia">Installation</a> ·
  <a href="#les-12-skills">Catalogue</a> ·
+ <a href="#les-outils-utilisables">Outils</a> ·
  <a href="docs/README.md">Documentation</a> ·
  <a href="#benchmarks">Benchmarks</a>
 </p>
@@ -50,6 +51,35 @@ flowchart LR
 exports d’historique navigateur. **Votre résultat :** un dossier avec les pièces
 conservées, les conclusions justifiées et les inconnues explicites, à relire
 puis à transmettre.
+
+## Les outils utilisables
+
+**Conservez les pièces avec les outils Python inclus, puis utilisez des outils
+spécialisés optionnels pour les métadonnées, les PDF, l’OCR et les médias.** Les
+skills précisent quand les appeler et comment conserver leurs résultats.
+
+| Outil | Utilisation | Disponibilité |
+| --- | --- | --- |
+| **Utilitaires Forge** | Enregistrer et hacher les pièces, trier les fichiers, créer des chronologies, lire les copies d’historiques, corréler et exporter | Inclus ; Python 3.11+, bibliothèque standard |
+| **ExifTool** | Extraire les métadonnées groupées des PNG, JPEG et PDF | Exécutable local optionnel ; adaptateur inclus |
+| **Poppler pdftotext** | Extraire le texte d’une plage de pages PDF | Exécutable local optionnel ; adaptateur inclus |
+| **Tesseract OCR** | Lire le texte des images PNG/JPEG avec les langues installées | Exécutable et données linguistiques optionnels ; adaptateur inclus |
+| **ffprobe** | Examiner les métadonnées des conteneurs et flux audio/vidéo | Exécutable local optionnel ; adaptateur inclus |
+| **Recherche web, lecture de pages, DNS/RDAP et cartes** | Remonter aux sources publiques, consulter les enregistrements et tester des hypothèses de localisation | Outils du client, selon disponibilité et périmètre autorisé |
+
+Découvrez les outils locaux avec `python3 scripts/forge.py tools`. La commande
+`tool-run` utilise un identifiant E enregistré et un exécutable explicitement
+choisi. L’analyse conserve l’empreinte de la pièce, la version de l’outil, ses
+paramètres et sa sortie. Aucune installation automatique. Les capacités web
+dépendent du client ; aucun service de recherche ni serveur MCP n’est fourni.
+
+Les adaptateurs forensic servent au triage documentaire, aux médias et à la
+géolocalisation ; les workflows web à la provenance, à l’infrastructure et à la
+géolocalisation. Leurs garde-fous sont testés avec des processus synthétiques.
+Les exécutables tiers réels et leur invocation par les clients/modèles restent
+à tester en intégration.
+[Commandes et limites](docs/cli.md#optional-local-tools) ·
+[Workflows des outils](shared/tool-workflows.md)
 
 ## Voir un résultat concret
 
@@ -157,7 +187,7 @@ Version **0.1.0**, contrôles locaux consignés le **14 octobre 2026** :
 
 | Vérifié localement sous Linux/WSL | Reste à évaluer |
 | --- | --- |
-| 81 tests automatisés réussis | Découverte et invocation réelles dans les quatre clients |
+| 95 tests automatisés réussis, dont 13 tests synthétiques des adaptateurs | Essais des outils tiers réels et invocation par les clients/modèles |
 | 12 runtimes autonomes et 4 adaptateurs d’installation contrôlés | Qualité d’enquête des modèles et résistance aux injections de prompt |
 | Export et restauration de la démo synthétique vérifiés | Exécution native Windows et macOS |
 
@@ -196,6 +226,14 @@ Codex sur six essais, avec et sans le paquet.
 [Partage et restauration](docs/cli.md#export-verification-and-restoration)
 
 ## Pour aller plus loin
+
+Les avis, améliorations et suggestions sont les bienvenus dans les
+[Issues GitHub](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues).
+Le [guide de contribution](CONTRIBUTING.md) précise les labels et les détails
+utiles à fournir. Pour la sécurité :
+[security@osint-forge.com](mailto:security@osint-forge.com).
+Pour une question relative aux données personnelles :
+[privacy@osint-forge.com](mailto:privacy@osint-forge.com).
 
 [Documentation](docs/README.md) · [Commandes](docs/cli.md) ·
 [Format des dossiers](docs/formats.md) · [Dépannage](docs/depannage.md)

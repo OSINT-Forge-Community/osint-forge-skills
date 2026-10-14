@@ -15,6 +15,7 @@ from .reporting import (export_case, prepare_share, render_report, restore_case,
 from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
                      atomic_write, digest, json_bytes, read_json, require, safe_path)
 from .timestamps import timestamp
+from .tooling import TOOLS, inventory, run_tool
 
 
 class Parser(argparse.ArgumentParser):
@@ -82,6 +83,16 @@ def parser() -> argparse.ArgumentParser:
     correlate.add_argument("--input", action="append", required=True)
     correlate.add_argument("--out", required=True)
     commands.add_parser("doctor", help="Report local runtime capabilities without collecting evidence")
+    commands.add_parser("tools", help="Find optional local tools without executing or installing them")
+    external = commands.add_parser("tool-run", help="Run an explicitly selected local tool on an evidence copy")
+    external.add_argument("--case", required=True)
+    external.add_argument("--evidence", required=True)
+    external.add_argument("--tool", required=True, choices=tuple(TOOLS))
+    external.add_argument("--executable", required=True, help="Approved absolute executable path")
+    external.add_argument("--out", required=True, help="A new JSON file inside CASE/analysis")
+    external.add_argument("--first-page", type=int, default=1)
+    external.add_argument("--last-page", type=int, default=1)
+    external.add_argument("--language", default="eng", help="Installed OCR language, for example eng or fra+eng")
     return root
 
 
@@ -130,6 +141,14 @@ def correlate(case: str, paths: list[str]) -> dict:
 
 def dispatch(args) -> dict:
     command = args.command
+    if command == "tools":
+        return inventory()
+    if command == "tool-run":
+        require(args.tool == "pdftotext" or (args.first_page == 1 and args.last_page == 1),
+                "INVALID_ARGUMENTS")
+        require(args.tool == "tesseract" or args.language == "eng", "INVALID_ARGUMENTS")
+        return run_tool(args.case, args.evidence, args.tool, args.executable, args.out,
+                        first_page=args.first_page, last_page=args.last_page, language=args.language)
     if command == "init":
         return initialize(args.case, args.title, args.scope)
     if command == "add":
