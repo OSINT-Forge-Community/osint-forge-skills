@@ -14,7 +14,7 @@
  <img src="assets/badges/version.svg" alt="Version 0.1.0">
  <img src="assets/badges/python.svg" alt="Python 3.11 ou supérieur">
  <img src="assets/badges/skills.svg" alt="12 skills">
- <img src="assets/badges/license.svg" alt="Licence Apache-2.0">
+ <img src="assets/badges/license.svg" alt="Licence du logiciel : Apache-2.0">
 </p>
 
 <p align="center">
@@ -33,7 +33,8 @@
 
 **12 skills pour aider les assistants IA à examiner les sources, confronter
 les hypothèses et rédiger des rapports reliés aux pièces.** Pour les analystes,
-enquêteurs, journalistes et chercheurs. Gratuit et open source, sous Apache-2.0.
+enquêteurs, journalistes et chercheurs. Le logiciel et les instructions des
+skills sont gratuits et open source, sous Apache-2.0.
 
 Une skill associe des instructions spécialisées et des outils locaux. Vous
 choisissez le client IA et le modèle ; les outils Python conservent les fichiers
@@ -166,11 +167,14 @@ n’établissent ni l’invocation dans un client ni la performance d’un modè
 
 <a id="benchmarks"></a>
 
-**Benchmarks :** 12/12 contrôles des outils hors ligne réussis lors de la mesure
-consignée du 14 octobre. [Mesures, résultats bruts et reproduction](benchmarks/README.md).
-**Pilote SkillsBench :** Codex réussit `citation-check` **3/3 avec le paquet et
-3/3 sans lui**. Aucune lecture explicite de skill n’a été observée ; ce résultat
-ne démontre donc pas leur apport. [Protocole, résultats et limites](benchmarks/README.md#skillsbench-pilot).
+**Des contrôles reproductibles, des résultats ouverts.** Les **12 contrôles hors
+ligne ont réussi** lors de la mesure du 14 octobre : conservation des pièces,
+ordre chronologique et protections à l’export.
+[Consulter les mesures et reproduire les contrôles](benchmarks/README.md).
+
+Un premier **pilote SkillsBench** explore la vérification de citations avec
+Codex sur six essais, avec et sans le paquet.
+[Lire le comparatif SkillsBench et son périmètre](benchmarks/README.md#skillsbench-pilot).
 
 ## Limites essentielles
 
@@ -202,6 +206,9 @@ analyste ou client de les reprendre indépendamment d’une conversation.
 
 **[Apache-2.0](LICENSE)** · [NOTICE](NOTICE) ·
 [Identité visuelle et provenance des éléments graphiques](docs/branding/README.md)
+
+Les bannières et visuels restent la propriété d’**OSINT Forge**, tous droits
+réservés ; ils sont exclus de la licence Apache-2.0.
 
 Silex et Rivet sont des mascottes promotionnelles. Les noms des clients indiquent
 la compatibilité visée, sans affiliation ni recommandation d’un fournisseur.

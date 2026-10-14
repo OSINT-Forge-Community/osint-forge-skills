@@ -1,0 +1,9 @@
+OSINT Forge visual assets
+Copyright 2026 OSINT Forge. All rights reserved.
+
+The banners, mascots, badges and other visual assets in assets/ are the
+property of OSINT Forge and are excluded from the Apache License, Version 2.0
+applicable to the software, skill instructions and textual documentation.
+
+The software license grants no rights to reuse, modify or redistribute these
+visual assets. Such uses require prior written authorization from OSINT Forge.

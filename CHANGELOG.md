@@ -2,6 +2,12 @@
 
 ## Unreleased - 2026-10-14
 
+- Clarified OSINT Forge ownership and reserved rights for visual assets,
+  separately from the Apache-2.0 software license. Kept creative direction
+  and source references local; public provenance retains output metadata.
+- Refined the README benchmark summary around reproducible checks and linked
+  the exploratory agent comparison without implying a demonstrated skill gain.
+
 - Removed explanatory source comments and docstrings while preserving CLI help
   and executable directives; regenerated packages and reran the offline benchmark.
 - Recorded a six-session Codex SkillsBench citation-check pilot: 3/3 passed in

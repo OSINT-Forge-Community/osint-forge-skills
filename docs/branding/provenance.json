@@ -8,18 +8,6 @@
   },
   "publication": "not_performed",
   "purpose": "synthetic_promotional_illustration_not_investigation_evidence",
-  "references": [
-    {
-      "brand_reference": "silex.png",
-      "mascot": "Silex",
-      "sha256": "1ab413c5636b24e875c9a5d4dddcd902825e2b8992133d84a63da6216e09b29d"
-    },
-    {
-      "brand_reference": "rivet.png",
-      "mascot": "Rivet",
-      "sha256": "e939f0aab59548e3967e418dc9904784ab962d2c7a6ab39474c626b5ef83cda9"
-    }
-  ],
   "revision": 2,
   "runtime_dependency": false,
   "schema_version": 1,
@@ -53,5 +41,8 @@
       "publication": "not_performed",
       "typography": "generated_approximation_not_font_verification"
     }
-  ]
+  ],
+  "owner": "OSINT Forge",
+  "rights": "All rights reserved; excluded from Apache-2.0",
+  "rights_notice": "assets/LICENSE.txt"
 }

@@ -14,7 +14,7 @@
  <img src="assets/badges/version.svg" alt="Version 0.1.0">
  <img src="assets/badges/python.svg" alt="Python 3.11 or later">
  <img src="assets/badges/skills.svg" alt="12 skills">
- <img src="assets/badges/license.svg" alt="Apache-2.0 license">
+ <img src="assets/badges/license.svg" alt="Software license: Apache-2.0">
 </p>
 
 <p align="center">
@@ -33,7 +33,8 @@
 
 **12 skills that help AI assistants examine sources, challenge hypotheses and
 write reports linked to evidence.** For analysts, investigators, journalists
-and researchers. Free and open source, under Apache-2.0.
+and researchers. Software and skill instructions are free and open source,
+under Apache-2.0.
 
 A skill combines specialized instructions and local tools. You choose the AI
 client and model; the Python tools preserve selected files in a portable case.
@@ -161,11 +162,13 @@ neither client invocation nor model performance.
 
 <a id="benchmarks"></a>
 
-**Benchmarks:** 12/12 offline helper probes passed in the recorded October 14
-run. [Measurements, raw results and reproduction](benchmarks/README.md).
-**SkillsBench pilot:** Codex passed `citation-check` **3/3 with the package and
-3/3 without it**. No explicit skill read was observed, so this does not demonstrate
-a skill benefit. [Protocol, results and limits](benchmarks/README.md#skillsbench-pilot).
+**Reproducible checks, open results.** All **12 offline checks passed** in the
+October 14 run, covering evidence preservation, chronological ordering and
+export safeguards. [Explore the measurements and run the checks](benchmarks/README.md).
+
+A first **SkillsBench pilot** explores citation verification with Codex across
+six runs, with and without the package.
+[Read the SkillsBench comparison and its scope](benchmarks/README.md#skillsbench-pilot).
 
 ## Essential limits
 
@@ -194,6 +197,9 @@ resume them independently of a conversation.
 
 **[Apache-2.0](LICENSE)** · [NOTICE](NOTICE) ·
 [Visual identity and asset provenance](docs/branding/README.md)
+
+Banners and visual assets remain the property of **OSINT Forge**, with all
+rights reserved; they are excluded from Apache-2.0.
 
 Silex and Rivet are promotional mascots. Client names describe intended
 compatibility and imply no affiliation or endorsement.
