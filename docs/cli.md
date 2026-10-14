@@ -98,7 +98,11 @@ be forged. Recognized signature bytes do not validate an entire file.
 `timeline` preserves original times. ISO times without offsets are not
 converted to UTC. Events without normalized times follow events with UTC,
 in source row order. Derived CSV neutralizes cell prefixes that spreadsheets
-could interpret as formulas.
+could interpret as formulas. Its `record_index` preserves the zero-based source
+row index, including `0`, even after chronological sorting. Missing timestamp
+and UTC values remain empty CSV cells. Older CSV exports may have an empty index
+for source row `0`; regenerate them into a new derived file from the original
+evidence, keeping the previous export for comparison.
 
 `browser` limits queries to recognized schemas and sets `truncated` beyond
 5,000 visits. It collects no live profile, cookies or passwords. A recorded

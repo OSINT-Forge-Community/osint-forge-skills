@@ -129,7 +129,8 @@ def timeline_csv(result: dict) -> bytes:
     for event in result["events"]:
         row = {}
         for key in fields:
-            value = visible(event.get(key, "") or "")
+            value = event.get(key)
+            value = visible("" if value is None else value)
             row[key] = "'" + value if value.lstrip().startswith(("=", "+", "-", "@")) else value
         writer.writerow(row)
     return buffer.getvalue().encode("utf-8")

@@ -2,6 +2,10 @@
 
 ## Unreleased - 2026-10-14
 
+- Preserved source row index `0` in timeline CSV exports after chronological
+  sorting, while retaining empty missing timestamps and spreadsheet formula
+  neutralization. Original evidence and JSON analyses remain unchanged.
+
 - Clarified OSINT Forge ownership and reserved rights for visual assets,
   separately from the Apache-2.0 software license. Kept creative direction
   and source references local; public provenance retains output metadata.
