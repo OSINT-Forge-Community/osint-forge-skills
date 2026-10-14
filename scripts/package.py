@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Build reproducible local plugins and independently installable skills."""
 
 from __future__ import annotations
 
@@ -15,12 +14,21 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "shared"))
 from forgekit.safeio import ForgeError, atomic_write, json_bytes, read_bytes, require, safe_path
 
-# Keep distribution independent of local maintainer notes and assistant files.
-# This list matches the public documentation exceptions in .gitignore.
 PUBLIC_DOCUMENTS = (
     "README.md", "installation.md", "demarrage.md", "cli.md", "formats.md",
     "depannage.md", "compatibility.json", "branding/README.md",
     "branding/provenance.json",
+)
+PUBLIC_BENCHMARKS = (
+    "README.md", "runtime.py", "results/2026-10-14-runtime/results.json",
+    "results/2026-10-14-runtime/source-manifest.json",
+    "results/2026-10-14-runtime-cleanup/results.json",
+    "results/2026-10-14-runtime-cleanup/source-manifest.json",
+    "skillsbench_codex.py",
+    "results/2026-10-14-skillsbench/results.json",
+    "results/2026-10-14-skillsbench/protocol.json",
+    "results/2026-10-14-skillsbench/skill-source-manifest.json",
+    "results/2026-10-14-skillsbench/requirements.txt",
 )
 
 
@@ -86,6 +94,8 @@ def expected_files() -> dict[str, bytes]:
     files[plugin + "shared/case-contract.md"] = contract
     for relative in PUBLIC_DOCUMENTS:
         files[plugin + "docs/" + relative] = read_bytes(ROOT / "docs" / relative)
+    for relative in PUBLIC_BENCHMARKS:
+        files[plugin + "benchmarks/" + relative] = read_bytes(ROOT / "benchmarks" / relative)
     for relative, data in collect(ROOT / "examples").items():
         files[plugin + "examples/" + relative] = data
     for relative in (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"):
@@ -98,22 +108,28 @@ def expected_files() -> dict[str, bytes]:
         files[relative] = json_bytes(catalog)
     files["README.md"] = ("![OSINT Forge Skills](plugins/osint-forge-skills/assets/readme-banner.en.png)\n\n"
         "# OSINT Forge Skills distribution " + version + "\n\n"
-        "This is a ready-to-install local marketplace, not the authoring checkout.\n"
-        "The plugin is under plugins/osint-forge-skills.\n\n"
-        "Claude: run claude plugin marketplace add . then\n"
-        "claude plugin install osint-forge-skills@osint-forge --scope local\n\n"
-        "Codex: run codex plugin marketplace add . then\n"
-        "codex plugin add osint-forge-skills@osint-forge\n\n"
-        "OpenCode: copy selected complete skill folders into your workspace's\n"
-        ".opencode/skills after checking that no same-name skill already exists.\n"
-        "Gemini: use gemini skills install on a complete skill folder with\n"
-        "--scope workspace. Each folder has its own offline Python runtime.\n\n"
-        "Run Python on a skill's scripts/forge.py to use the case utilities.\n"
-        "See [the plugin README](plugins/osint-forge-skills/README.md),\n"
-        "[documentation](plugins/osint-forge-skills/docs/README.md), and\n"
-        "[installation](plugins/osint-forge-skills/docs/installation.md).\n"
-        "Client configuration changes are deliberate operator actions; no model\n"
-        "trial or provider connection is performed by unpacking this archive.\n").encode()
+        "12 skills for evidence-based investigation, with self-contained local tools.\n"
+        "This marketplace is already built. Start from this extracted directory.\n\n"
+        "## Choose your next step\n\n"
+        "| I want to… | Guide |\n"
+        "| --- | --- |\n"
+        "| Understand the workflow | [Overview](plugins/osint-forge-skills/README.md) |\n"
+        "| Read in French | [Présentation](plugins/osint-forge-skills/README.fr.md) |\n"
+        "| Install in Claude Code | [Native plugin](plugins/osint-forge-skills/docs/installation.md#native-claude-code-plugin) |\n"
+        "| Install in Codex | [Native plugin](plugins/osint-forge-skills/docs/installation.md#native-codex-plugin) |\n"
+        "| Install in OpenCode or Gemini | [Standalone skills](plugins/osint-forge-skills/docs/installation.md#standalone-skills-all-four-clients) |\n"
+        "| Use the local tools | [Package entry points](plugins/osint-forge-skills/docs/demarrage.md#choose-the-right-environment) |\n\n"
+        "The complete plugin is in `plugins/osint-forge-skills/`. Each skill\n"
+        "includes its own offline Python runtime; Python 3.11+ is required.\n"
+        "Standalone installation from an archive is covered in the installation guide.\n\n"
+        "## Validation and data control\n\n"
+        "[Recorded compatibility](plugins/osint-forge-skills/docs/compatibility.json) ·\n"
+        "[Helper benchmarks](plugins/osint-forge-skills/benchmarks/README.md)\n\n"
+        "A single-task Codex pilot is recorded in the benchmark guide. Full skill\n"
+        "invocation and other clients remain unevaluated. Client setup\n"
+        "is an explicit operator action. A remote assistant may transmit what it reads.\n\n"
+        "[Documentation](plugins/osint-forge-skills/docs/README.md) ·\n"
+        "[License](plugins/osint-forge-skills/LICENSE)\n").encode()
     files.update(skill_archives)
     files[f"osint-forge-skills-{version}.zip"] = archive({
         path: content for path, content in files.items() if not path.startswith("skills/")})
@@ -145,7 +161,7 @@ def build(check: bool = False) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Build reproducible local plugins and independently installable skills.')
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     try:

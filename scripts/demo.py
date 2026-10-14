@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Create and verify an original synthetic case without network/model calls."""
 
 from __future__ import annotations
 
@@ -79,7 +78,7 @@ def demo(destination: str | Path) -> dict:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Create and verify an original synthetic case without network/model calls.')
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
     try:

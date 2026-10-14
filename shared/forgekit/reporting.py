@@ -1,5 +1,3 @@
-"""Evidence-linked reports and explicit, digest-bound sharing exports."""
-
 from __future__ import annotations
 
 import io
@@ -17,10 +15,28 @@ import json
 import os
 import tempfile
 
-SECRET = re.compile(r"(?i)(?:bearer\s+\S+|(?:api[_-]?key|password|secret|token)\s*[:=]\s*[^\s,;]+)")
+SECRET = re.compile(r"(?i)(?:bearer\s+|(?:api(?:\\?[_-])?key|password|secret|token)\s*[:=]\s*)(?=\S)")
 EMAIL = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.I)
 IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])")
 PRIVATE_KEY = re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----")
+
+
+def mask_credentials(text: str) -> tuple[str, int]:
+    parts, offset, count = [], 0, 0
+    while match := SECRET.search(text, offset):
+        end = match.end()
+        bearer = text[match.start():match.start() + 6].lower() == "bearer"
+        while end < len(text) and not text[end].isspace():
+            if not bearer and text[end] in ",;":
+                break
+            entity = next((value for value in ("&amp;", "&lt;", "&gt;")
+                           if text.startswith(value, end)), None) if text[end] == "&" else None
+            end += len(entity) if entity else 1
+        parts.extend((text[offset:match.start()], "[REDACTED]"))
+        offset = end
+        count += 1
+    parts.append(text[offset:])
+    return "".join(parts), count
 
 
 def render_report(case: str | Path, language: str = "en") -> bytes:
@@ -41,7 +57,7 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
                "collected": "collected", "bytes": "bytes", "groups": "Candidate origin groups",
                "independence": "Independence between groups: unknown.", "generated": "Generated with"})
     lines = [f"# {labels['title']}: {markdown(info['title'])}", "",
-             f"## {labels['scope']}", "", markdown(info["scope"]), "",
+             f"## {labels['scope']}", "", markdown(info["scope"], 8000), "",
              f"## {labels['claims']}", ""]
     for claim in claims:
         citations = lambda key: ", ".join(f"[{ref}](../raw/{ref}.bin)" for ref in claim[key]) or "-"
@@ -49,7 +65,7 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
                       f"{labels['state']}: `{claim['state']}` | {labels['confidence']}: `{claim['confidence']}`", "",
                       f"{labels['support']}: {citations('supports')}", "",
                       f"{labels['against']}: {citations('contradicts')}", "",
-                      f"{labels['why']}: {markdown(claim['rationale'])}", ""])
+                      f"{labels['why']}: {markdown(claim['rationale'], 8000)}", ""])
     lines.extend([f"## {labels['evidence']}", ""])
     for row in evidence:
         lines.append(f"- [{row['id']}](../{row['path']}): {markdown(row['original_name'])}; "
@@ -77,9 +93,9 @@ def prepare_share(source: str | Path, output: str | Path) -> dict:
     text = visible(original.decode("utf-8"), MAX_JSON)
     require(not PRIVATE_KEY.search(text), "PRIVATE_KEY_INPUT_REJECTED")
     counts = {}
-    for name, pattern in (("credentials", SECRET), ("email", EMAIL), ("ipv4", IPV4)):
+    text, counts["credentials"] = mask_credentials(text)
+    for name, pattern in (("email", EMAIL), ("ipv4", IPV4)):
         text, counts[name] = pattern.subn("[REDACTED]", text)
-    # Private report links and original file hashes belong only in the private bundle.
     text = re.sub(r"\[([^\]]+)\]\(\.\./raw/[^)]+\)", r"\1", text)
     text = re.sub(r"\b[0-9a-f]{64}\b", "[PRIVATE-DIGEST-REMOVED]", text)
     data = text.encode("utf-8")

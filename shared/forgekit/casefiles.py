@@ -1,5 +1,3 @@
-"""Versioned local case records; evidence bytes never become instructions."""
-
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -10,7 +8,7 @@ import re
 from urllib.parse import urlsplit
 
 from . import SCHEMA_VERSION, VERSION
-from .safeio import (ForgeError, MAX_TOTAL, atomic_write, digest, json_bytes,
+from .safeio import (ForgeError, MAX_RECORDS, MAX_TOTAL, atomic_write, digest, json_bytes,
                      jsonl_bytes, read_bytes, read_json, read_jsonl, relative_path,
                      require, safe_path)
 
@@ -145,6 +143,10 @@ def validate_claim(row: dict, evidence_ids: set[str]) -> None:
 def verify(path: str | Path) -> dict:
     root, _, evidence, claims = load_case(path)
     require(not (root / ".forge.lock").exists(), "CASE_BUSY")
+    return _verify_records(root, evidence, claims)
+
+
+def _verify_records(root: Path, evidence: list[dict], claims: list[dict]) -> dict:
     indexed = {row["path"] for row in evidence}
     actual = set()
     for entry in (root / "raw").iterdir():
@@ -186,12 +188,51 @@ def add_evidence(path: str | Path, source: str | Path, *, source_url: str | None
                "size": len(content), "original_name": source.name,
                "collected_at": utc_now(), "source_url": source_url,
                "origin_group": origin_group, "origin_independence": "unverified"}
-        # Validate the complete journal before copying, avoiding orphaned evidence
-        # on a record-count/size error. A crash between writes remains detectable.
         journal = jsonl_bytes(evidence + [row])
         atomic_write(root / row["path"], content)
         atomic_write(root / "evidence.jsonl", journal, replace=True)
     return {"id": identifier, "sha256": row["sha256"], "size": row["size"]}
+
+
+def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | None = None,
+             origin_group: str | None = None) -> dict:
+    require(isinstance(sources, list) and 0 < len(sources) <= MAX_RECORDS, "INVALID_BATCH_SIZE")
+    validate_url(source_url)
+    if origin_group is not None:
+        bounded_text(origin_group, 100, "INVALID_ORIGIN_GROUP")
+    root, _, _, _ = load_case(path)
+    selected = [safe_path(source) for source in sources]
+    require(all(not source.is_relative_to(root) for source in selected), "SOURCE_MUST_BE_OUTSIDE_CASE")
+    added = []
+    with case_lock(root):
+        _, _, evidence, claims = load_case(root)
+        _verify_records(root, evidence, claims)
+        require(len(evidence) + len(selected) <= MAX_RECORDS, "TOO_MANY_RECORDS")
+        total = sum(row["size"] for row in evidence)
+        next_id = max((int(row["id"][1:]) for row in evidence), default=0) + 1
+        for source in selected:
+            content = read_bytes(source)
+            if content.startswith(b"SQLite format 3\x00"):
+                require(not Path(str(source) + "-wal").exists(), "SQLITE_WAL_PRESENT")
+            bounded_text(source.name, 255, "INVALID_SOURCE_NAME")
+            require(total + len(content) <= MAX_TOTAL, "CASE_TOO_LARGE")
+            identifier = f"E{next_id:06d}"
+            require(bool(EVIDENCE_ID.fullmatch(identifier)), "EVIDENCE_LIMIT_REACHED")
+            row = {"id": identifier, "path": f"raw/{identifier}.bin", "sha256": digest(content),
+                   "size": len(content), "original_name": source.name,
+                   "collected_at": utc_now(), "source_url": source_url,
+                   "origin_group": origin_group, "origin_independence": "unverified"}
+            journal = jsonl_bytes(evidence + [row])
+            atomic_write(root / row["path"], content)
+            atomic_write(root / "evidence.jsonl", journal, replace=True)
+            evidence.append(row)
+            added.append({"id": identifier, "sha256": row["sha256"], "size": row["size"]})
+            total += len(content)
+            next_id += 1
+            del content
+        _, _, evidence, claims = load_case(root)
+        _verify_records(root, evidence, claims)
+    return {"status": "added", "evidence_count": len(added), "evidence": added}
 
 
 def add_claim(path: str | Path, text: str, supports: list[str], contradicts: list[str],

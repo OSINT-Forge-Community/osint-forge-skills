@@ -1,8 +1,7 @@
-"""Small deterministic analyses. No samples, macros or network calls execute."""
-
 from __future__ import annotations
 
 import csv
+from datetime import datetime, timezone
 from email import policy
 from email.parser import BytesHeaderParser
 import io
@@ -18,6 +17,10 @@ from .safeio import (ForgeError, MAX_JSON, MAX_RECORDS, atomic_write, digest,
                      json_bytes, require, safe_path, visible)
 from .safeio import zip_directory_guard
 from .timestamps import browser_timestamp, timestamp
+
+BROWSER_URL_BYTES = 16 * 1024
+BROWSER_TITLE_BYTES = 8 * 1024
+BROWSER_ROW_BYTES = 32 * 1024
 
 
 def save_analysis(case: str | Path, output: str | Path, result: object) -> dict:
@@ -66,7 +69,6 @@ def triage(case: str | Path, identifier: str) -> dict:
     elif kind == "jpeg":
         result["limitations"].append("JPEG signature only; EXIF and authenticity are not established.")
     elif kind == "unknown":
-        # Header-only email parsing avoids attachments or active document content.
         if b"\nFrom:" in b"\n" + data[:65536] or b"\nReceived:" in b"\n" + data[:65536]:
             message = BytesHeaderParser(policy=policy.default).parsebytes(data[:65536])
             result["signature_family"] = "email_header_candidate"
@@ -110,7 +112,9 @@ def timeline(case: str | Path, identifier: str, format_name: str) -> dict:
                 "INVALID_EVENT_TIMESTAMP")
         events.append({"evidence_id": identifier, "record_index": index,
                        "event": visible(event), **timestamp(row.get("timestamp"))})
-    events.sort(key=lambda row: (row["utc"] is None, row["utc"] or "", row["record_index"]))
+    events.sort(key=lambda row: (row["utc"] is None,
+                datetime.fromisoformat(row["utc"]) if row["utc"] else datetime.max.replace(tzinfo=timezone.utc),
+                row["record_index"]))
     return {"events": events, "event_count": len(events),
             "uncertain_time_count": sum(event["utc"] is None for event in events),
             "limitations": ["Order of events without an explicit offset remains unknown.",
@@ -126,7 +130,6 @@ def timeline_csv(result: dict) -> bytes:
         row = {}
         for key in fields:
             value = visible(event.get(key, "") or "")
-            # Prevent spreadsheet formula execution; unmodified values remain in JSON.
             row[key] = "'" + value if value.lstrip().startswith(("=", "+", "-", "@")) else value
         writer.writerow(row)
     return buffer.getvalue().encode("utf-8")
@@ -146,7 +149,9 @@ def browser(case: str | Path, identifier: str) -> dict:
             try:
                 connection.execute("PRAGMA trusted_schema=OFF")
                 connection.execute("PRAGMA query_only=ON")
-                # Bound queries even for pathological or deliberately corrupt DBs.
+                connection.execute("PRAGMA temp_store=FILE")
+                connection.execute("PRAGMA cache_size=-2048")
+                connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, BROWSER_ROW_BYTES)
                 ticks = [0]
 
                 def progress():
@@ -158,22 +163,43 @@ def browser(case: str | Path, identifier: str) -> dict:
                     "SELECT name FROM sqlite_master WHERE type='table' LIMIT 1000")}
                 if {"visits", "urls"} <= tables:
                     family, granularity = "chromium", "visit"
-                    query = "SELECT u.url,u.title,v.visit_time FROM visits v JOIN urls u ON u.id=v.url ORDER BY v.visit_time,v.id LIMIT 5001"
+                    query = "SELECT url,visit_time FROM visits ORDER BY visit_time,id LIMIT 5001"
+                    lookup = "SELECT url,title FROM urls WHERE id=? LIMIT 2"
                 elif {"moz_places", "moz_historyvisits"} <= tables:
                     family, granularity = "firefox", "visit"
-                    query = "SELECT p.url,p.title,h.visit_date FROM moz_historyvisits h JOIN moz_places p ON p.id=h.place_id ORDER BY h.visit_date,h.id LIMIT 5001"
+                    query = "SELECT place_id,visit_date FROM moz_historyvisits ORDER BY visit_date,id LIMIT 5001"
+                    lookup = "SELECT url,title FROM moz_places WHERE id=? LIMIT 2"
                 else:
                     raise ForgeError("UNSUPPORTED_BROWSER_SCHEMA")
-                records = connection.execute(query).fetchall()
+                events = []
+                output_bytes = len(json_bytes(result)) + 1024
+                truncated = False
+                for index, (place, moment) in enumerate(connection.execute(query)):
+                    if index == MAX_RECORDS:
+                        truncated = True
+                        break
+                    require(type(place) is int, "INVALID_BROWSER_ROW")
+                    cursor = connection.execute(lookup, (place,))
+                    fields = cursor.fetchone()
+                    require(fields is not None and cursor.fetchone() is None, "INVALID_BROWSER_REFERENCE")
+                    url, title = fields
+                    require(isinstance(url, str) and (title is None or isinstance(title, str))
+                            and type(moment) is int, "INVALID_BROWSER_ROW")
+                    title = title or ""
+                    require(len(url.encode("utf-8")) <= BROWSER_URL_BYTES
+                            and len(title.encode("utf-8")) <= BROWSER_TITLE_BYTES,
+                            "BROWSER_FIELD_TOO_LARGE")
+                    event = {"evidence_id": identifier, "record_index": index,
+                             "event": "browser visit", "url": url, "url_exact": True,
+                             "title": visible(title, 1000), "title_truncated": len(title) > 1000,
+                             **browser_timestamp(moment, family)}
+                    output_bytes += len(json_bytes(event)) + 128
+                    require(output_bytes <= MAX_JSON, "ANALYSIS_OUTPUT_TOO_LARGE")
+                    events.append(event)
             finally:
                 connection.close()
         except sqlite3.Error as exc:
             raise ForgeError("SQLITE_ANALYSIS_FAILED") from exc
-    events = []
-    for index, (url, title, moment) in enumerate(records[:MAX_RECORDS]):
-        events.append({"evidence_id": identifier, "record_index": index,
-                       "event": "browser visit", "url": visible(url, 2000),
-                       "title": visible(title, 1000), **browser_timestamp(moment, family)})
     result.update({"family": family, "granularity": granularity, "events": events,
-                   "event_count": len(events), "truncated": len(records) > MAX_RECORDS})
+                   "event_count": len(events), "truncated": truncated})
     return result

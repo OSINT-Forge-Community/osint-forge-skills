@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""The distribution incorporates the canonical shared runtime."""
 
 import sys
 from pathlib import Path

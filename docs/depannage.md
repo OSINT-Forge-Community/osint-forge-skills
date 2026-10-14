@@ -76,12 +76,19 @@ operator control, rather than resetting state.
 | `INVALID_TIMELINE_INPUT` / `INVALID_TIMELINE_ROWS` | Review UTF-8 encoding and JSON, JSONL or CSV structures in [data formats](formats.md) |
 | `SQLITE_REQUIRED` / `UNSUPPORTED_BROWSER_SCHEMA` | Supply a supported history snapshot; no fallback parser is installed |
 | `SQLITE_ANALYSIS_FAILED` | Examine the copy/backup with an authorized local tool; do not disable bounds |
+| `BROWSER_FIELD_TOO_LARGE` | URL exceeds 16 KiB or title exceeds 8 KiB of UTF-8; request a bounded derived export and preserve the original |
+| `INVALID_BROWSER_ROW` / `INVALID_BROWSER_REFERENCE` | Snapshot has unexpected field types or missing/ambiguous visit references; verify its schema and acquisition |
+| `INVALID_BATCH_SIZE` | Select 1-5,000 explicit sources for `add-many`; respect remaining case and journal capacity |
 | `FILE_TOO_LARGE` / `CASE_TOO_LARGE` / `STRUCTURED_INPUT_TOO_LARGE` | Choose a bounded export consistent with scope and document omissions |
 | `TOO_MANY_RECORDS` / `TOO_MANY_EVENTS` / `ANALYSIS_OUTPUT_TOO_LARGE` | Narrow analysis scope, preserve raw evidence and state coverage |
 
 `timezone_unknown`, an unknown format, `snapshot_completeness: unverified` or
 `truncated: true` is a result to preserve. Do not turn it into certainty or
 complete success by manually editing outputs.
+
+`SQLITE_ANALYSIS_FAILED` also covers values or rows exceeding the 32 KiB
+SQLite limit. A failed `add-many` can leave a successfully registered prefix:
+run `verify`, inspect IDs, then resume only unregistered selections.
 
 ## Sharing and restoration
 

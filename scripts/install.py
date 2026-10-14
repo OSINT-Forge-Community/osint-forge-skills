@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Optional offline standalone installation; native plugins are documented separately."""
 
 from __future__ import annotations
 
@@ -58,7 +57,6 @@ def install(target: str | Path, client: str, scope: str, selected: list[str] | N
             "skills": skills, "files": [{"path": name, "sha256": digest(data)}
                                         for name, data in sorted(files.items())]}))
     except BaseException:
-        # Roll back only unchanged files written by this invocation.
         for path, expected in reversed(created):
             if path.exists() and not path.is_symlink() and digest(read_bytes(path)) == expected:
                 path.unlink()
@@ -91,7 +89,6 @@ def uninstall(target: str | Path, client: str, scope: str, dry_run: bool = False
         require(digest(read_bytes(path)) == row.get("sha256"), "INSTALLED_FILE_MODIFIED")
     if dry_run:
         return {"status": "dry_run", "file_count": len(names), "changed_files": 0}
-    # Check every file before deleting any. Unknown additional files are preserved.
     parents = set()
     for name in names:
         path = safe_path(base / name)
@@ -106,7 +103,7 @@ def uninstall(target: str | Path, client: str, scope: str, dry_run: bool = False
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Optional offline standalone installation; native plugins are documented separately.')
     parser.add_argument("action", choices=("install", "uninstall"))
     parser.add_argument("--client", choices=("claude", "codex", "opencode", "gemini"), required=True)
     parser.add_argument("--target", required=True, help="Explicit existing project or user home directory")

@@ -1,5 +1,3 @@
-"""Preserve original timestamps. Never invent a missing timezone."""
-
 from datetime import datetime, timedelta, timezone
 
 
@@ -9,13 +7,15 @@ def timestamp(value: object) -> dict:
         return {"original_timestamp": original, "utc": None, "time_status": "missing"}
     try:
         parsed = datetime.fromisoformat(original.replace("Z", "+00:00"))
+        if parsed.tzinfo is not None:
+            parsed = parsed.astimezone(timezone.utc)
     except (ValueError, OverflowError):
         return {"original_timestamp": original, "utc": None, "time_status": "invalid"}
     if parsed.tzinfo is None:
         return {"original_timestamp": original, "utc": None,
                 "time_status": "timezone_unknown"}
     return {"original_timestamp": original,
-            "utc": parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "utc": parsed.isoformat().replace("+00:00", "Z"),
             "time_status": "normalized"}
 
 

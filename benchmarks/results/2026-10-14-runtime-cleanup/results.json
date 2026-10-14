@@ -1,0 +1,369 @@
+{
+  "benchmark_version": "1.1",
+  "counts": {
+    "failed": 0,
+    "harness_error": 0,
+    "not_run": 0,
+    "passed": 12
+  },
+  "executed_at_utc": "2026-10-14T13:07:53.722202+00:00",
+  "fixture_storage": "system_temporary_directory",
+  "machine": "x86_64",
+  "model_trials": "not_run",
+  "network_policy": "Python socket audit events forbidden in runner and worker",
+  "performance": [
+    {
+      "events": 100,
+      "fixture_sha256": "11278eb5e3945e32ec7b9fa74c086569c2e8c1ba6bb48fbc7ebdbf9eae416902",
+      "input_bytes": 8893,
+      "max": 2.99585,
+      "median": 2.568756,
+      "min": 2.01917,
+      "samples": [
+        2.99585,
+        2.568756,
+        2.01917
+      ],
+      "unit": "ms",
+      "warmup_runs": 1,
+      "workload": "timeline"
+    },
+    {
+      "events": 1000,
+      "fixture_sha256": "e4006929fafa83a9cee563f1eb1094665c5db4729f9e95d648c2a508646102e6",
+      "input_bytes": 89893,
+      "max": 4.388662,
+      "median": 3.812821,
+      "min": 3.312321,
+      "samples": [
+        4.388662,
+        3.812821,
+        3.312321
+      ],
+      "unit": "ms",
+      "warmup_runs": 1,
+      "workload": "timeline"
+    },
+    {
+      "events": 5000,
+      "fixture_sha256": "f1539565c2eec7f28e2c92658f0245705ad355f4c07793839395ddf79864fe37",
+      "input_bytes": 453893,
+      "max": 12.980128,
+      "median": 12.703471,
+      "min": 12.69125,
+      "samples": [
+        12.980128,
+        12.703471,
+        12.69125
+      ],
+      "unit": "ms",
+      "warmup_runs": 1,
+      "workload": "timeline"
+    },
+    {
+      "elapsed_ms": 100.978032,
+      "evidence_files": 10,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 368640,
+      "raw_reads": 45,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 4.5,
+      "samples_count": 1,
+      "verify": {
+        "max": 2.2767,
+        "median": 1.847084,
+        "min": 1.751504,
+        "samples": [
+          2.2767,
+          1.847084,
+          1.751504
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "sequential_intake"
+    },
+    {
+      "elapsed_ms": 881.136605,
+      "evidence_files": 50,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 10035200,
+      "raw_reads": 1225,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 24.5,
+      "samples_count": 1,
+      "verify": {
+        "max": 10.2612,
+        "median": 10.143606,
+        "min": 9.645815,
+        "samples": [
+          10.143606,
+          9.645815,
+          10.2612
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "sequential_intake"
+    },
+    {
+      "elapsed_ms": 1840.981247,
+      "evidence_files": 100,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 40550400,
+      "raw_reads": 4950,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 49.5,
+      "samples_count": 1,
+      "verify": {
+        "max": 15.510842,
+        "median": 14.862168,
+        "min": 14.555252,
+        "samples": [
+          14.555252,
+          15.510842,
+          14.862168
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "sequential_intake"
+    },
+    {
+      "elapsed_ms": 75.84459,
+      "evidence_files": 10,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 81920,
+      "raw_reads": 10,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 1.0,
+      "samples_count": 1,
+      "verify": {
+        "max": 1.876051,
+        "median": 1.840345,
+        "min": 1.695405,
+        "samples": [
+          1.876051,
+          1.695405,
+          1.840345
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "batch_intake"
+    },
+    {
+      "elapsed_ms": 436.30982,
+      "evidence_files": 50,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 409600,
+      "raw_reads": 50,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 1.0,
+      "samples_count": 1,
+      "verify": {
+        "max": 7.154321,
+        "median": 7.055293,
+        "min": 6.489082,
+        "samples": [
+          7.154321,
+          6.489082,
+          7.055293
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "batch_intake"
+    },
+    {
+      "elapsed_ms": 1056.028265,
+      "evidence_files": 100,
+      "file_bytes": 8192,
+      "fixture_sha256": "a83013bbf7ed4a10bd33305e625cdac3943dcd98f0766d77a370f249be31e8f9",
+      "raw_bytes_read": 819200,
+      "raw_reads": 100,
+      "read_instrumentation": true,
+      "rehash_bytes_per_final_case_byte": 1.0,
+      "samples_count": 1,
+      "verify": {
+        "max": 16.520157,
+        "median": 15.16372,
+        "min": 14.376804,
+        "samples": [
+          15.16372,
+          14.376804,
+          16.520157
+        ],
+        "unit": "ms",
+        "warmup_runs": 1
+      },
+      "workload": "batch_intake"
+    }
+  ],
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "probes": [
+    {
+      "elapsed_ms": 26.76093,
+      "id": "T01",
+      "invariant": "Mixed fractional timestamps stay chronological",
+      "observed": {
+        "actual_record_order": [
+          0,
+          1
+        ],
+        "expected_record_order": [
+          0,
+          1
+        ]
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 37.489206,
+      "id": "T02",
+      "invariant": "Unrepresentable UTC remains an invalid row",
+      "observed": {
+        "actual_time_states": [
+          "invalid",
+          "normalized"
+        ],
+        "exit_code": 0,
+        "expected": "retain invalid time and ordinary event",
+        "response": {
+          "event_count": 2,
+          "evidence_id": "E000001",
+          "sha256": "43d844920809d76523b2de78cfc02d07c41453a79893d376196897263472ef6c",
+          "status": "written"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 31.60127,
+      "id": "R01",
+      "invariant": "Accepted scope and rationale survive report rendering",
+      "observed": {
+        "expected_tail_markers": 2,
+        "retained_tail_markers": 2,
+        "scope_and_rationale_characters": 4536
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 44.116145,
+      "id": "S01",
+      "invariant": "Known credential masking survives Markdown rendering",
+      "observed": {
+        "public_export_performed": false,
+        "raw_credential_masks": 1,
+        "raw_text_control_masked": true,
+        "rendered_credential_masks": 1,
+        "synthetic_value_retained_in_review_view": false
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 113.342642,
+      "id": "B01",
+      "invariant": "Different full URLs do not become exact URL matches",
+      "observed": {
+        "false_same_url_links": 0,
+        "original_url_length": 2125,
+        "original_urls_different": true
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 686.729085,
+      "id": "B02",
+      "invariant": "Browser analysis handles a bounded memory budget",
+      "observed": {
+        "address_space_limit_mib": 256,
+        "bounded_cli_outcome": true,
+        "exit_code": 2,
+        "input_bytes": 204800,
+        "peak_rss_kib": 30228,
+        "response": {
+          "code": "SQLITE_ANALYSIS_FAILED",
+          "status": "error"
+        },
+        "visits": 2000
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 31.997751,
+      "id": "C01",
+      "invariant": "Missing time and timezone stay unknown",
+      "observed": {
+        "time_states": [
+          "timezone_unknown",
+          "missing"
+        ]
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 31.669335,
+      "id": "C02",
+      "invariant": "Evidence modification is rejected",
+      "observed": {
+        "actual_code": "EVIDENCE_INTEGRITY_MISMATCH",
+        "expected_code": "EVIDENCE_INTEGRITY_MISMATCH"
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 47.447135,
+      "id": "C03",
+      "invariant": "Unresolved contradictions block high confidence",
+      "observed": {
+        "actual_code": "UNRESOLVED_CONTRADICTION",
+        "expected_code": "UNRESOLVED_CONTRADICTION"
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 71.56684,
+      "id": "C04",
+      "invariant": "Private handoff preserves original bytes and records",
+      "observed": {
+        "member_bytes_preserved": true
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 25.498013,
+      "id": "C05",
+      "invariant": "Changed sharing view rejects the previous digest",
+      "observed": {
+        "actual_code": "APPROVAL_DIGEST_MISMATCH",
+        "archive_created": false,
+        "expected_code": "APPROVAL_DIGEST_MISMATCH"
+      },
+      "status": "passed"
+    },
+    {
+      "elapsed_ms": 24.743022,
+      "id": "C06",
+      "invariant": "Oversize files are rejected before intake",
+      "observed": {
+        "actual_code": "FILE_TOO_LARGE",
+        "expected_code": "FILE_TOO_LARGE"
+      },
+      "status": "passed"
+    }
+  ],
+  "python": "3.12.3",
+  "schema_version": 1,
+  "scope": "selected synthetic utility invariants; not a model or general security score",
+  "source_manifest_sha256": "87cab0a812c0f777f6ccfaf9248c0d4ee5312ec417e8fab4804e86f7c33d4306",
+  "sources_unchanged": true,
+  "sqlite": "3.45.1",
+  "tool_version": "0.1.0"
+}

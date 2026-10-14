@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Development entrypoint; packaged skills carry their own runtime."""
 
 from pathlib import Path
 import sys

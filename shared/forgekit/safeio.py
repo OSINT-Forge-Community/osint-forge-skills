@@ -1,5 +1,3 @@
-"""Bounded IO. This constrains our helpers, not the host agent's permissions."""
-
 from __future__ import annotations
 
 import hashlib
@@ -18,7 +16,7 @@ MAX_RECORDS = 5000
 
 
 class ForgeError(Exception):
-    """An error code safe to expose without reflecting evidence or paths."""
+    pass
 
 
 def require(condition: bool, code: str) -> None:
@@ -27,7 +25,6 @@ def require(condition: bool, code: str) -> None:
 
 
 def safe_path(value: str | Path, *, exists: bool = True) -> Path:
-    # Inspect every component before any resolution; never follow a symlink.
     path = Path(os.path.abspath(os.fspath(value)))
     parts = [part.lower() for part in path.parts]
     require(not any(a == "envs" and b == "production"
@@ -100,7 +97,6 @@ def atomic_write(value: str | Path, data: bytes, *, replace: bool = False) -> No
         if replace:
             os.replace(temporary, path)
         else:
-            # Exclusive destination creation works on Windows and Linux.
             out = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL
                           | getattr(os, "O_NOFOLLOW", 0)
                           | getattr(os, "O_BINARY", 0), 0o600)
@@ -154,20 +150,18 @@ def jsonl_bytes(rows: list[dict]) -> bytes:
 
 
 def visible(value: object, limit: int = 4000) -> str:
-    """Neutralize controls, terminal escapes and invisible direction changes."""
     text = str(value)[:limit]
     return "".join(c if c.isprintable() or c in "\n\t"
                    else "\\u%04x" % ord(c) for c in text)
 
 
-def markdown(value: object) -> str:
-    text = visible(value).replace("\n", " ").replace("\t", " ")
+def markdown(value: object, limit: int = 4000) -> str:
+    text = visible(value, limit).replace("\n", " ").replace("\t", " ")
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     return re.sub(r"([\\`*{}_\[\]()#!|])", r"\\\1", text)
 
 
 def zip_directory_guard(data: bytes, maximum: int) -> None:
-    """Reject oversized directory counts before zipfile allocates member objects."""
     location = data.rfind(b"PK\x05\x06", max(0, len(data) - 65557))
     require(location >= 0 and len(data) - location >= 22, "INVALID_ZIP")
     import struct

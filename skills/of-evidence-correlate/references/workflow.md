@@ -1,6 +1,6 @@
 # Correlate case evidence notes
 
-The helper compares exact UTC strings and URLs. It validates input evidence metadata against the case, but derived files can still be edited to mislead. Reproduce analyses before relying on them.
+The helper compares normalized UTC instants and exact URLs. URLs require `url_exact: true`; regenerate legacy browser outputs whose URLs may have been clipped. Skipped URL fields are counted explicitly. It validates input evidence metadata against the case, but derived files can still be edited to mislead. Reproduce analyses before relying on them.
 
 Matching URLs may arise from public resources, synchronization, automation or copied evidence. Matching times can result from rounding or common settings. Neither proves identity, intent or causation.
 

@@ -10,6 +10,23 @@ The build is offline. In PowerShell use `py -3`; in Linux/WSL use `python3` when
 `python` is not mapped. Quote paths with spaces. Install into the filesystem
 and user environment used by the target client; Windows and WSL homes differ.
 
+## Build packages from source
+
+At the repository root on Linux/WSL:
+
+```bash
+python3 scripts/package.py
+python3 scripts/package.py --check
+```
+
+On Windows/PowerShell, use `py -3` in place of `python3`. The build creates the
+full plugin, twelve standalone archives and `SHA256SUMS` in `dist/`. The second
+command checks that the generated files match the current sources. Do not
+install the authoring folders in `skills/`: their runtime is added at build time.
+
+An extracted full distribution is already built. Follow the client sections
+below from its root; it does not contain the source build script.
+
 ## Native Claude Code plugin
 
 From the built repository or an extracted full distribution:
@@ -39,7 +56,7 @@ changes client settings and is an operator action. Keep a versioned local copy.
 
 ## Standalone skills: all four clients
 
-Use an existing explicit target. Default scope is project:
+From the source repository, use an existing explicit target. Default scope is project:
 
 ```text
 python scripts/install.py install --client opencode --target /path/to/workspace --dry-run
@@ -52,6 +69,15 @@ python scripts/install.py install --client opencode --target /path/to/workspace
 | Codex | `.agents/skills` | `.agents/skills` |
 | OpenCode | `.opencode/skills` | `.config/opencode/skills` |
 | Gemini | `.gemini/skills` | `.gemini/skills` |
+
+**From an extracted archive:** the source installer is not included. Copy the
+selected complete skill folder from `plugins/osint-forge-skills/skills/` (or
+from a standalone ZIP) into the project-relative destination in the table.
+Create the destination parent if needed and stop if a same-name skill already
+exists; never merge or overwrite an existing installation. Retain all files
+inside the skill folder. Gemini's native command below is another option.
+Manual copies do not create installer receipts; the receipt-based uninstall
+command applies only to installations made with `scripts/install.py`.
 
 For `--scope user`, `--target` must explicitly name your actual user home.
 The installer never changes environment variables, auth, network permissions

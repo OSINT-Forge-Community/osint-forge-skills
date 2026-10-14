@@ -1,0 +1,69 @@
+{
+  "scope": "SkillsBench citation-check task-level pilot; whole-package treatment",
+  "project_base_commit": "9757a5d9796013bcf0f9e296edaa7f2a87b60ae5",
+  "skillsbench_commit": "b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af",
+  "registry_version": "1.1",
+  "task": "citation-check",
+  "task_registry_digest": "sha256:d78c412f8d9f42b282c12fa009f76b0cda6d9da782ade315946dda747b71f252",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "sandbox": "docker",
+  "network": "public per original task",
+  "agent_timeout_seconds": 900,
+  "trial_count": 6,
+  "order_seed": 20261014,
+  "order": [
+    {
+      "pair": 1,
+      "arm": "with-skill"
+    },
+    {
+      "pair": 1,
+      "arm": "no-skill"
+    },
+    {
+      "pair": 2,
+      "arm": "with-skill"
+    },
+    {
+      "pair": 2,
+      "arm": "no-skill"
+    },
+    {
+      "pair": 3,
+      "arm": "no-skill"
+    },
+    {
+      "pair": 3,
+      "arm": "with-skill"
+    }
+  ],
+  "treatment": "frozen generated OSINT Forge package, all 12 skills",
+  "baseline": "no injected skills",
+  "scorer": "unchanged upstream verifier",
+  "benchflow_version": "0.6.3",
+  "adapter": "@agentclientprotocol/codex-acp@2.2.2",
+  "container_codex_cli": "0.162.1",
+  "date": "2026-10-14",
+  "status": "completed",
+  "model_trial_limit": 6,
+  "project_state": "unreleased working snapshot, before comment cleanup; not a released commit",
+  "idle_timeout_seconds": 600,
+  "concurrency": 1,
+  "automatic_retries": 0,
+  "include_task_skills": false,
+  "sandbox_user": "agent",
+  "auth": "maintainer-selected existing ChatGPT subscription; no API fallback",
+  "harness_extension": "../../skillsbench_codex.py",
+  "full_benchmark": false,
+  "leaderboard_submission": false,
+  "selection_rule": "citation-check selected in advance as a source-verification smoke test; no representative sampling",
+  "skill_source_manifest": "skill-source-manifest.json",
+  "python_dependencies": "requirements.txt",
+  "platform": "Linux/WSL, Python 3.12.3, local Docker 29.8.1",
+  "host_workaround": "Native chdir+exec launcher corrected inherited Docker cwd; original task/scorer unchanged",
+  "evaluated_skill_manifest_sha256": "755aa62e3f1bea483629380eb3ea00cc5820c25f3c14b42ad124b26a3c8ff762",
+  "evaluation_dependency_lock_sha256": "23c4812a8d6f495df1f45ce1119d1c494853905e763a8ddf43c6b0e6e1f8b3e8",
+  "public_adapter_sha256": "4c503df7684f9b51820e393290cc9a49a5158e65ba50935cc7ea7664d79afa5a",
+  "public_adapter_difference": "Only the interpreter shebang differs from the executed local adapter."
+}

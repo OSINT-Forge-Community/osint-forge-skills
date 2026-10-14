@@ -84,6 +84,10 @@ the runtime computes no probability score.
 
 ## Timeline input
 
+Chronologies sort by instant, including fractions of a second. Equal instants
+keep source order. Offset conversion beyond years 1-9999 produces an `invalid`
+time while retaining the event and original timestamp.
+
 `timeline` accepts three representations:
 
 - JSON: an object array or an object whose `events` field is an array.
@@ -132,7 +136,11 @@ CLI analyses have an input block:
 This illustration is not a usable digest. The CLI supplies the real value.
 A timeline adds `events`, `event_count`, `uncertain_time_count` and `limitations`.
 Browser analysis also adds `family`, `granularity`, `snapshot_completeness` and
-`truncated`; its events contain `url`, `title` and `timestamp_encoding`.
+`truncated`; its events contain `url`, `url_exact`, `title`, `title_truncated`
+and `timestamp_encoding`. `url` is exact untrusted text, bounded to 16 KiB of
+UTF-8, with `url_exact: true`. Title display is clipped at 1,000 characters;
+`title_truncated` records that loss. Source titles may contain up to 8 KiB.
+SQLite values/rows exceeding 32 KiB and cumulative oversized analyses are rejected.
 
 Chromium encodes visits in microseconds since January 1, 1601 UTC; Firefox
 uses microseconds since January 1, 1970 UTC. Queries cover only supported tables.
@@ -142,6 +150,9 @@ Conversion establishes neither clock accuracy nor history completeness.
 `basis` (`same_utc` or `same_url`), a common value and references to input rows.
 The result is an investigative lead, with no proof of identity, causation or
 independent sources.
+`skipped_unverified_url_count` counts legacy URL fields without `url_exact: true`.
+Regenerate those browser analyses; old clipped values cannot establish equality.
+UTC equality uses normalized instants, including equivalent fractional notation.
 
 ## Case archives
 

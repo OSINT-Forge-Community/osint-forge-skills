@@ -20,6 +20,26 @@ dist/
 /tests/
 /evals/
 /scripts/validate.py
+/benchmarks/*
+!/benchmarks/README.md
+!/benchmarks/runtime.py
+!/benchmarks/skillsbench_codex.py
+!/benchmarks/results/
+/benchmarks/results/*
+!/benchmarks/results/2026-10-14-runtime/
+/benchmarks/results/2026-10-14-runtime/*
+!/benchmarks/results/2026-10-14-runtime/results.json
+!/benchmarks/results/2026-10-14-runtime/source-manifest.json
+!/benchmarks/results/2026-10-14-runtime-cleanup/
+/benchmarks/results/2026-10-14-runtime-cleanup/*
+!/benchmarks/results/2026-10-14-runtime-cleanup/results.json
+!/benchmarks/results/2026-10-14-runtime-cleanup/source-manifest.json
+!/benchmarks/results/2026-10-14-skillsbench/
+/benchmarks/results/2026-10-14-skillsbench/*
+!/benchmarks/results/2026-10-14-skillsbench/results.json
+!/benchmarks/results/2026-10-14-skillsbench/protocol.json
+!/benchmarks/results/2026-10-14-skillsbench/skill-source-manifest.json
+!/benchmarks/results/2026-10-14-skillsbench/requirements.txt
 /.agents/skills/
 /.osint-forge-skills/
 

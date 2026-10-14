@@ -1,8 +1,7 @@
-# OSINT Forge Skills - English documentation
+# OSINT Forge Skills
 
-The complete English documentation is now the main **[README.md](README.md)**,
-including the catalogue, installation, guided investigation and verified limits.
+The English overview is in **[README.md](README.md)**.
 
-This entry point is retained for existing links. The optional French overview
-is available in [README.fr.md](README.fr.md). User guides are in English; start
-with the [documentation index](docs/README.md).
+[Try the demo](README.md#start-in-five-minutes) ·
+[Install](README.md#install-in-your-ai-assistant) ·
+[Documentation](docs/README.md) · [Français](README.fr.md)

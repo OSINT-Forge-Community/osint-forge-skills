@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "scope": "SkillsBench citation-check task-level pilot; whole-package treatment",
+  "protocol": "protocol.json",
+  "arms": {
+    "no-skill": {
+      "planned": 3,
+      "passed": 3,
+      "failed": 0,
+      "infrastructure_error": 0,
+      "not_run": 0,
+      "median_agent_seconds": 240.1,
+      "median_tool_calls": 23,
+      "skill_invocations_reported": 0,
+      "trials_with_explicit_skill_file_reads": 0,
+      "total_reported_tokens": 1592517,
+      "cost_usd": null,
+      "pass_rate": 1.0
+    },
+    "with-skill": {
+      "planned": 3,
+      "passed": 3,
+      "failed": 0,
+      "infrastructure_error": 0,
+      "not_run": 0,
+      "median_agent_seconds": 179.9,
+      "median_tool_calls": 25,
+      "skill_invocations_reported": 0,
+      "trials_with_explicit_skill_file_reads": 0,
+      "total_reported_tokens": 1551271,
+      "cost_usd": null,
+      "pass_rate": 1.0
+    }
+  },
+  "pass_rate_delta_percentage_points": 0.0,
+  "trials": [
+    {
+      "id": "01-pair-1-with-skill-v4",
+      "pair": 1,
+      "arm": "with-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 25,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 20.3,
+        "agent_setup": 4.1,
+        "agent_execution": 150.0,
+        "verifier": 21.3,
+        "total": 307.3
+      },
+      "skill_source": "custom_runtime",
+      "raw_result_sha256": "d135bd831b15585630825b16ead0498de5a1edd50a53888a3bcb199d6695f808",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:00:16.481703",
+      "finished_at": "2026-10-14 15:05:23.754913",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "d0999e1a2da42aa9dcc40723c8c52886e0769bc85c6efee9258845e731858b74",
+      "usage": {
+        "n_input_tokens": 66509,
+        "n_output_tokens": 4227,
+        "n_cache_read_tokens": 423808,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 494544,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    },
+    {
+      "id": "02-pair-1-no-skill",
+      "pair": 1,
+      "arm": "no-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 23,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 6.6,
+        "agent_setup": 4.4,
+        "agent_execution": 240.5,
+        "verifier": 20.2,
+        "total": 333.2
+      },
+      "skill_source": "none",
+      "raw_result_sha256": "8f18417b66a3475e11c0536ef0fda534bb257dc9ddbf29aee4a52372a11adef7",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:06:01.254504",
+      "finished_at": "2026-10-14 15:11:34.474609",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "85c6351e3c23b497014a363e2855f180549d5bb953b8cd2b81afc0d44d6aced2",
+      "usage": {
+        "n_input_tokens": 60931,
+        "n_output_tokens": 4050,
+        "n_cache_read_tokens": 401152,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 466133,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    },
+    {
+      "id": "03-pair-2-with-skill",
+      "pair": 2,
+      "arm": "with-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 31,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 19.7,
+        "agent_setup": 2.3,
+        "agent_execution": 239.8,
+        "verifier": 21.3,
+        "total": 374.4
+      },
+      "skill_source": "custom_runtime",
+      "raw_result_sha256": "cd7f12c6f7a0e3b14b724a4266308d354826d8ea161e167a79e4d6a289404b33",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:11:54.762526",
+      "finished_at": "2026-10-14 15:18:09.188693",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "eb87d16a37247ae8e6a689866cf498a79e292f9bf1f0f7cfa4a7c5979a404168",
+      "usage": {
+        "n_input_tokens": 66211,
+        "n_output_tokens": 4866,
+        "n_cache_read_tokens": 511488,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 582565,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    },
+    {
+      "id": "04-pair-2-no-skill",
+      "pair": 2,
+      "arm": "no-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 27,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 6.2,
+        "agent_setup": 3.1,
+        "agent_execution": 209.9,
+        "verifier": 21.4,
+        "total": 299.1
+      },
+      "skill_source": "none",
+      "raw_result_sha256": "275874173437c1afcbd7238c761cc4d1f0162aace762dc3e5a62fca453e08dab",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:18:29.806008",
+      "finished_at": "2026-10-14 15:23:28.903554",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "ac3a3e8c12429ec8e91099a4a402edb380bb1173c8eb8bc178c361163d066b91",
+      "usage": {
+        "n_input_tokens": 143556,
+        "n_output_tokens": 4303,
+        "n_cache_read_tokens": 369024,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 516883,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    },
+    {
+      "id": "05-pair-3-no-skill",
+      "pair": 3,
+      "arm": "no-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 23,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 5.9,
+        "agent_setup": 2.4,
+        "agent_execution": 240.1,
+        "verifier": 22.6,
+        "total": 334.0
+      },
+      "skill_source": "none",
+      "raw_result_sha256": "4da80c5f3e213efb8dbc572c83527400ecaad73eae9029ae8f3134cd02ffe0cc",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:23:49.395201",
+      "finished_at": "2026-10-14 15:29:23.413894",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "2d0173fd50c8b4e790a680abf5ce57d63ce126a331f48fce4b2804b4927172db",
+      "usage": {
+        "n_input_tokens": 76450,
+        "n_output_tokens": 4027,
+        "n_cache_read_tokens": 529024,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 609501,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    },
+    {
+      "id": "06-pair-3-with-skill",
+      "pair": 3,
+      "arm": "with-skill",
+      "status": "passed",
+      "reward": 1.0,
+      "scorer_checks": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tool_calls": 25,
+      "skill_invocations_reported": 0,
+      "timing_seconds": {
+        "environment_setup": 20.5,
+        "agent_setup": 3.5,
+        "agent_execution": 179.9,
+        "verifier": 21.1,
+        "total": 328.4
+      },
+      "skill_source": "custom_runtime",
+      "raw_result_sha256": "26b2b3318ad27b04f552db02a1ff47900bf14bc93b44f7fcc1e78a01c150566f",
+      "model_observed": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh"
+      },
+      "started_at": "2026-10-14 15:29:44.006658",
+      "finished_at": "2026-10-14 15:35:12.424819",
+      "prompts_sent": 1,
+      "skill_files_explicitly_read_in_successful_tool_titles": [],
+      "trajectory_sha256": "f680461a56a1886c42d993d8d21a54af387215a6fa1f1a570c68c6335a2505df",
+      "usage": {
+        "n_input_tokens": 57040,
+        "n_output_tokens": 3938,
+        "n_cache_read_tokens": 413184,
+        "n_cache_creation_tokens": 0,
+        "total_tokens": 474162,
+        "cost_usd": null,
+        "usage_source": "agent_native_acp",
+        "price_source": null
+      }
+    }
+  ],
+  "preflight": {
+    "task_structure": "passed with BenchFlow 0.6.3; 0.6.9 rejected published environment field",
+    "oracle": {
+      "passed": 1,
+      "checks_passed": 9,
+      "checks_total": 9
+    },
+    "oracle_setup_failures": [
+      {
+        "id": "oracle-01",
+        "status": "infrastructure_error",
+        "reason": "Docker Compose getwd failure"
+      },
+      {
+        "id": "oracle-02",
+        "status": "infrastructure_error",
+        "reason": "persistent staging path alone did not fix inherited cwd"
+      },
+      {
+        "id": "oracle-03",
+        "status": "infrastructure_error",
+        "reason": "shell startup getcwd warning contaminated workspace; raw reward 0 is invalid"
+      }
+    ],
+    "adapter_setup_failures": [
+      {
+        "id": "01-pair-1-with-skill",
+        "adapter": "0.0.45",
+        "status": "model_selection_error",
+        "task_prompts_sent": 0
+      },
+      {
+        "id": "01-pair-1-with-skill-v2",
+        "adapter": "0.0.45",
+        "status": "override_did_not_update_derived_installer_tables",
+        "task_prompts_sent": 0
+      },
+      {
+        "id": "01-pair-1-with-skill-v3",
+        "adapter": "2.2.2",
+        "status": "new_model_option_rejected_legacy_composite_model_id",
+        "task_prompts_sent": 0
+      }
+    ]
+  },
+  "limitations": [
+    "One public task with three repeated sessions per arm; not six independent cases or a full SkillsBench score.",
+    "Whole-package availability differs between arms; this does not isolate instruction-only impact.",
+    "Skill injection is recorded separately from explicit file reads and framework invocation counters; absence of a file read is not proof of absent metadata loading.",
+    "Public task exposure and possible training contamination cannot be ruled out.",
+    "No blinded source-quality or prompt-injection assessment was performed; the upstream verifier checks the task answer.",
+    "Wall time varies with web responses and local execution; timings do not establish a general speedup.",
+    "Tokens are adapter-reported cumulative telemetry, including cache reads; subscription cost is unavailable.",
+    "The evaluated snapshot preceded source comment cleanup; frozen hashes identify it. Current checkout bytes differ.",
+    "Raw trajectories and answers remain local. Published hashes identify artifacts but do not authenticate or independently attest them."
+  ]
+}

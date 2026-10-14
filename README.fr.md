@@ -23,477 +23,185 @@
  <a href="#installer-dans-son-assistant-ia">Installation</a> ·
  <a href="#les-12-skills">Catalogue</a> ·
  <a href="docs/README.md">Documentation</a> ·
- <a href="docs/compatibility.json">Compatibilité</a>
+ <a href="#benchmarks">Benchmarks</a>
 </p>
+
 
 ---
 
-Cette présentation française est conservée pour les lecteurs francophones.
-L’[édition principale](README.md) et les guides utilisateur sont désormais en anglais.
-Les observations de compatibilité ci-dessous sont celles du 13 octobre 2026.
+## Enquêter avec des preuves que l’on peut réexaminer
 
-## Ce que fait ce projet
+**12 skills pour aider les assistants IA à examiner les sources, confronter
+les hypothèses et rédiger des rapports reliés aux pièces.** Pour les analystes,
+enquêteurs, journalistes et chercheurs. Gratuit et open source, sous Apache-2.0.
 
-**OSINT Forge Skills donne aux assistants IA une méthode d'enquête, des outils
-locaux et un format de dossier commun.** Le projet aide à examiner des sources
-publiques autorisées et des artefacts fournis, à tester les explications
-possibles, puis à produire un rapport qui renvoie aux pièces utilisées.
+Une skill associe des instructions spécialisées et des outils locaux. Vous
+choisissez le client IA et le modèle ; les outils Python conservent les fichiers
+sélectionnés dans un dossier portable.
 
-Une skill est un dossier d'instructions spécialisé que le client peut charger
-lorsqu'une demande correspond à son rôle. Un plugin regroupe plusieurs skills
-pour les installer ensemble. Ici, chaque skill exportée inclut aussi les petits
-scripts et les références nécessaires à son fonctionnement.
+```mermaid
+flowchart LR
+    A[Documents et sources] --> B[Analyse et contradictions]
+    B --> C[Rapport référencé]
+```
 
-Le projet s'adresse aux analystes, enquêteurs, journalistes et chercheurs qui
-veulent comprendre **ce qui est observé, ce qui est déduit et ce qui reste
-inconnu**. Les formateurs peuvent utiliser les cas synthétiques pour travailler
-ces distinctions sans manipuler de données réelles.
+**Vos entrées :** documents sélectionnés, captures de sources, journaux ou
+exports d’historique navigateur. **Votre résultat :** un dossier avec les pièces
+conservées, les conclusions justifiées et les inconnues explicites, à relire
+puis à transmettre.
 
-| L'assistant aide à… | Les outils locaux permettent de… |
+## Voir un résultat concret
+
+**Trois articles confirment-ils un événement de façon indépendante ?** Dans
+le cas synthétique Dock 7, les trois reprennent le Harbor Bulletin. L’heure
+exacte de l’événement reste non confirmée.
+
+| Aperçu de rapport · exemple synthétique résumé | Pièces |
 | --- | --- |
-| Cadrer la question et les limites d'une enquête | Créer un dossier et copier les fichiers explicitement sélectionnés |
-| Examiner l'origine et l'indépendance des sources | Regrouper les octets identiques et les origines annotées |
-| Tester des hypothèses et leurs contradictions | Enregistrer des conclusions avec des références stables |
-| Interpréter des exports de journaux ou d'historique | Normaliser les heures explicites et conserver les incertitudes |
-| Rédiger et préparer une transmission | Vérifier, exporter et restaurer le dossier |
+| **Observé :** les trois articles attribuent l’annonce au même bulletin. | `E000001` · `E000002` · `E000003` |
+| **Élément contradictoire à examiner :** une capture indique que le quai est ouvert ; une autre note indique que la fermeture n’a pas encore été observée. | `E000004`, journal d’événements |
+| **Inconnu :** la fermeture a-t-elle commencé à 09 h 00 UTC ? L’heure annoncée n’a pas de fuseau. | `C000002`, non confirmé, confiance faible |
 
-Les scripts fonctionnent **hors ligne**, avec la bibliothèque standard de
-Python. La recherche web éventuelle passe par les capacités déjà disponibles
-dans le client et par le périmètre autorisé par l'utilisateur.
-
-## La signature : preuves et contre-enquête
-
-### Trois articles peuvent reposer sur une seule source
-
-Trois publications reprennent le même bulletin. Leurs adresses et leurs
-formulations diffèrent, mais elles ne constituent pas trois témoignages
-indépendants de l'événement annoncé.
-
-La skill de provenance guide l'examen des attributions et des dates. L'outil
-local regroupe les copies exactes et les labels d'origine fournis par
-l'analyste. **Une différence de domaine ou d'empreinte ne suffit jamais à
-établir l'indépendance.** Les groupes restants conservent un statut inconnu.
-
-### Une conclusion doit aussi rencontrer ses contradictions
-
-Une hypothèse peut être compatible avec une pièce sans être confirmée par elle.
-La contre-enquête examine les autres explications, les observations qui les
-départageraient et les éléments qui fragilisent le raisonnement.
-
-Les conclusions conservent leurs pièces favorables et contradictoires. Une
-assertion non confirmée reste de confiance faible ; une contradiction non
-résolue empêche d'enregistrer une confiance forte dans l'outil.
-
-### Le dossier peut continuer dans une autre CLI
-
-Les pièces utilisent des identifiants comme `E000001`, les conclusions des
-identifiants comme `C000001`. Le format ne dépend pas du texte d'une conversation
-ni d'un fournisseur de modèle. Un autre analyste ou un autre client peut reprendre
-le dossier, contrôler ses octets et relire ses limites.
-
-La reproductibilité concerne les pièces enregistrées, les calculs et les
-exports. Les réponses de deux modèles peuvent différer : cette différence doit
-être examinée, pas masquée par une promesse de réponses identiques.
-
-La valeur recherchée est une méthode portable qui conserve les pièces, les
-hypothèses alternatives et les limites du raisonnement, avec des exemples
-synthétiques pour découvrir le parcours.
+La démo enregistre explicitement ces conclusions et groupes d’origine ; elle
+ne demande pas à un modèle de les découvrir. Des domaines ou des empreintes
+différents ne prouvent pas l’indépendance des sources.
+[Explorer le corpus](examples/PROVENANCE.md).
 
 ## Démarrer en cinq minutes
 
-### 1. Préparer le projet
+Depuis la **racine du dépôt source**, avec **Python 3.11+**, lancez la démo
+synthétique. Aucun compte, clé API ou paquet Python supplémentaire n’est requis.
 
-Ouvrir un terminal à la racine du dépôt. **Python 3.11 ou supérieur** suffit pour
-les outils ; aucun paquet Python, compte de fournisseur ou clé API n'est requis.
-Le client IA choisi doit être installé séparément si des skills sont utilisées
-avec un modèle.
-
-Sous Windows / PowerShell :
-
-```powershell
-py -3 scripts/package.py
-py -3 scripts/package.py --check
-```
-
-Sous Linux / WSL :
-
-```bash
-python3 scripts/package.py
-python3 scripts/package.py --check
-```
-
-La première commande construit le plugin complet, les 12 archives autonomes et
-leurs empreintes dans `dist/`. La seconde vérifie les fichiers générés.
-
-### 2. Essayer une enquête synthétique sans modèle
-
-Sous PowerShell :
-
-```powershell
-New-Item -ItemType Directory -Force .\cases | Out-Null
-py -3 scripts/demo.py --out .\cases\demo
-```
-
-Sous Linux / WSL :
+**Linux / WSL**
 
 ```bash
 mkdir -p cases
 python3 scripts/demo.py --out cases/demo
 ```
 
-Le sous-dossier `demo` doit être **nouveau**. Pour recommencer, choisir un autre
-nom ; le script refuse de remplacer un dossier existant.
+**Windows / PowerShell**
 
-La démonstration crée uniquement des fichiers synthétiques originaux : trois
-articles attribués au même bulletin, des événements dont certaines heures sont
-incertaines, un historique de navigation et un document contenant des instructions
-hostiles. Elle produit des rapports, vérifie un export privé et restaure le dossier.
+```powershell
+New-Item -ItemType Directory -Force .\cases | Out-Null
+py -3 scripts/demo.py --out .\cases\demo
+```
 
-Elle ne lance aucune recherche réseau ni aucun modèle. Les attributions connues
-du corpus sont annotées par le générateur : ce résultat ne démontre pas une
-détection sémantique automatique des origines.
+Choisissez un dossier de sortie **neuf** à chaque exécution. Ouvrez
+`cases/demo/case/reports/report.fr.md` : la démo enregistre **7 pièces,
+2 conclusions et 2 horodatages incertains**, puis vérifie un export privé et
+restaure le dossier. Elle n’utilise ni réseau ni modèle. Les libellés du rapport
+sont français ; le texte des pièces et conclusions synthétiques reste anglais.
 
-| Résultat de la démonstration | Signification |
-| --- | --- |
-| 7 pièces enregistrées | Les copies sont identifiées et contrôlables |
-| 2 conclusions | Une observation sourcée et une assertion non confirmée |
-| 2 horodatages incertains | Le fuseau absent et l'heure manquante restent visibles |
-| Export privé restauré | Les pièces et références sont conservées |
-| Vue publique à revoir | Le masquage automatique ne vaut pas approbation |
-
-Les rapports se trouvent dans `cases/demo/case/reports/`. Les cas sont ignorés
-par Git. La [provenance du corpus](examples/PROVENANCE.md) décrit ce qui est
-synthétique et ce qui n'a pas été fourni.
+[Suivre le guide pas à pas](docs/demarrage.md) ·
+[Vous utilisez une archive extraite ?](docs/demarrage.md#choose-the-right-environment)
 
 ## Installer dans son assistant IA
 
-Construire les paquets avec `scripts/package.py` avant l'installation. Les
-dossiers sous `skills/` servent à l'écriture ; les paquets générés contiennent
-le runtime et les références communs incorporés à chaque skill.
+Construisez les paquets depuis le dépôt source avec
+`python3 scripts/package.py` (`py -3 scripts/package.py` sous Windows).
+Choisissez ensuite votre client :
 
-### Claude Code : plugin natif
-
-Depuis la racine du dépôt construit :
-
-```text
-claude plugin marketplace add .
-claude plugin install osint-forge-skills@osint-forge --scope local
-```
-
-Puis, dans une session :
-
-```text
-/osint-forge-skills:of-case-start
-```
-
-La portée `local` cible le projet courant. Une installation utilisateur est
-un choix distinct si les skills doivent être disponibles dans tous les projets.
-Les commandes d'installation modifient la configuration locale de Claude ;
-elles ne sont jamais exécutées par les scripts de génération.
-
-### Codex : plugin natif
-
-```text
-codex plugin marketplace add .
-codex plugin add osint-forge-skills@osint-forge
-```
-
-La version locale observée, `0.162.1`, expose ces commandes. Sélectionner ensuite
-la skill dans le client ou la demander explicitement, par exemple
-`$of-hypothesis-audit`. Un redémarrage de session peut être nécessaire.
-
-Le catalogue est local : aucun compte de forge ou service d'hébergement n'est
-requis pour cette installation. La découverte et l'invocation réelles des
-skills dans les clients restent à évaluer, comme indiqué plus bas.
-
-### OpenCode et Gemini CLI : skills autonomes
-
-L'installateur fournit une copie complète dans le répertoire reconnu par le
-client. Il demande un **dossier cible existant**, propose un aperçu et refuse
-les collisions.
-
-Exemple PowerShell avec un espace de test local :
-
-```powershell
-New-Item -ItemType Directory -Force .\cases\client-lab | Out-Null
-py -3 scripts/install.py install --client opencode --target .\cases\client-lab --dry-run
-py -3 scripts/install.py install --client opencode --target .\cases\client-lab
-```
-
-Pour Gemini, remplacer `opencode` par `gemini`. Sous Linux/WSL, utiliser
-`python3` et des chemins comme `cases/client-lab`.
-
-| Client | Destination relative au projet cible |
+| Client | Guide d’installation |
 | --- | --- |
-| Claude, en alternative au plugin | `.claude/skills` |
-| Codex, en alternative au plugin | `.agents/skills` |
-| OpenCode | `.opencode/skills` |
-| Gemini CLI | `.gemini/skills` |
+| Claude Code | [Plugin natif](docs/installation.md#native-claude-code-plugin) |
+| Codex | [Plugin natif](docs/installation.md#native-codex-plugin) |
+| OpenCode | [Skills autonomes](docs/installation.md#standalone-skills-all-four-clients) |
+| Gemini CLI | [Skills autonomes ou installation native](docs/installation.md#standalone-skills-all-four-clients) |
 
-Ajouter `--skill of-source-provenance` pour installer une seule skill. Son paquet
-reste autonome. Pour une portée utilisateur, `--scope user` exige de désigner
-explicitement le bon dossier personnel ; le chemin OpenCode devient alors
-`.config/opencode/skills`.
+Installez les paquets générés dans `dist/`, qui contiennent le runtime requis.
+Choisissez une seule méthode par client et portée d’installation. La découverte
+réelle et le comportement des modèles restent à tester ; voir
+[l’état des validations](#ce-qui-est-vérifié-aujourdhui).
 
-Gemini dispose aussi de sa propre commande d'installation d'un dossier généré :
+Après installation, exemple de demande :
 
-```text
-gemini skills install ./dist/plugins/osint-forge-skills/skills/of-case-start --scope workspace
-```
-
-Choisir **une méthode par client et par portée** pour éviter les doublons entre
-plugin et copies autonomes. Windows et WSL utilisent des environnements
-utilisateur différents : installer là où la CLI sera exécutée.
-
-### Retirer une installation autonome
-
-```text
-python scripts/install.py uninstall --client opencode --target /chemin/du/projet --dry-run
-python scripts/install.py uninstall --client opencode --target /chemin/du/projet
-```
-
-L'outil contrôle les empreintes de tous les fichiers enregistrés avant la
-suppression. Une modification bloque l'opération pour permettre sa conservation.
-Les fichiers supplémentaires ajoutés par l'utilisateur restent en place. Pour
-les plugins natifs, utiliser la commande de désinstallation du client.
-
-Le [guide d'installation](docs/installation.md) détaille les portées, les
-archives téléchargées et les références officielles de chaque client.
+> Utilise `of-case-start` sur ces documents fournis, sans requête réseau.
+> Vérifie si les articles apportent une confirmation indépendante, examine
+> les contradictions et prépare un rapport référencé. Garde les inconnues explicites.
 
 ## Les 12 skills
 
-| Skill | Quand l'utiliser | Livrable attendu |
-| --- | --- | --- |
-| [`of-case-start`](skills/of-case-start/SKILL.md) | Commencer ou cadrer une enquête autorisée | Périmètre, dossier privé, inventaire et gaps |
-| [`of-source-provenance`](skills/of-source-provenance/SKILL.md) | Examiner des publications et leur origine | Attributions, reprises et indépendance inconnue ou documentée |
-| [`of-hypothesis-audit`](skills/of-hypothesis-audit/SKILL.md) | Réexaminer une conclusion ou des explications concurrentes | Matrice de support, contradictions et observations discriminantes |
-| [`of-domain-infrastructure`](skills/of-domain-infrastructure/SKILL.md) | Interpréter des captures DNS/RDAP autorisées | Inventaire daté et limites d'attribution |
-| [`of-geolocation`](skills/of-geolocation/SKILL.md) | Vérifier un lieu public à partir d'indices autorisés | Lieux candidats et précision justifiée |
-| [`of-media-forensics`](skills/of-media-forensics/SKILL.md) | Examiner le contexte et les métadonnées fournies | Observations, transformations possibles et limites d'authenticité |
-| [`of-document-triage`](skills/of-document-triage/SKILL.md) | Trier des fichiers, archives ou courriels exportés | Signatures, en-têtes et formats non analysés |
-| [`of-browser-artifacts`](skills/of-browser-artifacts/SKILL.md) | Analyser une copie autorisée d'historique | Visites référencées et complétude non établie |
-| [`of-log-timeline`](skills/of-log-timeline/SKILL.md) | Construire une chronologie de journaux structurés | Heures originales, UTC justifié et incertitudes |
-| [`of-evidence-correlate`](skills/of-evidence-correlate/SKILL.md) | Comparer des événements et leurs liens possibles | Correspondances candidates et limites d'interprétation |
-| [`of-investigation-report`](skills/of-investigation-report/SKILL.md) | Rédiger ou transmettre les résultats | Rapport privé référencé aux pièces |
-| [`of-case-export`](skills/of-case-export/SKILL.md) | Reprendre un dossier ou préparer son partage | Archive vérifiée ou vue publique approuvée |
+Choisissez une étape, puis la skill adaptée à votre question.
 
-Les skills peuvent être invoquées explicitement ou découvertes par un client
-compatible lorsque la demande correspond à leur description. Elles ne supposent
-pas qu'un modèle sait exécuter un outil absent.
+### Cadrer
 
-## À quoi ressemble une enquête ?
+- [Ouvrir un dossier](skills/of-case-start/SKILL.md) : question, périmètre et inventaire des pièces
 
-```mermaid
-flowchart LR
-   A[Question et périmètre] --> B[Pièces sélectionnées]
-   B --> C[Provenance et chronologie]
-   C --> D[Hypothèses et contradictions]
-   D --> E[Rapport référencé]
-   E --> F[Revue du partage]
-   F --> G[Export et reprise]
-```
+### Vérifier les sources
 
-Le modèle conduit le raisonnement. Les scripts enregistrent et contrôlent les
-artefacts. La décision de partager un contenu reste liée à une vue précisément
-revue, distincte du dossier privé.
+- [Provenance](skills/of-source-provenance/SKILL.md) : origines et reprises
+- [Infrastructure de domaine](skills/of-domain-infrastructure/SKILL.md) : captures DNS/RDAP
+- [Géolocalisation](skills/of-geolocation/SKILL.md) : lieux candidats
 
-### Exemple de demande à l'assistant
+### Examiner les fichiers
 
-> Utilise `of-case-start` sur ces exports autorisés. L'enquête porte uniquement
-> sur les documents fournis, sans requête réseau. Vérifie ensuite si les trois
-> articles apportent des confirmations indépendantes, examine les contradictions
-> et prépare un rapport en français. Conserve les éléments inconnus.
+- [Triage documentaire](skills/of-document-triage/SKILL.md) : fichiers, archives et courriels
+- [Analyse des médias](skills/of-media-forensics/SKILL.md) : contexte et métadonnées fournies
+- [Traces navigateur](skills/of-browser-artifacts/SKILL.md) : copies d’historiques pris en charge
 
-### Exemple d'utilisation directe des outils
+### Confronter les explications
 
-Depuis le dépôt, avec un dossier `cases/` existant et un nom d'enquête nouveau :
+- [Chronologie](skills/of-log-timeline/SKILL.md) : dates et incertitudes
+- [Corrélation](skills/of-evidence-correlate/SKILL.md) : liens candidats
+- [Audit d’hypothèses](skills/of-hypothesis-audit/SKILL.md) : alternatives et contradictions
 
-```bash
-python3 scripts/forge.py init --case cases/enquete --title "Vérification des publications" --scope "Documents synthétiques fournis, sans réseau"
-python3 scripts/forge.py add --case cases/enquete --source examples/inputs/article-a.json
-python3 scripts/forge.py verify --case cases/enquete
-python3 scripts/forge.py claim --case cases/enquete --text "L'article attribue l'annonce au Harbor Bulletin." --state observed --confidence medium --support E000001 --rationale "L'attribution figure dans la pièce ; elle ne prouve pas que l'événement annoncé a eu lieu."
-python3 scripts/forge.py report --case cases/enquete --lang fr
-```
+### Transmettre
 
-Sous PowerShell, utiliser `py -3` à la place de `python3`. Ces commandes n'appellent
-aucun modèle. Elles permettent aussi de contrôler les actions que l'assistant
-affirme avoir réalisées.
+- [Rapport d’enquête](skills/of-investigation-report/SKILL.md) : conclusions référencées
+- [Export du dossier](skills/of-case-export/SKILL.md) : partage relu ou restauration privée
 
-## Le format d'un dossier
+## Ce qui est vérifié aujourd’hui
 
-```text
-case/
-├── case.json           Question, périmètre, version et création
-├── evidence.jsonl      Pièces E000001, provenance, taille et SHA-256
-├── claims.jsonl        Conclusions C000001, support et contradictions
-├── raw/                Copies privées des pièces sélectionnées
-├── analysis/           Analyses et chronologies dérivées
-├── reports/            Rapports privés
-└── exports/            Archives et vues de partage
-```
+Version **0.1.0**, contrôles locaux consignés le **14 octobre 2026** :
 
-Les fichiers sources restent en dehors du dossier. L'outil les copie lors de
-l'enregistrement et ouvre les pièces en lecture seule pour les analyses. Les
-sorties vont dans des espaces distincts ; elles ne remplacent pas les originaux.
-
-| État d'une conclusion | Sens |
+| Vérifié localement sous Linux/WSL | Reste à évaluer |
 | --- | --- |
-| `observed` | Une observation doit être directement soutenue par une pièce |
-| `inferred` | Une déduction possède du support et une justification explicite |
-| `unconfirmed` | Un point non établi conserve une confiance faible |
+| 81 tests automatisés réussis | Découverte et invocation réelles dans les quatre clients |
+| 12 runtimes autonomes et 4 adaptateurs d’installation contrôlés | Qualité d’enquête des modèles et résistance aux injections de prompt |
+| Export et restauration de la démo synthétique vérifiés | Exécution native Windows et macOS |
 
-Chaque conclusion peut référencer des pièces favorables **et** contradictoires.
-Le contrôle vérifie la présence et la validité structurelle des références. Il
-ne prouve pas qu'une pièce soutient réellement l'affirmation : l'analyse du sens
-et la revue des hypothèses restent nécessaires.
+Les observations des manifestes clients sont datées du 13 octobre dans le
+[registre de compatibilité](docs/compatibility.json). Les contrôles de paquets
+n’établissent ni l’invocation dans un client ni la performance d’un modèle.
 
-Le [contrat de dossier v1](shared/case-contract.md) décrit les commandes, les
-limites, le comportement des erreurs et les conditions de reprise.
+<a id="benchmarks"></a>
 
-## Partager et reprendre un dossier
+**Benchmarks :** 12/12 contrôles des outils hors ligne réussis lors de la mesure
+consignée du 14 octobre. [Mesures, résultats bruts et reproduction](benchmarks/README.md).
+**Pilote SkillsBench :** Codex réussit `citation-check` **3/3 avec le paquet et
+3/3 sans lui**. Aucune lecture explicite de skill n’a été observée ; ce résultat
+ne démontre donc pas leur apport. [Protocole, résultats et limites](benchmarks/README.md#skillsbench-pilot).
 
-### Transmission privée
+## Limites essentielles
 
-```bash
-python3 scripts/forge.py export --case cases/enquete --mode private --out cases/enquete/exports/private.zip
-python3 scripts/forge.py verify-export --archive cases/enquete/exports/private.zip
-python3 scripts/forge.py restore --archive cases/enquete/exports/private.zip --case cases/enquete-reprise
-```
+- **Outils locaux, modèle choisi séparément.** Les helpers Python fonctionnent
+  hors ligne. Un assistant distant peut transmettre ce qu’il lit ; appliquez
+  sa politique de données.
+- **La conservation demande une interprétation.** Les empreintes vérifient les
+  octets, pas l’authenticité. Les corrélations sont des pistes ; les heures
+  manquantes et historiques incomplets restent des lacunes.
+- **Analyse bornée.** Exports pris en charge uniquement ; 64 Mio par fichier,
+  256 Mio de pièces brutes par dossier, 4 Mio d’entrées structurées et
+  5 000 événements. [Formats et limites détaillées](docs/cli.md#capabilities-and-limits).
+- **Relecture avant partage.** Gardez les dossiers réels hors de ce dépôt.
+  Les exports privés contiennent les pièces ; les vues publiques demandent
+  une relecture et l’approbation de leurs octets exacts. Le masquage automatique
+  ne garantit pas l’anonymisation.
 
-L'archive privée contient les pièces originales et les références. Elle doit
-rester confidentielle. La restauration exige un dossier nouveau, vérifie les
-membres et contrôle de nouveau le dossier obtenu.
+[Modèle de sécurité](SECURITY.md) ·
+[Partage et restauration](docs/cli.md#export-verification-and-restoration)
 
-### Partage public
+## Pour aller plus loin
 
-Préparer une vue expurgée, la revoir, puis autoriser ses octets exacts :
+[Documentation](docs/README.md) · [Commandes](docs/cli.md) ·
+[Format des dossiers](docs/formats.md) · [Dépannage](docs/depannage.md)
 
-1. `prepare-share` masque certains éléments évidents et retourne
-  `review_required` avec l'empreinte de la vue.
-2. La revue humaine examine le contexte restant : noms, lieux, identifiants,
-  informations sensibles et droits de redistribution.
-3. `export --mode public` exige la vue et son `--approved-sha256`. Une modification
-  après approbation produit une empreinte différente et bloque l'export.
+Les guides sont en anglais et inclus dans le plugin complet. Les dossiers
+suivent un [contrat versionné](shared/case-contract.md), permettant à un autre
+analyste ou client de les reprendre indépendamment d’une conversation.
 
-Le masquage ne garantit pas l'anonymisation. Le digest fourni est une assertion
-de l'opérateur, pas une signature authentifiant l'approbation humaine. L'export
-public contient uniquement la vue revue et ses métadonnées ; aucune commande
-d'export ne publie ou n'envoie le contenu à un service.
+**[Apache-2.0](LICENSE)** · [NOTICE](NOTICE) ·
+[Identité visuelle et provenance des éléments graphiques](docs/branding/README.md)
 
-## Ce qui est vérifié aujourd'hui
-
-État de la version `0.1.0`, contrôles locaux du 13 octobre 2026 :
-
-| Vérification | Résultat | Portée réelle |
-| --- | --- | --- |
-| Structure des skills | 12/12 valides | Métadonnées, références et ressources générées |
-| Tests déterministes | 67 réussis | Comportements des outils, installateurs et exclusions des paquets |
-| Runtimes autonomes | 12/12 exécutés avec `doctor` | Absence de dépendance au dépôt source pour cette commande |
-| Installations autonomes | 4 adaptateurs testés | Copie, collisions, reçus et retrait dans des dossiers synthétiques |
-| Manifestes Claude | Valides avec Claude Code 2.1.220 | Validation native du plugin et du catalogue |
-| Reprise de la démonstration | Vérifiée | Octets et références conservés dans le dossier restauré |
-| Découverte et invocation dans les CLI | Non exécutées | Les adaptateurs ne constituent pas cette preuve |
-| Comportement des modèles | Non évalué | Aucun taux de réussite ni résistance générale annoncés |
-| Windows natif et macOS | Non exécutés | Les contrôles actuels ont été réalisés sous Linux/WSL |
-
-Le [registre de compatibilité](docs/compatibility.json) conserve ces distinctions.
-Un résultat annoncé par le modèle doit être confronté aux commandes et artefacts
-réellement observés. Le contrôle d'un paquet ou d'un fichier hostile par le helper
-ne démontre pas le comportement d'un assistant face à une injection de prompt.
-
-## Limites utiles à connaître
-
-| Les outils fournis savent faire | Une autre acquisition ou un export reste nécessaire pour… |
-| --- | --- |
-| Empreintes, copies et références | Établir l'authenticité ou une chaîne de conservation judiciaire |
-| JSON, JSONL et CSV `timestamp` / `event` | Journaux arbitraires, EVTX binaire et formats propriétaires |
-| Historiques SQLite Chromium et Firefox pris en charge | Acquisition de profils vivants, cookies et credentials |
-| Signatures, dimensions PNG et en-têtes de courriel | Extraction EXIF, texte PDF, décodage vidéo et authentification des médias |
-| Liens candidats par UTC ou URL exacts | Attribution d'identité, preuve de causalité ou résolution sémantique automatique |
-
-Les limites de taille sont explicites : **64 Mio par fichier**, **256 Mio de
-pièces par dossier**, **4 Mio pour les données structurées** et **5 000 événements**.
-Les valeurs manquantes ou les parsers absents produisent un gap visible.
-
-Les heures sans décalage explicite restent incertaines. Un historique copié
-sans son journal WAL peut être incomplet ; l'absence du fichier WAL ne prouve
-pas la complétude. Les URL enregistrées ne prouvent ni l'intention ni l'identité
-d'une personne.
-
-## Confidentialité et contrôle local
-
-Les scripts n'exécutent pas les fichiers suspects et ne font aucune requête
-réseau. Ils refusent les liens symboliques et les fichiers spéciaux, utilisent
-des sorties séparées et contrôlent les membres des archives sans extracteur
-externe. Ces protections couvrent **leurs propres opérations** ; les permissions
-du shell, du modèle et des autres outils dépendent de l'environnement hôte.
-
-Un client distant peut transmettre le texte qu'il lit. Un runtime local ne rend
-pas un assistant cloud local ou souverain. Préparer des vues minimisées et
-appliquer la politique de données du client choisi. Les permissions NTFS
-nécessitent un contrôle opérateur distinct des modes POSIX.
-
-Les dossiers réels, tokens, cookies, credentials, données personnelles et contenus
-privés de challenges ne doivent jamais entrer dans ce dépôt public. Le projet
-n'ajoute ni SDK fournisseur, ni télémétrie, ni serveur MCP obligatoire, ni service
-de secours. Le choix de l'hébergement de publication reste indépendant.
-
-Voir [SECURITY.md](SECURITY.md) pour le modèle de sécurité et les limites de
-signalement actuellement prévues.
-
-## Organisation du dépôt
-
-```text
-osint-forge-skills/
-├── skills/             Instructions, notes et métadonnées des 12 skills
-├── shared/             Runtime Python et contrat maintenus une seule fois
-├── scripts/            Génération, installation, utilitaires et démonstration
-├── examples/           Corpus original et sa provenance
-├── docs/               Guides utilisateur et compatibilité
-├── assets/             Bannière, badges locaux et identité visuelle
-├── plugin.json         Identité du plugin portable
-├── .claude-plugin/     Catalogue source pour Claude
-├── .agents/plugins/    Catalogue source pour Codex
-└── dist/               Paquets générés, ignorés par Git
-```
-
-La génération incorpore le runtime et le contrat dans chaque skill autonome.
-Cette duplication est produite automatiquement ; les sources communes restent
-maintenues dans `shared/`. Les archives possèdent des noms versionnés et leurs
-empreintes sont listées dans `dist/SHA256SUMS`.
-
-## Documentation utilisateur
-
-La documentation accompagne l'installation, les analyses et la transmission
-d'un dossier. Elle détaille les commandes, leurs limites et les erreurs possibles.
-
-| Besoin | Guide |
-| --- | --- |
-| Choisir un parcours de lecture | [Index de documentation](docs/README.md) |
-| Installer ou retirer les skills dans un CLI | [Installation](docs/installation.md) |
-| Tester un premier dossier sans compte ni modèle | [Démarrage guidé](docs/demarrage.md) |
-| Retrouver les arguments, résultats et plafonds | [Référence CLI](docs/cli.md) |
-| Comprendre pièces, conclusions et heures | [Formats](docs/formats.md) et [contrat v1](shared/case-contract.md) |
-| Résoudre une erreur ou une interruption | [Dépannage](docs/depannage.md) |
-| Connaître les clients et plateformes vérifiés | [Compatibilité](docs/compatibility.json) |
-
-Les guides utilisateur sont aussi inclus dans le plugin complet. Depuis une
-archive extraite, lancer le runtime d'un skill complet comme expliqué dans le
-guide de démarrage.
-
-## Licence et identité
-
-Les instructions, outils, documents et fixtures originaux sont distribués sous
-**[Apache-2.0](LICENSE)**. Conserver également [NOTICE](NOTICE). Les outils et
-modèles utilisés séparément restent soumis à leurs propres licences et conditions.
-
-La bannière reprend **Silex, le lynx, et Rivet, l'automate**, les deux mascottes
-retenues pour OSINT Forge : l'observation et la construction du raisonnement.
-Elle est une illustration synthétique de présentation, sans valeur de preuve.
-Sa [provenance](docs/branding/README.md) est conservée avec les assets.
-Les badges sont des SVG locaux : aucun service externe de badges ou de polices
-n'est chargé par le dépôt.
-
-Les noms des clients décrivent la compatibilité visée. Ils n'impliquent aucune
-affiliation, approbation par leurs fournisseurs ou certification professionnelle.
+Silex et Rivet sont des mascottes promotionnelles. Les noms des clients indiquent
+la compatibilité visée, sans affiliation ni recommandation d’un fournisseur.

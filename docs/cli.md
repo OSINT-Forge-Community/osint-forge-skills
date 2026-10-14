@@ -37,6 +37,7 @@ immediately after the command; in Bash, read `$?`.
 | --- | --- | --- |
 | `init` | `--case`, `--title`, `--scope` | New case only; title ≤ 300 characters, scope ≤ 8,000 |
 | `add` | `--case`, `--source` | Optional `--url`, `--origin-group`; copies evidence from outside the case |
+| `add-many` | `--case`, repeatable `--source` | Explicit batch; optional shared `--url`, `--origin-group`; 1-5,000 selections within case limits |
 | `claim` | `--case`, `--text`, `--state`, `--rationale` | Repeatable `--support` and `--contradict`; default `--confidence low` |
 
 `init` creates `raw/`, `analysis/`, `reports/`, `exports/`, `case.json`,
@@ -49,6 +50,15 @@ credentials, query parameters or a fragment; the helper **never visits it**.
 An origin label is an analyst annotation, not evidence of independence.
 A known adjacent `-wal` blocks SQLite intake; supply a coherent backup
 produced by the operator.
+
+For many files use `add-many --case CASE --source FIRST --source SECOND`.
+It holds one case lock, verifies all registered bytes before intake and verifies
+the resulting case before success. It reads one source at a time and returns
+the added IDs, hashes and sizes. It does not scan directories. URL and origin
+options apply to the entire batch; split batches when provenance differs.
+Each addition commits separately: a later failure preserves completed additions.
+Run `verify` and inspect the journal before resuming only the remaining files.
+Both commands retain source, WAL, path, size and record-limit protections.
 
 `claim` accepts the following states:
 
@@ -93,11 +103,20 @@ could interpret as formulas.
 `browser` limits queries to recognized schemas and sets `truncated` beyond
 5,000 visits. It collects no live profile, cookies or passwords. A recorded
 URL proves neither identity nor intent.
+SQLite values/rows are capped at 32 KiB before loading; URLs are preserved
+exactly up to 16 KiB and titles accepted up to 8 KiB of UTF-8. Display titles
+are limited to 1,000 characters with an explicit `title_truncated` flag.
+Fields exceeding these bounds or cumulative output exceeding 4 MiB produce
+an error without saving a partial analysis. URLs remain untrusted text;
+render them with escaping and do not execute or automatically open them.
 
 `correlate` expects event outputs from `timeline` or `browser`, including their
 `input` block. It checks that the ID and hash match the journal. These metadata
 remain editable: reproduce analyses before relying on results. Equal times
 or URLs do not prove causation.
+URLs require `url_exact: true`; legacy analyses without the marker are skipped
+and counted in `skipped_unverified_url_count`. Regenerate browser outputs before
+correlating. UTC values are normalized before equality comparison.
 
 ## Reports and sharing views
 
@@ -110,6 +129,9 @@ prepare-share --input FILE --out NEW_FILE
 `reports/report.fr.md`. Headings and labels are localized; claim text is not
 automatically translated. `--replace` replaces only that generated path.
 The report contains filenames, hashes and `raw/` links and is private by default.
+Accepted scope and rationale fields are rendered in full, up to 8,000 characters
+each, with markup escaped. Known credential masking recognizes the renderer's
+escaped `api_key` spelling as well as plain text; manual review still applies.
 
 `prepare-share` reads UTF-8 text, masks some credentials, email addresses and
 IPv4 addresses, removes private report links and recognized SHA-256 values,
@@ -164,6 +186,9 @@ It does not test AI client permissions or a remote model.
 | Total raw case evidence | 256 MiB, or 268,435,456 bytes |
 | Structured JSON/JSONL and analysis output | 4 MiB, or 4,194,304 bytes |
 | Journal rows or analyzed events | 5,000 |
+| Browser SQLite value/row | 32 KiB |
+| Browser URL / accepted title, UTF-8 | 16 KiB / 8 KiB |
+| Browser displayed title | 1,000 characters, with `title_truncated` |
 | Archive entries examined by `triage` | 1,000 |
 | Export members, including manifest | At most 1,024 |
 

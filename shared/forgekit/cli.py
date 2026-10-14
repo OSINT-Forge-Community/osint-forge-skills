@@ -1,5 +1,3 @@
-"""The same utility ships inside each standalone skill package."""
-
 from __future__ import annotations
 
 import argparse
@@ -10,12 +8,13 @@ import sys
 
 from . import VERSION
 from .analysis import browser, save_analysis, timeline, timeline_csv, triage
-from .casefiles import (add_claim, add_evidence, evidence_bytes, initialize,
+from .casefiles import (add_claim, add_evidence, add_many, evidence_bytes, initialize,
                         load_case, provenance, verify)
 from .reporting import (export_case, prepare_share, render_report, restore_case,
                         verify_export)
 from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
                      atomic_write, digest, json_bytes, read_json, require, safe_path)
+from .timestamps import timestamp
 
 
 class Parser(argparse.ArgumentParser):
@@ -36,6 +35,11 @@ def parser() -> argparse.ArgumentParser:
     add.add_argument("--source", required=True)
     add.add_argument("--url", help="HTTPS provenance URL without credentials, query or fragment")
     add.add_argument("--origin-group", help="Analyst label; not an independence assertion")
+    batch = commands.add_parser("add-many", help="Copy explicitly selected files under one case lock")
+    batch.add_argument("--case", required=True)
+    batch.add_argument("--source", action="append", required=True)
+    batch.add_argument("--url", help="Shared HTTPS provenance URL without credentials, query or fragment")
+    batch.add_argument("--origin-group", help="Shared analyst origin label")
     claim = commands.add_parser("claim", help="Record an analyst claim with evidence references")
     claim.add_argument("--case", required=True)
     claim.add_argument("--text", required=True)
@@ -88,6 +92,7 @@ def correlate(case: str, paths: list[str]) -> dict:
     require(2 <= len(paths) <= 20 and len(set(paths)) == len(paths), "INVALID_CORRELATION_INPUTS")
     candidates = {}
     count = 0
+    skipped_urls = 0
     for index, value in enumerate(paths):
         path = safe_path(value)
         require(path.is_relative_to(root / "analysis"), "ANALYSIS_INPUT_REQUIRED")
@@ -105,7 +110,10 @@ def correlate(case: str, paths: list[str]) -> dict:
                     "INVALID_EVENT_REFERENCE")
             count += 1
             require(count <= MAX_RECORDS, "TOO_MANY_EVENTS")
-            for kind, key in (("same_utc", event.get("utc")), ("same_url", event.get("url"))):
+            url = event.get("url") if event.get("url_exact") is True else None
+            skipped_urls += int(bool(event.get("url")) and url is None)
+            moment = timestamp(event.get("utc"))["utc"]
+            for kind, key in (("same_utc", moment), ("same_url", url)):
                 if isinstance(key, str) and key:
                     candidates.setdefault((kind, key), []).append({"input_index": index,
                         "evidence_id": source["evidence_id"], "record_index": event.get("record_index")})
@@ -114,7 +122,9 @@ def correlate(case: str, paths: list[str]) -> dict:
               for (kind, key), records in sorted(candidates.items())
               if len({row["input_index"] for row in records}) > 1]
     return {"candidate_links": groups, "candidate_count": len(groups),
+            "skipped_unverified_url_count": skipped_urls,
             "limitations": ["A shared timestamp or URL does not establish identity, causation or independence.",
+                            "Regenerate legacy browser analyses to correlate exact URLs.",
                             "Derived metadata can be edited; reproduce the analyses before relying on them."]}
 
 
@@ -124,6 +134,8 @@ def dispatch(args) -> dict:
         return initialize(args.case, args.title, args.scope)
     if command == "add":
         return add_evidence(args.case, args.source, source_url=args.url, origin_group=args.origin_group)
+    if command == "add-many":
+        return add_many(args.case, args.source, source_url=args.url, origin_group=args.origin_group)
     if command == "claim":
         return add_claim(args.case, args.text, args.support, args.contradict,
                          args.state, args.confidence, args.rationale)

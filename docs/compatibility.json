@@ -1,13 +1,72 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-13",
+  "as_of": "2026-10-14",
   "skill_version": "0.1.0",
   "evidence_policy": "Record performed checks separately; never infer real model behavior from packaging.",
   "clients": {
-    "claude": {"observed_version": "2.1.220", "distribution": ["native_plugin", "standalone_skills"], "package_structure": "passed", "offline_standalone_installation": "passed_synthetic_workspace", "native_manifest": "passed_cli_2.1.220", "actual_discovery_and_invocation": "not_run", "model_trials": "not_run"},
-    "codex": {"observed_version": "0.162.1", "distribution": ["native_plugin", "standalone_skills"], "package_structure": "passed", "offline_standalone_installation": "passed_synthetic_workspace", "native_manifest": "schema_structure_only", "actual_discovery_and_invocation": "not_run", "model_trials": "not_run"},
-    "opencode": {"observed_version": null, "distribution": ["standalone_skills"], "package_structure": "passed", "offline_standalone_installation": "passed_synthetic_workspace", "actual_discovery_and_invocation": "not_run_client_unavailable", "model_trials": "not_run"},
-    "gemini": {"observed_version": null, "distribution": ["native_skill_install", "standalone_skills"], "package_structure": "passed", "offline_standalone_installation": "passed_synthetic_workspace", "actual_discovery_and_invocation": "not_run_client_unavailable", "model_trials": "not_run"}
+    "claude": {
+      "observed_version": "2.1.220",
+      "distribution": [
+        "native_plugin",
+        "standalone_skills"
+      ],
+      "package_structure": "passed",
+      "offline_standalone_installation": "passed_synthetic_workspace",
+      "native_manifest": "passed_cli_2.1.220",
+      "actual_discovery_and_invocation": "not_run",
+      "model_trials": "not_run"
+    },
+    "codex": {
+      "observed_version": "0.162.1",
+      "distribution": [
+        "native_plugin",
+        "standalone_skills"
+      ],
+      "package_structure": "passed",
+      "offline_standalone_installation": "passed_synthetic_workspace",
+      "native_manifest": "schema_structure_only",
+      "actual_discovery_and_invocation": "not_demonstrated_in_skillsbench_pilot",
+      "model_trials": "completed_citation_check_three_repeats_per_arm",
+      "model_trial_evidence": {
+        "date": "2026-10-14",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh",
+        "codex_cli": "0.162.1",
+        "acp_adapter": "2.2.2",
+        "baseline_passed": 3,
+        "baseline_attempted": 3,
+        "package_passed": 3,
+        "package_attempted": 3,
+        "explicit_skill_reads_observed": 0,
+        "result": "../benchmarks/results/2026-10-14-skillsbench/results.json",
+        "scope": "one public task, no demonstrated skill benefit or all-skill coverage"
+      }
+    },
+    "opencode": {
+      "observed_version": null,
+      "distribution": [
+        "standalone_skills"
+      ],
+      "package_structure": "passed",
+      "offline_standalone_installation": "passed_synthetic_workspace",
+      "actual_discovery_and_invocation": "not_run_client_unavailable",
+      "model_trials": "not_run"
+    },
+    "gemini": {
+      "observed_version": null,
+      "distribution": [
+        "native_skill_install",
+        "standalone_skills"
+      ],
+      "package_structure": "passed",
+      "offline_standalone_installation": "passed_synthetic_workspace",
+      "actual_discovery_and_invocation": "not_run_client_unavailable",
+      "model_trials": "not_run"
+    }
   },
-  "platforms": {"linux_wsl_python_3_12": "passed_local_checks", "windows_native": "not_run", "macos": "not_run"}
+  "platforms": {
+    "linux_wsl_python_3_12": "passed_local_checks",
+    "windows_native": "not_run",
+    "macos": "not_run"
+  }
 }

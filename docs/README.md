@@ -7,15 +7,18 @@ catalogue and overall workflow. English is the primary documentation language.
 
 ## Choose your path
 
-| Need | Guide | Useful next step |
-| --- | --- | --- |
-| Install or remove skills in a client | [Installation](installation.md) | [Observed compatibility](compatibility.json) |
-| Try the tools without an account or model | [Guided quick start](demarrage.md) | [CLI reference](cli.md) |
-| Find arguments, outputs and limits | [Commands](cli.md) | [Troubleshooting](depannage.md) |
-| Understand evidence, claims and timestamps | [Data formats](formats.md) | [Contract v1](../shared/case-contract.md) |
-| Resume a case after an error | [Troubleshooting](depannage.md) | [Export and restoration](cli.md) |
-| Check which clients and platforms were actually verified | [Compatibility](compatibility.json) | [Security limits](../SECURITY.md) |
-| Review asset notices | [Identity and provenance](branding/README.md) | [License](../LICENSE), [NOTICE](../NOTICE) |
+| I want to… | Start here |
+| --- | --- |
+| **Try a first case** without an account or model | [Guided demo](demarrage.md) |
+| **Install the skills** in my assistant | [Choose a client](installation.md) |
+| **Analyze or share evidence** with the local tools | [Commands and limits](cli.md) |
+| **Understand a case** and its references | [Data formats](formats.md) |
+| **Resolve an error** or interrupted operation | [Troubleshooting](depannage.md) |
+| **Review validation evidence** | [Client compatibility](compatibility.json) · [Benchmarks](../benchmarks/README.md) |
+
+For preservation and sharing rules, see the [case contract](../shared/case-contract.md)
+and [security model](../SECURITY.md). Asset notices are in the
+[visual identity guide](branding/README.md).
 
 ## Private cases and the host environment
 
