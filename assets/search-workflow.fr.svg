@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+<title id="title">De la requête aux pièces vérifiables</title>
+<desc id="desc">Le runtime prépare localement. Les outils web du client transmettent les termes au moteur. Les sources sélectionnées sont conservées et examinées dans un dossier local.</desc>
+<rect width="960" height="320" rx="18" fill="#151B24"/>
+<g font-family="Arial, sans-serif">
+<text x="28" y="42" font-size="25" fill="#F5F3ED" font-weight="700">De la requête aux pièces vérifiables</text>
+<rect x="24" y="68" width="288" height="184" rx="12" fill="#202936"/>
+<rect x="24" y="86" width="4" height="148" rx="2" fill="#E7A86E"/>
+<text x="42" y="96" font-size="14" fill="#E7A86E" font-weight="700">01 · LOCAL</text>
+<text x="42" y="134" font-size="27" fill="#F5F3ED" font-weight="700">Préparer</text>
+<text x="42" y="169" font-size="18" fill="#F5F3ED" font-weight="400">dorks / forge_dorks</text>
+<text x="42" y="199" font-size="16" fill="#C7D0DD" font-weight="400">Expression, site, type, dates</text>
+<text x="42" y="229" font-size="17" fill="#C7D0DD" font-weight="400">Requête + URL Google</text>
+<path d="M318 152l8 8-8 8" fill="none" stroke="#C7D0DD" stroke-width="2"/>
+<rect x="336" y="68" width="288" height="184" rx="12" fill="#202936"/>
+<rect x="336" y="86" width="4" height="148" rx="2" fill="#76B9F0"/>
+<text x="354" y="96" font-size="14" fill="#76B9F0" font-weight="700">02 · OUTILS WEB</text>
+<text x="354" y="134" font-size="27" fill="#F5F3ED" font-weight="700">Rechercher</text>
+<text x="354" y="169" font-size="18" fill="#F5F3ED" font-weight="400">Recherche ou navigateur</text>
+<text x="354" y="199" font-size="16" fill="#C7D0DD" font-weight="400">Moteur réel identifié</text>
+<text x="354" y="229" font-size="17" fill="#C7D0DD" font-weight="400">Requête et date consignées</text>
+<path d="M630 152l8 8-8 8" fill="none" stroke="#C7D0DD" stroke-width="2"/>
+<rect x="648" y="68" width="288" height="184" rx="12" fill="#202936"/>
+<rect x="648" y="86" width="4" height="148" rx="2" fill="#80D1B0"/>
+<text x="666" y="96" font-size="14" fill="#80D1B0" font-weight="700">03 · DOSSIER LOCAL</text>
+<text x="666" y="134" font-size="27" fill="#F5F3ED" font-weight="700">Vérifier</text>
+<text x="666" y="169" font-size="18" fill="#F5F3ED" font-weight="400">Sources originales choisies</text>
+<text x="666" y="199" font-size="16" fill="#C7D0DD" font-weight="400">Pièces et références gardées</text>
+<text x="666" y="229" font-size="17" fill="#C7D0DD" font-weight="400">Observations et limites</text>
+<text x="28" y="282" font-size="18" fill="#C7D0DD" font-weight="400">Le moteur reçoit les termes. La préparation locale ne lance aucune recherche.</text>
+</g>
+</svg>

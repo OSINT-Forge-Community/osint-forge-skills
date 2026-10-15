@@ -14,6 +14,8 @@ The illustrations are synthetic artwork, not investigation evidence.
 - [English banner](../../assets/readme-banner.en.png)
 - [French banner](../../assets/readme-banner.png)
 - Investigation workflow: [English](../../assets/workflow.en.svg) · [French](../../assets/workflow.fr.svg)
+- Search workflow: [English](../../assets/search-workflow.en.svg) · [French](../../assets/search-workflow.fr.svg)
+- Local tools and host capabilities: [English](../../assets/toolkit.en.svg) · [French](../../assets/toolkit.fr.svg)
 - [File provenance](provenance.json): dimensions, dates and integrity hashes
 
 Both banners measure 2170 × 725 pixels and are stored locally.
@@ -26,3 +28,7 @@ The local investigation workflow retains its original SVG design. Badge labels
 use title case, with charcoal backgrounds and muted copper, slate and blue accents.
 
 Generation prompts, creative briefs and source references remain private.
+
+The research and toolkit diagrams are original static SVGs with accessible titles
+and descriptions. They explain data flow and capability boundaries; they contain
+no external fonts, scripts, remote resources or performance statistics.

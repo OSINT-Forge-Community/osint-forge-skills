@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - research, Google dorking and local MCP
+
+- Add six original advisory pivot cards and offline quoted search templates,
+  with explicit prerequisites, inference limits and stopping conditions.
+- Expose planning, static sources, pivots and queries through an optional
+  standard-library-only read-only MCP stdio server. An operator may select one
+  case at startup for count-only byte/reference verification.
+- Bundle the runtime and research guide in each standalone skill. MCP activation
+  is explicit; no global client settings or mandatory services are added.
+- Add a bounded Google dork builder through CLI and MCP: exact phrases, domain,
+  file type, exclusions and dates, with a search URL and host execution workflow.
+- Present evidence traceability, review, portability, included technologies and
+  optional integrations in both English and French READMEs, with original
+  localized SVG diagrams for search data flow and the project toolkit.
+
 ## 0.2.0 - 2026-10-15
 
 Local preparation; no tag or publication is implied.

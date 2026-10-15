@@ -25,3 +25,8 @@ Run this loaded skill's `scripts/forge.py`; its complete folder includes the run
 
 A private event analysis with original record references, request/result links,
 coverage gaps and explicit limits on execution and host-effect claims.
+
+For a lead requiring a follow-up check, read
+[research pivots](references/research-workflows.md) and use
+`pivots --kind agent-export`. Keep the triggering evidence locator and
+the observation that would distinguish alternatives before collecting more.

@@ -19,12 +19,28 @@
 </p>
 
 <p align="center">
- <a href="README.md">English</a> · <a href="#démarrer-en-cinq-minutes">Démarrage</a> · <a href="#les-outils-utilisables">Outils</a> · <a href="#les-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
+ <a href="README.md">English</a> · <a href="#démarrer-en-cinq-minutes">Démarrage</a> · <a href="#les-outils-utilisables">Outils</a> · <a href="#rechercher-avec-google-dorking">Dorking</a> · <a href="#les-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
 Documents, captures de sources, journaux et exports d’historique deviennent un
 dossier portable : pièces conservées, conclusions référencées et inconnues explicites.
-Vous choisissez l’assistant et le modèle ; les outils Python inclus restent hors ligne.
+Utilisez les outils web de votre assistant pour rechercher des sources publiques,
+puis conservez et examinez les pièces sélectionnées localement. Vous choisissez
+l’assistant et le modèle ; le runtime Python inclus reste hors ligne.
+
+## Pourquoi utiliser OSINT Forge Skills ?
+
+| Avantage | Apport concret |
+| --- | --- |
+| **Conclusions traçables** | Originaux conservés, contrôle des octets, sources référencées et citations localisables |
+| **Relecture structurée** | Hypothèses concurrentes, contradictions, indépendance des sources et conclusions signalées lorsque leurs prémisses changent |
+| **Recherche ciblée** | Fiches de sources datées, six parcours de rebond et Google dorking pour préparer le prochain contrôle |
+| **Contrôle local** | Bibliothèque standard Python, aucune télémétrie du runtime, aucun service obligatoire ni installation automatique d’outils |
+| **Travail portable** | Skills autonomes, export/restauration de dossiers privés, rapports FR/EN, GraphML et CSV aux champs Timesketch |
+
+Ces fonctions sont implémentées. Les essais de modèles consignés ne démontrent
+pas de gain général en précision, en vitesse ou en coût de tokens. Votre client
+contrôle l’accès du modèle et la transmission des données. [Tests et limites](#benchmarks).
 
 ![Conserver les pièces sélectionnées, examiner les sources et contradictions, transmettre un rapport relu.](assets/workflow.fr.svg)
 
@@ -77,6 +93,8 @@ déclarée et une citation volontairement incorrecte.
 | Outil | Utilisation |
 | --- | --- |
 | **Forge · inclus** | Conserver les pièces, trier, créer des chronologies, corréler et exporter |
+| **Google dorking · inclus** | Composer des requêtes ciblées et des URL de recherche ; exécuter avec les outils web autorisés du client |
+| **MCP stdio · inclus, optionnel** | Exposer cinq outils locaux de planification/recherche ; vérifier un dossier choisi en option |
 | **ExifTool · optionnel** | Métadonnées PNG, JPEG et PDF |
 | **pdftotext · optionnel** | Texte d’une sélection de pages PDF |
 | **Tesseract · optionnel** | OCR sur les images PNG/JPEG |
@@ -87,6 +105,15 @@ python3 scripts/forge.py tools
 python3 scripts/forge.py plan --kind organization
 ```
 
+**Suivre une piste :** six fiches de rebond et un générateur de requêtes hors
+ligne précisent le prochain contrôle, ses prérequis et ses conditions d'arrêt.
+[Parcours de recherche](shared/research-workflows.md).
+
+**Utiliser MCP :** activez explicitement le serveur local dans votre client pour
+accéder aux plans, fiches de sources, rebonds, modèles de requêtes et dorks.
+Choisissez un dossier au démarrage pour ajouter un outil de vérification dont
+le retour se limite au statut et aux compteurs. [Configuration MCP](docs/mcp.md).
+
 Les quatre adaptateurs sont inclus ; **vous installez et choisissez les exécutables tiers**.
 Chaque résultat conserve l’empreinte de la pièce, la version de l’outil, ses paramètres et sa sortie.
 L’import groupé garde la provenance de chaque fichier. Analysez les captures
@@ -95,6 +122,37 @@ forensic et exportez en GraphML ou en CSV aux champs Timesketch.
 La réutilisation explicite d’un résultat reste distincte d’une nouvelle exécution.
 Recherche web, DNS/RDAP et cartes dépendent des outils disponibles et autorisés du client.
 [Commandes et limites](docs/cli.md#optional-local-tools) · [Workflows des outils](shared/tool-workflows.md)
+
+## Rechercher avec Google dorking
+
+![Préparer localement, rechercher via les outils web autorisés, puis conserver et vérifier les sources choisies dans un dossier local. Le moteur reçoit les termes de recherche.](assets/search-workflow.fr.svg)
+
+Préparez une requête localement :
+
+```bash
+python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf --after 2024-01-01
+```
+
+Le résultat JSON contient `site:example.org "Harbor Example Ltd" filetype:pdf
+after:2024-01-01` et une URL Google encodée. Ajoutez `--before` ou répétez
+`--exclude` pour affiner. Cet exemple utilise un nom synthétique et un domaine réservé.
+
+Demandez à l’assistant **d’exécuter la requête avec son outil de recherche ou
+son navigateur autorisé**, de consigner le moteur réel, la requête et la date,
+puis de vérifier les sources originales. L’outil MCP inclus `forge_dorks`
+prépare le même résultat. Un client peut utiliser un autre moteur : il faut
+alors vérifier la prise en charge de la syntaxe Google. Sans outil web,
+la requête et l’URL restent utilisables manuellement.
+[Opérateurs et parcours d’exécution](shared/research-workflows.md#google-dorking-with-host-web-tools).
+
+## Ce que nous utilisons
+
+![Socle Forge hors ligne, quatre outils locaux optionnels et capacités assistant et web contrôlées par le client. Rapports FR/EN, archives, GraphML et CSV aux champs Timesketch portables.](assets/toolkit.fr.svg)
+
+Le runtime et les parcours publics sont originaux. La recherche progressive
+et les rebonds s’inspirent d’approches examinées dans `smixs/osint-skill`,
+`frangelbarrera/osint-agent-skills` et OpenOSINT ; leurs codes et services ne
+sont pas des dépendances embarquées. [Références et attribution](shared/research-workflows.md#design-references).
 
 <a id="installer-dans-son-assistant-ia"></a>
 
@@ -130,7 +188,7 @@ Pour les plugins natifs et les archives ZIP, construisez avec `python3 scripts/p
 
 ## Tests et benchmarks
 
-Consigné le **15 octobre 2026** : **145 tests réussis** sous Linux/WSL, dont
+Consigné le **15 octobre 2026** : **166 tests réussis** sous Linux/WSL, dont
 **15 tests synthétiques des adaptateurs**. [Benchmarks et essais réels →](benchmarks/README.md)
 
 <details>
@@ -141,6 +199,8 @@ Consigné le **15 octobre 2026** : **145 tests réussis** sous Linux/WSL, dont
   avec un écart de workspace. Skills lus dans les trois sessions qui en disposaient ; aucun gain général de qualité démontré.
 - GraphML lu et réécrit avec NetworkX 3.7. Les anciens essais de binaires, navigateur et
   six sessions de revue gardent leurs snapshots du 14 octobre.
+- La composition des dorks et le MCP stdio passent les tests locaux ; efficacité sur un moteur réel et intégration à un client MCP restent à tester.
+- Quatre nouveaux SVG FR/EN rendus et inspectés localement ; affichage GitHub non testé.
 - Les résultats historiques hors ligne et SkillsBench restent disponibles avec leurs limites.
 - La couverture de tous les skills et clients, la qualité générale d’enquête, la résistance aux injections,
   Windows/macOS natifs et les imports dans des applications tierces restent à valider.

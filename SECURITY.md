@@ -64,3 +64,14 @@ conclusion. A person able to rewrite all case files can recompute hashes.
 Explicit tool-result reuse checks consistency but is not independent reproduction.
 HTML/MHTML extraction never executes the page; hostile parsing remains bounded
 by input/output limits and should use an appropriate isolated environment.
+
+## Optional MCP boundary
+
+The local stdio MCP server exposes an explicit read-only tool allowlist with
+bounded messages and validated arguments. It opens no network listener and
+executes no arbitrary commands. Without startup `--case`, no case operation is
+available. With one selected case, verification returns only counts, status and
+limits; tool calls cannot select another path. It creates no transcript.
+Filesystem parents and host permissions remain operator-controlled. A remote
+host/model may still receive tool arguments and results; local MCP does not
+approve that transmission. See [MCP setup](docs/mcp.md) for the protocol scope.

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="392" viewBox="0 0 960 392" role="img" aria-labelledby="title desc">
+<title id="title">Les briques du projet</title>
+<desc id="desc">Un socle Python hors ligne, des outils de fichiers locaux optionnels et les capacités web et modèle du client choisi. Les sorties restent portables.</desc>
+<rect width="960" height="392" rx="18" fill="#151B24"/>
+<g font-family="Arial, sans-serif">
+<text x="28" y="42" font-size="25" fill="#F5F3ED" font-weight="700">Les briques du projet</text>
+<rect x="24" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="24" y="86" width="4" height="214" rx="2" fill="#E7A86E"/>
+<text x="42" y="96" font-size="14" fill="#E7A86E" font-weight="700">INCLUS · HORS LIGNE</text>
+<text x="42" y="134" font-size="24" fill="#F5F3ED" font-weight="700">Forge</text>
+<text x="42" y="172" font-size="17" fill="#C7D0DD" font-weight="400">16 skills Markdown</text>
+<text x="42" y="201" font-size="17" fill="#C7D0DD" font-weight="400">Python 3.11+ · stdlib</text>
+<text x="42" y="230" font-size="17" fill="#C7D0DD" font-weight="400">JSON / CSV / SQLite</text>
+<text x="42" y="259" font-size="16" fill="#C7D0DD" font-weight="400">SHA-256 · contrôle des octets</text>
+<text x="42" y="288" font-size="17" fill="#C7D0DD" font-weight="400">CLI + MCP stdio optionnel</text>
+<rect x="336" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="336" y="86" width="4" height="214" rx="2" fill="#76B9F0"/>
+<text x="354" y="96" font-size="14" fill="#76B9F0" font-weight="700">OPTIONNEL · LOCAL</text>
+<text x="354" y="134" font-size="24" fill="#F5F3ED" font-weight="700">Analyse de fichiers</text>
+<text x="354" y="172" font-size="17" fill="#C7D0DD" font-weight="400">ExifTool · métadonnées</text>
+<text x="354" y="201" font-size="17" fill="#C7D0DD" font-weight="400">pdftotext · texte PDF</text>
+<text x="354" y="230" font-size="17" fill="#C7D0DD" font-weight="400">Tesseract · OCR</text>
+<text x="354" y="259" font-size="16" fill="#C7D0DD" font-weight="400">ffprobe · audio / vidéo</text>
+<text x="354" y="288" font-size="17" fill="#C7D0DD" font-weight="400">Exécutables choisis par vous</text>
+<rect x="648" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="648" y="86" width="4" height="214" rx="2" fill="#80D1B0"/>
+<text x="666" y="96" font-size="14" fill="#80D1B0" font-weight="700">SELON VOTRE CLIENT</text>
+<text x="666" y="134" font-size="24" fill="#F5F3ED" font-weight="700">Assistant et web</text>
+<text x="666" y="172" font-size="17" fill="#C7D0DD" font-weight="400">Client et modèle au choix</text>
+<text x="666" y="201" font-size="17" fill="#C7D0DD" font-weight="400">Recherche / navigateur</text>
+<text x="666" y="230" font-size="17" fill="#C7D0DD" font-weight="400">DNS / RDAP / cartes</text>
+<text x="666" y="259" font-size="16" fill="#C7D0DD" font-weight="400">Permissions gérées par le client</text>
+<text x="666" y="288" font-size="17" fill="#C7D0DD" font-weight="400">Accès réseau via ses outils</text>
+<path d="M36 338h888" stroke="#3A4656"/>
+<text x="28" y="369" font-size="18" fill="#80D1B0" font-weight="400">Sorties portables : rapports FR/EN · archives · GraphML · CSV Timesketch</text>
+</g>
+</svg>

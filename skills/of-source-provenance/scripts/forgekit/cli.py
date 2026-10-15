@@ -24,6 +24,8 @@ from .planning import ROUTES, plan as build_plan
 from .assurance import case_status, check_citations
 from .sources import source_cards
 from .agents import agent_events
+from .research import PIVOTS, QUERY_KINDS, pivots, query_templates
+from .dorking import FILETYPES, dorks
 
 
 class Parser(argparse.ArgumentParser):
@@ -77,6 +79,21 @@ def parser() -> argparse.ArgumentParser:
     sources = commands.add_parser("sources", help="Filter static dated source cards without network access")
     sources.add_argument("--category", choices=("organization", "domain", "archive", "imagery"))
     sources.add_argument("--jurisdiction")
+    pivot = commands.add_parser("pivots", help="Read advisory follow-up checks without collection")
+    pivot.add_argument("--kind", choices=tuple(PIVOTS))
+    queries = commands.add_parser("queries", help="Prepare search queries offline without submitting them")
+    queries.add_argument("--kind", choices=QUERY_KINDS, required=True)
+    queries.add_argument("--value", required=True)
+    queries.add_argument("--site")
+    dork = commands.add_parser("dorks", help="Compose a Google query and URL offline for host web tools")
+    dork.add_argument("--phrase", required=True)
+    dork.add_argument("--site", help="DNS domain, without a scheme or path")
+    dork.add_argument("--filetype", choices=FILETYPES)
+    dork.add_argument("--exclude", action="append", help="Exclude a phrase; repeat up to five times")
+    dork.add_argument("--after", help="Google date filter in YYYY-MM-DD format")
+    dork.add_argument("--before", help="Google date filter in YYYY-MM-DD format")
+    mcp = commands.add_parser("mcp", help="Serve optional read-only MCP tools over local stdio")
+    mcp.add_argument("--case", help="Expose count-only verification for this single operator-selected case")
     for name in ("review-status", "check-citations"):
         child = commands.add_parser(name)
         child.add_argument("--case", required=True)
@@ -217,6 +234,12 @@ def dispatch(args) -> dict:
         return build_plan(args.kind, read_json(args.request) if args.request else None, args.case)
     if command == "sources":
         return source_cards(args.category, args.jurisdiction)
+    if command == "pivots":
+        return pivots(args.kind)
+    if command == "queries":
+        return query_templates(args.kind, args.value, args.site)
+    if command == "dorks":
+        return dorks(args.phrase, args.site, args.filetype, args.exclude, args.after, args.before)
     if command == "review-status":
         return case_status(args.case)
     if command == "check-citations":
@@ -312,12 +335,27 @@ def dispatch(args) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    mcp_mode = (sys.argv[1:] if argv is None else argv)[:1] == ["mcp"]
     try:
-        result = dispatch(parser().parse_args(argv))
+        args = parser().parse_args(argv)
+        if args.command == "mcp":
+            from .mcp import serve
+            try:
+                return serve(args.case)
+            except (ForgeError, OSError, UnicodeError, ValueError, TypeError, OverflowError, RecursionError):
+                print("MCP_START_OR_IO_ERROR", file=sys.stderr)
+                return 2
+        result = dispatch(args)
     except ForgeError as exc:
+        if mcp_mode:
+            print("MCP_START_OR_IO_ERROR", file=sys.stderr)
+            return 2
         print(json.dumps({"status": "error", "code": str(exc)}))
         return 2
     except (OSError, UnicodeError, ValueError, TypeError, OverflowError, RecursionError):
+        if mcp_mode:
+            print("MCP_START_OR_IO_ERROR", file=sys.stderr)
+            return 2
         print(json.dumps({"status": "error", "code": "IO_OR_FORMAT_ERROR"}))
         return 2
     print(json.dumps(result, ensure_ascii=True, sort_keys=True))

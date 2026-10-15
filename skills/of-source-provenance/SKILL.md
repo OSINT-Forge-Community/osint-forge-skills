@@ -46,3 +46,14 @@ Read [review controls](references/assurance-workflows.md) when planning a
 question, checking excerpts or revising dependent conclusions. Read
 [source and export profiles](references/source-workflows.md) only when selecting
 a public source or interpreting a supplied forensic export.
+
+For a lead requiring a follow-up check, read
+[research pivots](references/research-workflows.md) and use
+`pivots --kind publication`. Keep the triggering evidence locator and
+the observation that would distinguish alternatives before collecting more.
+
+For Google dorking or an advanced public-source search, use the Google dorking
+section of [research workflows](references/research-workflows.md). Compose with
+`dorks --phrase TEXT`, then submit with an available authorized host web tool.
+Record the actual engine, query and time; check original sources. Without a web
+tool, return the query for manual use and state that search was not executed.

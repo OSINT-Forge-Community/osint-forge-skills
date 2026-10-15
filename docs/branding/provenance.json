@@ -61,6 +61,38 @@
       "purpose": "readme_navigation_and_capabilities",
       "runtime_dependency": false,
       "updated_on": "2026-10-14"
+    },
+    {
+      "asset": "assets/search-workflow.en.svg",
+      "sha256": "4b733dc62c5b1b0b00ecea483382ae1e029bd9fec49ccd426786752fbd4c9e21",
+      "tool": "original SVG markup",
+      "purpose": "research_data_flow",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-15"
+    },
+    {
+      "asset": "assets/search-workflow.fr.svg",
+      "sha256": "6bfd4b062979e256c49fa0296210c65eff6ee698cf2a69aceb880d2974052684",
+      "tool": "original SVG markup",
+      "purpose": "research_data_flow",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-15"
+    },
+    {
+      "asset": "assets/toolkit.en.svg",
+      "sha256": "6ecbfa9b9583283bbcaef62ed1b8c986372b46d59e27d9fbd7001e59872a0dcb",
+      "tool": "original SVG markup",
+      "purpose": "local_and_host_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-15"
+    },
+    {
+      "asset": "assets/toolkit.fr.svg",
+      "sha256": "81cb569a59955a4a15b49125cb3328a035888156f6a16d553510250648301dc3",
+      "tool": "original SVG markup",
+      "purpose": "local_and_host_capabilities",
+      "runtime_dependency": false,
+      "updated_on": "2026-10-15"
     }
   ]
 }

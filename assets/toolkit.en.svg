@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="392" viewBox="0 0 960 392" role="img" aria-labelledby="title desc">
+<title id="title">The tools behind the workflow</title>
+<desc id="desc">An offline Python core, optional local file tools and the chosen host’s web and model capabilities. Outputs stay portable.</desc>
+<rect width="960" height="392" rx="18" fill="#151B24"/>
+<g font-family="Arial, sans-serif">
+<text x="28" y="42" font-size="25" fill="#F5F3ED" font-weight="700">The tools behind the workflow</text>
+<rect x="24" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="24" y="86" width="4" height="214" rx="2" fill="#E7A86E"/>
+<text x="42" y="96" font-size="14" fill="#E7A86E" font-weight="700">INCLUDED · OFFLINE</text>
+<text x="42" y="134" font-size="24" fill="#F5F3ED" font-weight="700">Forge</text>
+<text x="42" y="172" font-size="17" fill="#C7D0DD" font-weight="400">16 Markdown skills</text>
+<text x="42" y="201" font-size="17" fill="#C7D0DD" font-weight="400">Python 3.11+ · stdlib</text>
+<text x="42" y="230" font-size="17" fill="#C7D0DD" font-weight="400">JSON / CSV / SQLite</text>
+<text x="42" y="259" font-size="17" fill="#C7D0DD" font-weight="400">SHA-256 · byte checks</text>
+<text x="42" y="288" font-size="17" fill="#C7D0DD" font-weight="400">CLI + optional MCP stdio</text>
+<rect x="336" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="336" y="86" width="4" height="214" rx="2" fill="#76B9F0"/>
+<text x="354" y="96" font-size="14" fill="#76B9F0" font-weight="700">OPTIONAL · LOCAL</text>
+<text x="354" y="134" font-size="24" fill="#F5F3ED" font-weight="700">File analysis</text>
+<text x="354" y="172" font-size="17" fill="#C7D0DD" font-weight="400">ExifTool · metadata</text>
+<text x="354" y="201" font-size="17" fill="#C7D0DD" font-weight="400">pdftotext · PDF text</text>
+<text x="354" y="230" font-size="17" fill="#C7D0DD" font-weight="400">Tesseract · OCR</text>
+<text x="354" y="259" font-size="17" fill="#C7D0DD" font-weight="400">ffprobe · audio / video</text>
+<text x="354" y="288" font-size="17" fill="#C7D0DD" font-weight="400">You select the executables</text>
+<rect x="648" y="68" width="288" height="250" rx="12" fill="#202936"/>
+<rect x="648" y="86" width="4" height="214" rx="2" fill="#80D1B0"/>
+<text x="666" y="96" font-size="14" fill="#80D1B0" font-weight="700">HOST CAPABILITIES</text>
+<text x="666" y="134" font-size="24" fill="#F5F3ED" font-weight="700">Assistant and web</text>
+<text x="666" y="172" font-size="17" fill="#C7D0DD" font-weight="400">Your choice of client / model</text>
+<text x="666" y="201" font-size="17" fill="#C7D0DD" font-weight="400">Search / browser</text>
+<text x="666" y="230" font-size="17" fill="#C7D0DD" font-weight="400">DNS / RDAP / maps</text>
+<text x="666" y="259" font-size="17" fill="#C7D0DD" font-weight="400">Host-managed permissions</text>
+<text x="666" y="288" font-size="17" fill="#C7D0DD" font-weight="400">Network access via host tools</text>
+<path d="M36 338h888" stroke="#3A4656"/>
+<text x="28" y="369" font-size="18" fill="#80D1B0" font-weight="400">Portable outputs: EN/FR reports · case archives · GraphML · Timesketch CSV</text>
+</g>
+</svg>

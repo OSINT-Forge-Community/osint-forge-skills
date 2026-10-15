@@ -18,7 +18,7 @@ from forgekit.safeio import ForgeError, atomic_write, json_bytes, read_bytes, re
 PUBLIC_DOCUMENTS = (
     "README.md", "installation.md", "demarrage.md", "cli.md", "formats.md",
     "depannage.md", "compatibility.json", "branding/README.md",
-    "branding/provenance.json",
+    "branding/provenance.json", "mcp.md",
 )
 PUBLIC_BENCHMARKS = (
     "results/2026-10-15-assurance-model/results.json",
@@ -65,7 +65,7 @@ def skill_resources() -> dict[str, bytes]:
              for name, data in collect(ROOT / "shared" / "forgekit").items()
              if name.endswith(".py")}
     for name in ("case-contract.md", "tool-workflows.md", "review-workflows.md",
-                 "assurance-workflows.md", "source-workflows.md"):
+                 "assurance-workflows.md", "source-workflows.md", "research-workflows.md"):
         files["references/" + name] = read_bytes(ROOT / "shared" / name)
     for name in ("LICENSE", "NOTICE"):
         files[name] = read_bytes(ROOT / name)
@@ -132,7 +132,7 @@ def expected_files() -> dict[str, bytes]:
     contract = read_bytes(ROOT / "shared" / "case-contract.md")
     tool_workflows = read_bytes(ROOT / "shared" / "tool-workflows.md")
     review_workflows = read_bytes(ROOT / "shared" / "review-workflows.md")
-    review_controls = {name: read_bytes(ROOT / "shared" / name) for name in ("assurance-workflows.md", "source-workflows.md")}
+    review_controls = {name: read_bytes(ROOT / "shared" / name) for name in ("assurance-workflows.md", "source-workflows.md", "research-workflows.md")}
     skill_archives = {}
     for folder, source in sources.items():
         for path, content in source.items():

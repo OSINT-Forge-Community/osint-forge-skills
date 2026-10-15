@@ -273,6 +273,18 @@ No automatic cache, model call or tool installation is performed.
 
 ## Contextual planning and review
 
+Research helpers offer `pivots [--kind KIND]` and
+`queries --kind domain|organization|publication --value TEXT [--site DOMAIN]`.
+These return suggestions without collecting or searching; see
+[follow-up checks](../shared/research-workflows.md).
+`dorks --phrase TEXT [--site DOMAIN] [--filetype TYPE] [--exclude TEXT]`
+`[--after YYYY-MM-DD] [--before YYYY-MM-DD]` composes a Google query and URL.
+Repeat `--exclude` up to five times. The model may execute the query through
+authorized host web tools; the Python command stays offline.
+[Operators, input bounds and execution workflow](../shared/research-workflows.md#google-dorking-with-host-web-tools).
+`mcp [--case CASE]` starts the optional read-only stdio interface; see
+[MCP setup](mcp.md) before configuring a host.
+
 ```text
 plan --kind organization
 plan --request selected-plan.json [--case CASE]

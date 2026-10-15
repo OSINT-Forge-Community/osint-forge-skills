@@ -165,3 +165,9 @@ does not alter existing plugin registrations during build or testing.
 - [OpenCode skills](https://opencode.ai/docs/skills/)
 - [Gemini skills](https://geminicli.com/docs/cli/skills/)
 - [Agent Skills format](https://agentskills.io/specification)
+
+## Optional MCP interface
+
+After installing a complete skill, you can explicitly configure a compatible
+host to launch its helper with `mcp`. See [local MCP setup](mcp.md) for paths,
+available tools and data boundaries. Skill installation does not enable it.

@@ -16,6 +16,9 @@ catalogue and overall workflow. English is the primary documentation language.
 | **Review corrections, graphs or forensic exports** | [Review workflows](../shared/review-workflows.md) · [Synthetic viewer demo](../examples/review_demo.py) |
 | **Plan a question, review dependencies or check excerpts** | [Planning and evidence review](../shared/assurance-workflows.md) |
 | **Select a public source or forensic export profile** | [Dated sources and profiles](../shared/source-workflows.md) |
+| **Follow a lead or prepare search terms** | [Research workflows](../shared/research-workflows.md) |
+| **Search with Google operators through host tools** | [Google dorking](../shared/research-workflows.md#google-dorking-with-host-web-tools) |
+| **Connect offline helpers through MCP** | [Optional local server](mcp.md) |
 | **Review supplied AI agent event exports** | [Agent event skill](../skills/of-agent-artifacts/SKILL.md) |
 | **Understand a case** and its references | [Data formats](formats.md) |
 | **Resolve an error** or interrupted operation | [Troubleshooting](depannage.md) |

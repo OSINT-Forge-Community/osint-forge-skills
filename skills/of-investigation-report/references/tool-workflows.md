@@ -104,3 +104,8 @@ context or fabricating a valid URL. Never save credentials in capture metadata.
 Distinguish a retrieved response from its factual assertions. If the client
 cannot save a capture, cite the accessible source and mark durable evidence
 registration incomplete. Do not invent a saved file, E ID or hash.
+
+For targeted search operators and Google URLs, use `dorks --phrase TEXT` or
+MCP `forge_dorks`, then execute through an authorized host web tool. See the
+[Google dorking workflow](research-workflows.md#google-dorking-with-host-web-tools)
+for input bounds, provider identification and source preservation.

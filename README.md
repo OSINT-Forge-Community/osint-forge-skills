@@ -19,12 +19,28 @@
 </p>
 
 <p align="center">
- <a href="README.fr.md">Français</a> · <a href="#start-in-five-minutes">Quick start</a> · <a href="#tools-you-can-use">Tools</a> · <a href="#the-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
+ <a href="README.fr.md">Français</a> · <a href="#start-in-five-minutes">Quick start</a> · <a href="#tools-you-can-use">Tools</a> · <a href="#search-with-google-dorking">Dorking</a> · <a href="#the-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
 Documents, source captures, logs and browser-history exports become a portable
 case with preserved evidence, referenced findings and explicit unknowns.
-You choose the assistant and model; the included Python tools work offline.
+Use your assistant's web tools to research public sources, then preserve and
+review selected evidence locally. You choose the assistant and model; the
+included Python runtime works offline.
+
+## Why use OSINT Forge Skills?
+
+| Advantage | What you get |
+| --- | --- |
+| **Traceable findings** | Preserved originals, byte checks, source references and citation locators you can revisit |
+| **Structured review** | Competing hypotheses, contradictions, source independence and claims flagged when their premises change |
+| **Focused research** | Dated source cards, six pivot workflows and Google dorking to prepare the next public-source check |
+| **Local control** | Python standard library, no runtime telemetry, no mandatory service and no automatic tool installation |
+| **Portable work** | Self-contained skills, private case export/restore, EN/FR reports, GraphML and Timesketch-field CSV |
+
+These are implemented capabilities. The recorded model trials do not establish
+a general gain in accuracy, speed or token cost. Your host controls model access
+and data transmission. [Tests and limits](#benchmarks).
 
 ![Preserve selected evidence, examine sources and contradictions, share a reviewed report.](assets/workflow.en.svg)
 
@@ -76,6 +92,8 @@ source-record references and one intentional excerpt mismatch.
 | Tool | Use it for |
 | --- | --- |
 | **Forge · included** | Preserve evidence, triage files, build timelines, correlate and export |
+| **Google dorking · included** | Compose targeted queries and search URLs; execute with authorized host web tools |
+| **MCP stdio · included, optional** | Expose five local planning/research helpers; optionally verify one selected case |
 | **ExifTool · optional** | PNG, JPEG and PDF metadata |
 | **pdftotext · optional** | Text from selected PDF pages |
 | **Tesseract · optional** | OCR on PNG/JPEG images |
@@ -93,6 +111,44 @@ text versions, map forensic CSV and export GraphML or Timesketch-field CSV.
 Explicit result reuse is labelled separately from a fresh tool execution.
 Web search, DNS/RDAP and maps depend on your client's available, authorized tools.
 [Commands & limits](docs/cli.md#optional-local-tools) · [Tool workflows](shared/tool-workflows.md)
+
+**Follow a lead:** six advisory pivot cards and an offline query generator help
+choose the next check, with prerequisites and stopping conditions.
+[Research workflows](shared/research-workflows.md).
+
+**Use MCP:** enable the local server explicitly in your host to access plans,
+source cards, pivots, query templates and dorks. Select one case at startup for
+an additional count-only verification tool. [MCP setup](docs/mcp.md).
+
+## Search with Google dorking
+
+![Prepare a query locally, search through authorized host web tools, then preserve and verify selected sources in a local case. The engine receives search terms.](assets/search-workflow.en.svg)
+
+Prepare a query locally:
+
+```bash
+python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf --after 2024-01-01
+```
+
+The JSON result includes `site:example.org "Harbor Example Ltd" filetype:pdf
+after:2024-01-01` and an encoded Google URL. Add `--before` or repeat `--exclude`
+to refine it. This example uses a synthetic name and a reserved domain.
+
+Ask your assistant to **run the query with its authorized search or browser tool**,
+record the actual engine, query and date, then check the original sources.
+The included `forge_dorks` MCP tool prepares the same output. A host may use a
+different engine; Google syntax support must then be checked. Without a web
+tool, the query and URL remain available for manual use.
+[Operator guide and execution workflow](shared/research-workflows.md#google-dorking-with-host-web-tools).
+
+## What powers the project
+
+![Offline Forge core, four optional local analysis tools and host-controlled assistant and web capabilities. Portable EN/FR reports, case archives, GraphML and Timesketch-field CSV.](assets/toolkit.en.svg)
+
+The public runtime and workflows are original. Our staged research and pivot
+design draws on reviewed approaches from `smixs/osint-skill`,
+`frangelbarrera/osint-agent-skills` and OpenOSINT; their code and services are
+not bundled dependencies. [References and attribution](shared/research-workflows.md#design-references).
 
 <a id="install-in-your-ai-assistant"></a>
 
@@ -128,7 +184,7 @@ For native plugins and ZIP archives, build with `python3 scripts/package.py`, th
 
 ## Tests & benchmarks
 
-Recorded on **October 15, 2026**: **145 tests passed** on Linux/WSL, including
+Recorded on **October 15, 2026**: **166 tests passed** on Linux/WSL, including
 **15 synthetic adapter tests**. [Benchmarks and real trials →](benchmarks/README.md)
 
 <details>
@@ -139,6 +195,8 @@ Recorded on **October 15, 2026**: **145 tests passed** on Linux/WSL, including
   with one workspace deviation. Skills were read in all three sessions using them; no general quality gain is demonstrated.
 - GraphML passed a NetworkX 3.7 round trip. Earlier real-binary, browser and six-session
   review observations retain their October 14 snapshots.
+- Google dork construction and MCP stdio pass local tests; live engine effectiveness and real MCP host integration remain untested.
+- Four new EN/FR SVG diagrams were rendered and inspected locally; GitHub rendering was not exercised.
 - Historical offline and SkillsBench results remain available with their limitations.
 - Full catalogue/client coverage, general investigation quality, prompt-injection resistance,
   native Windows/macOS and real third-party application imports remain unvalidated.

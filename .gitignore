@@ -51,6 +51,7 @@ dist/
 !/docs/formats.md
 !/docs/depannage.md
 !/docs/compatibility.json
+!/docs/mcp.md
 !/docs/branding/
 /docs/branding/*
 !/docs/branding/README.md

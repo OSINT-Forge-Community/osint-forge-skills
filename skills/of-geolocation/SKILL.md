@@ -42,3 +42,8 @@ Read [review controls](references/assurance-workflows.md) when planning a
 question, checking excerpts or revising dependent conclusions. Read
 [source and export profiles](references/source-workflows.md) only when selecting
 a public source or interpreting a supplied forensic export.
+
+For a lead requiring a follow-up check, read
+[research pivots](references/research-workflows.md) and use
+`pivots --kind media`. Keep the triggering evidence locator and
+the observation that would distinguish alternatives before collecting more.

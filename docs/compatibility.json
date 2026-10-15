@@ -179,7 +179,7 @@
     "source_checks": "passed_16_skills_20_python_sources_145_tests",
     "model_trials": "nine_sessions_completed_non_blind_review_no_retries_one_workspace_deviation",
     "client_invocation": "selected_project_skill_reads_and_one_functional_agent_helper_workflow_observed",
-    "scope": "Current model snapshot identifies 432 frozen files. Historical client, binary and visual observations retain their own snapshots."
+    "scope": "Historical assurance model snapshot identifies 432 frozen files. Historical client, binary and visual observations retain their own snapshots. Current helper checks are recorded in current_local_verification and mcp_verification."
   },
   "current_local_verification": {
     "date": "2026-10-15",
@@ -187,12 +187,58 @@
     "case_schema": 3,
     "source_validation": "passed",
     "skills": 16,
-    "python_sources": 20,
-    "unit_tests_passed": 145,
-    "unit_tests_elapsed_seconds": 591.04,
+    "python_sources": 23,
+    "unit_tests_passed": 166,
+    "unit_tests_elapsed_seconds": 634.456,
     "skill_format_validation": "passed_16_of_16_skill_creator",
-    "source_and_extracted_archive_demos": "passed_synthetic_isolated_python",
+    "source_and_extracted_archive_demos": "historical_research_mcp_snapshot_passed_not_rerun_for_dorking",
     "claude_native_manifest": "passed_cli_2.1.220",
     "current_browser_visual_trial": "not_run"
+  },
+  "mcp_verification": {
+    "date": "2026-10-15",
+    "product_version": "0.2.0",
+    "transport": "stdio",
+    "protocol_versions": [
+      "2025-11-25",
+      "2025-06-18"
+    ],
+    "runtime_dependencies": "standard_library_only",
+    "research_and_mcp_unit_tests_passed": 14,
+    "total_unit_tests_passed": 166,
+    "isolated_standalone_subprocess": "passed_synthetic_json_rpc_handshake_list_and_query_call",
+    "case_privacy": "passed_counts_only_no_path_or_evidence_text_case_bytes_and_mtime_unchanged",
+    "input_validation": "passed_closed_schemas_duplicate_keys_utf8_json_constants_lifecycle_and_message_limits",
+    "real_mcp_host": "not_run",
+    "official_mcp_sdk_client": "not_run",
+    "model_trials": "not_run",
+    "client_configuration_changed": false,
+    "third_party_osint_runtimes_installed_or_executed": false,
+    "native_windows_macos": "not_run",
+    "dorking_unit_tests_passed": 7,
+    "default_tool_count": 5,
+    "with_selected_case_tool_count": 6
+  },
+  "dorking_verification": {
+    "date": "2026-10-15",
+    "syntax_reference": "https://support.google.com/websearch/answer/2466433?hl=en",
+    "unit_tests_passed": 7,
+    "cli_and_isolated_skill_mcp": "passed_synthetic",
+    "runtime_network_calls": false,
+    "live_search_effectiveness": "not_run",
+    "model_search_trial": "not_run"
+  },
+  "readme_diagrams": {
+    "date": "2026-10-15",
+    "new_svg_count": 4,
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "renderer": "system_librsvg_cairo",
+    "render_and_visual_inspection": "passed",
+    "text_bounds": "passed",
+    "github_rendering": "not_run",
+    "external_resources": false
   }
 }
