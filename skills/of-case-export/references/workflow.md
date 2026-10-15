@@ -7,3 +7,12 @@ ZIP_STORED archives use fixed member times. Verification rejects traversal paths
 Internal hashes are not signatures: an attacker can replace an archive and its manifest together. Retain independent digests where that matters. There is no trusted timestamp.
 
 Masking misses names, precise locations, identifiers, sensitive deductions and unfamiliar secrets. The approved digest is an operator assertion, not authenticated proof of human review. Export never uploads to another service.
+
+## Preserve new review semantics
+
+Schema 3 exports retain dependencies, review history, identity/time context and
+coverage requirements. Test a restored private copy with `verify`,
+`review-status` and `check-citations`. Share the receiving tool/version and
+known metadata losses separately from format checks. A GraphML/CSV file does
+not establish a successful application import, and the private HTML review
+still requires a distinct minimized Markdown view for public export.

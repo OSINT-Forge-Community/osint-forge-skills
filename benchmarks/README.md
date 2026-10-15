@@ -1,10 +1,75 @@
 # Benchmarks and reproducible results
 
-There are two evaluation tracks: deterministic helper behavior, and agent
-performance with a specified model and client. Both have recorded results.
-The external run is a six-session SkillsBench pilot on one task; the other
-benchmarks below were researched on **October 14, 2026** and remain unperformed.
-No result has been submitted to a leaderboard.
+Deterministic helper checks and model/client pilots are recorded separately.
+Each observation retains its evaluated source snapshot. The external benchmark
+comparisons were researched on **October 14, 2026**; unperformed benchmarks
+remain labelled as such. No result has been submitted to a leaderboard.
+
+## Schema 3 assurance and nine sessions · October 15, 2026
+
+Version 0.2.0 passed **145 tests** on Linux/WSL, Python 3.12, in 591.040 seconds.
+Source validation covered 16 skills and 20 Python sources. All sixteen skills
+passed skill-format validation; source copies and the extracted full plugin
+ran their synthetic workflows in isolated Python. The assurance demo reports
+two dependent conclusions needing review and one deliberately incorrect quote,
+then checks private restoration and unchanged source bytes.
+
+```bash
+python3 examples/assurance_demo.py --out cases/assurance-demo-new
+```
+
+GraphML was read and rewritten with development-only **NetworkX 3.7**. Synthetic
+checks preserved IDs, accents, jurisdictions, candidate relations, matching
+criteria, time metadata and premise review warnings. CSV checks preserved row
+zero and accents, neutralized a leading formula character and counted an omitted
+unknown time. These are library/format checks; no Timesketch, Maltego, Aleph or
+OGI application import was performed. NetworkX is not a runtime dependency.
+The current HTML was checked structurally; the earlier browser trial applies to
+its October 14 snapshot.
+
+Nine explicitly authorized Codex CLI 0.162.1 sessions used `gpt-6.1-sol`, `xhigh`,
+three original synthetic scenarios, a 420-second limit per session and at most
+two concurrent sessions. The order, inputs, helpers, skill files and rubric were
+frozen first; no session was retried. Workspaces were outside the repository.
+The baseline retained generic local client tools such as Python, without Forge.
+The skills condition added instructions and references to the same Forge helpers.
+
+| Observed outcome | Client without Forge/skills | Client with helpers | Client with helpers and skills |
+| --- | --- | --- | --- |
+| Sessions completed / attempted | 3/3 | 3/3 | 3/3 |
+| Content rubric accepted, non-blind review | 3/3 | 3/3 | 3/3 |
+| Strict workspace constraint met | 3/3 | 2/3 | 3/3 |
+| Sessions with explicit project skill reads | 0/3 | 0/3 | 3/3 |
+| Sessions with functional Forge commands | 0/3 | 0/3 | 1/3 |
+
+All original input bytes remained unchanged; six helper copies and three skill
+copies also retained their bytes. The answers referenced **57 valid source
+locators**. Forty supplied exact excerpts were checked; other references used
+locators or paraphrases. These checks do not establish semantic support. The
+separate engineering review accepted the five content criteria in each answer.
+Five distinct skills were read across the three skills sessions. The agent
+session ran init, add-many, agent-events, timeline and verify successfully.
+
+One helpers-only scene session created, read and removed a synthetic scratch
+file outside its assigned workspace. That session failed the strict workspace
+constraint and remains in every denominator. Seven unavailable `python` alias
+attempts were recovered with the existing `python3` inside the same sessions;
+there were no failed client sessions or model-session retries. Provider request
+counts and monetary costs were not measured. Temporary derived agent-case files
+were removed with the trial workspace; helper outputs remain in private traces.
+
+**No general quality gain is demonstrated.** These are three development fixtures,
+one session per condition and a review by the development agent, without
+independent blinding or held-out cases. Helper availability did not imply use.
+Global host skill metadata exposure cannot be completely excluded. The scene
+exercise used text descriptions rather than images, and conspicuous hostile
+notes do not qualify general injection resistance. The 96 EN/FR discovery prompts
+are prepared but **not executed**. Time and token measurements are descriptive.
+
+[Results and per-session measurements](results/2026-10-15-assurance-model/results.json) ·
+[Evaluated source and input hashes](results/2026-10-15-assurance-model/source-manifest.json) ·
+[Recorded compatibility](../docs/compatibility.json) ·
+[Assurance workflow](../shared/assurance-workflows.md)
 
 ## Recorded results · October 14, 2026
 

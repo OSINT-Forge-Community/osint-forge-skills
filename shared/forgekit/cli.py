@@ -20,16 +20,10 @@ from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
 from .timestamps import timestamp
 from .tooling import TOOLS, inventory, run_tool
 
-ROUTES = {
-    "documents": ["of-document-triage", "of-source-provenance"],
-    "media": ["of-media-forensics", "of-geolocation"],
-    "domain": ["of-domain-infrastructure", "of-source-provenance"],
-    "organization": ["of-organization-research", "of-source-provenance"],
-    "versions": ["of-version-compare", "of-source-provenance"],
-    "windows-export": ["of-windows-artifacts", "of-log-timeline"],
-    "browser": ["of-browser-artifacts", "of-evidence-correlate"],
-    "logs": ["of-log-timeline", "of-evidence-correlate"],
-}
+from .planning import ROUTES, plan as build_plan
+from .assurance import case_status, check_citations
+from .sources import source_cards
+from .agents import agent_events
 
 
 class Parser(argparse.ArgumentParser):
@@ -65,17 +59,32 @@ def parser() -> argparse.ArgumentParser:
     claim.add_argument("--rationale", required=True)
     claim.add_argument("--citations", help="Selected JSON array of evidence locators")
     claim.add_argument("--supersedes", help="Current C identifier replaced by this new claim")
+    claim.add_argument("--depends-on", action="append", default=None, help="Earlier C identifier used as a premise")
+    claim.add_argument("--time-context", help="Selected JSON object of source and validity dates")
     intake = commands.add_parser("intake", help="Import an explicit per-file provenance manifest")
     intake.add_argument("--case", required=True)
     intake.add_argument("--manifest", required=True)
     review = commands.add_parser("record", help="Append a research, entity, relation or annotation record")
     review.add_argument("--case", required=True)
     review.add_argument("--input", required=True)
-    upgrade = commands.add_parser("upgrade", help="Create a schema v2 copy of a v1 case")
+    upgrade = commands.add_parser("upgrade", help="Create a verified copy using the current case schema")
     upgrade.add_argument("--case", required=True)
     upgrade.add_argument("--out", required=True)
     plan = commands.add_parser("plan", help="Suggest a bounded workflow without running it")
-    plan.add_argument("--kind", choices=tuple(ROUTES), required=True)
+    plan.add_argument("--kind", choices=tuple(ROUTES), action="append")
+    plan.add_argument("--request", help="Selected JSON question, kinds, declared capabilities and budget")
+    plan.add_argument("--case", help="Optional case whose review state should inform the plan")
+    sources = commands.add_parser("sources", help="Filter static dated source cards without network access")
+    sources.add_argument("--category", choices=("organization", "domain", "archive", "imagery"))
+    sources.add_argument("--jurisdiction")
+    for name in ("review-status", "check-citations"):
+        child = commands.add_parser(name)
+        child.add_argument("--case", required=True)
+    agent = commands.add_parser("agent-events", help="Interpret a supplied normalized agent export offline")
+    agent.add_argument("--case", required=True)
+    agent.add_argument("--evidence", required=True)
+    agent.add_argument("--format", choices=("json", "jsonl"), required=True)
+    agent.add_argument("--out", required=True)
     imported = commands.add_parser("import-events", help="Map two columns of a supplied forensic CSV")
     imported.add_argument("--case", required=True)
     imported.add_argument("--evidence", required=True)
@@ -205,12 +214,15 @@ def dispatch(args) -> dict:
                         first_page=args.first_page, last_page=args.last_page, language=args.language,
                         reuse=args.reuse)
     if command == "plan":
-        return {"kind": args.kind, "start": "of-case-start", "selected_skills": ROUTES[args.kind],
-                "review": ["of-hypothesis-audit", "of-investigation-report"],
-                "stop_conditions": ["Question answered within scope", "Required capability or evidence absent",
-                                    "Remaining observations cannot discriminate hypotheses"],
-                "loading": "Read only the selected skill and references needed for the current step",
-                "executed": False, "network_authorized": False}
+        return build_plan(args.kind, read_json(args.request) if args.request else None, args.case)
+    if command == "sources":
+        return source_cards(args.category, args.jurisdiction)
+    if command == "review-status":
+        return case_status(args.case)
+    if command == "check-citations":
+        return check_citations(args.case)
+    if command == "agent-events":
+        return save_analysis(args.case, args.out, agent_events(args.case, args.evidence, args.format))
     if command == "intake":
         return intake_manifest(args.case, args.manifest)
     if command == "record":
@@ -247,7 +259,8 @@ def dispatch(args) -> dict:
         return add_claim(args.case, args.text, args.support, args.contradict,
                          args.state, args.confidence, args.rationale,
                          citations=read_json(args.citations) if args.citations else None,
-                         supersedes=args.supersedes)
+                         supersedes=args.supersedes, depends_on=args.depends_on,
+                         time_context=read_json(args.time_context) if args.time_context else None)
     if command in ("verify", "provenance"):
         return (verify if command == "verify" else provenance)(args.case)
     if command in ("triage", "timeline", "browser"):

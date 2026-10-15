@@ -5,13 +5,14 @@ from pathlib import Path
 import re
 import zipfile
 
-from . import VERSION
+from . import SCHEMA_VERSION, VERSION
 from .casefiles import load_case, provenance, verify
 from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_TOTAL, atomic_write, digest,
                      json_bytes, markdown, read_bytes, relative_path, require,
                      safe_path, visible)
 from .safeio import zip_directory_guard
 from .review import current, records
+from .assurance import check_citations, coverage, dependency_status
 import json
 import os
 import tempfile
@@ -46,6 +47,8 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
     _, info, evidence, claims = load_case(case)
     root, _, _, _ = load_case(case)
     review = records(root, info)
+    statuses = dependency_status(claims, review)
+    citation_checks = check_citations(case)
     require(language in ("en", "fr"), "UNSUPPORTED_LANGUAGE")
     labels = ({"title": "Rapport d'enquête", "scope": "Périmètre", "claims": "Conclusions",
                "support": "Pièces favorables", "against": "Pièces contradictoires",
@@ -70,6 +73,14 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
                       f"{labels['support']}: {citations('supports')}", "",
                       f"{labels['against']}: {citations('contradicts')}", "",
                       f"{labels['why']}: {markdown(claim['rationale'], 8000)}", ""])
+        status = statuses[claim["id"]]
+        if status["status"] == "needs_review":
+            label = "À réexaminer" if language == "fr" else "Needs review"
+            lines.extend([f"**{label}**: " + markdown(json.dumps(status["reasons"], ensure_ascii=False), MAX_JSON), ""])
+        if claim.get("depends_on"):
+            lines.extend([("Dépend de" if language == "fr" else "Depends on") + ": " + ", ".join(claim["depends_on"]), ""])
+        if claim.get("time_context"):
+            lines.extend([markdown(json.dumps(claim["time_context"], ensure_ascii=False)), ""])
         if claim.get("supersedes"):
             lines.extend([f"Supersedes: {claim['supersedes']}", ""])
         successors = [row["id"] for row in claims if row.get("supersedes") == claim["id"]]
@@ -86,7 +97,11 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
             lines.append(f"- {row['id']} [{row['kind']} / {row.get('status', row.get('state', 'recorded'))}] "
                          f"{markdown(row.get('question', row.get('label', row.get('note', ''))))}: "
                          f"{markdown(row['rationale'], 8000)}")
-    lines.extend([f"## {labels['evidence']}", ""])
+    lines.extend(["", "## Couverture déclarée" if language == "fr" else "## Declared coverage", "",
+                  markdown(json.dumps(coverage(review), ensure_ascii=False), MAX_JSON), "",
+                  "## Contrôle des citations" if language == "fr" else "## Citation checks", "",
+                  markdown(json.dumps(citation_checks, ensure_ascii=False), MAX_JSON), "",
+                  f"## {labels['evidence']}", ""])
     for row in evidence:
         lines.append(f"- [{row['id']}](../{row['path']}): {markdown(row['original_name'])}; "
                      f"SHA-256 `{row['sha256']}`; {row['size']} {labels['bytes']}; "
@@ -103,7 +118,9 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
         ", ".join(group) for group in groups["candidate_origin_groups"]), "",
         labels['independence'], "",
         f"{labels['generated']} OSINT Forge Skills {VERSION}.", ""])
-    return "\n".join(lines).encode("utf-8")
+    data = "\n".join(lines).encode("utf-8")
+    require(len(data) <= MAX_JSON, "REPORT_TOO_LARGE")
+    return data
 
 
 def prepare_share(source: str | Path, output: str | Path) -> dict:
@@ -169,7 +186,7 @@ def export_case(case: str | Path, output: str | Path, mode: str,
         require(view is None and approved_sha256 is None, "INVALID_PRIVATE_EXPORT_OPTIONS")
         members = {name: read_bytes(root / name, MAX_JSON)
                    for name in ("case.json", "evidence.jsonl", "claims.jsonl")}
-        if load_case(root)[1]["schema_version"] == 2:
+        if load_case(root)[1]["schema_version"] >= 2:
             members["review.jsonl"] = read_bytes(root / "review.jsonl", MAX_JSON)
         for row in evidence:
             members[row["path"]] = read_bytes(root / row["path"])
@@ -272,7 +289,7 @@ def restore_case(path: str | Path, destination: str | Path) -> dict:
 
 def upgrade_case(case, destination):
     root, info, _, _ = load_case(case)
-    require(info["schema_version"] == 1, "CASE_ALREADY_CURRENT")
+    require(info["schema_version"] < SCHEMA_VERSION, "CASE_ALREADY_CURRENT")
     output = safe_path(destination, exists=False)
     require(not output.exists() and not output.is_relative_to(root), "INVALID_UPGRADE_DESTINATION")
     with tempfile.TemporaryDirectory(prefix=".forge-upgrade-", dir=safe_path(output.parent)) as temporary:
@@ -281,11 +298,12 @@ def upgrade_case(case, destination):
         export_case(root, archive, "private")
         restore_case(archive, converted)
         metadata = json.loads(read_bytes(converted / "case.json", MAX_JSON))
-        metadata["schema_version"] = 2
-        metadata["upgraded_from"] = {"schema_version": 1, "export_sha256": digest(read_bytes(archive, MAX_TOTAL + MAX_JSON))}
+        metadata["schema_version"] = SCHEMA_VERSION
+        metadata["upgraded_from"] = {"schema_version": info["schema_version"], "export_sha256": digest(read_bytes(archive, MAX_TOTAL + MAX_JSON))}
         atomic_write(converted / "case.json", json_bytes(metadata), replace=True)
-        atomic_write(converted / "review.jsonl", b"")
+        if info["schema_version"] == 1:
+            atomic_write(converted / "review.jsonl", b"")
         verify(converted)
         require(not output.exists(), "OUTPUT_EXISTS")
         os.rename(converted, output)
-    return {"status": "upgraded_copy", "schema_version": 2, "original_unchanged": True}
+    return {"status": "upgraded_copy", "schema_version": SCHEMA_VERSION, "original_unchanged": True}

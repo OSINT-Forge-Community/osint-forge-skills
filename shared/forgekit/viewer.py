@@ -11,6 +11,7 @@ from .exchange import graph
 from .review import checked_analysis, current, records
 from .safeio import MAX_JSON, MAX_RECORDS, require, visible
 from .timestamps import timestamp
+from .assurance import check_citations, coverage, dependency_status
 
 SCRIPT = """const search=document.getElementById('search');
 const kind=document.getElementById('kind');
@@ -42,8 +43,12 @@ def render_html(case, language="en", analyses=None):
     ledger = records(root, info)
     replaced = {row.get("supersedes") for row in claims + ledger}
     entries = []
+    statuses = dependency_status(claims, ledger)
+    citation_checks = check_citations(case)
     for row in claims:
-        entries.append((row["id"], "claim", row["state"], row["text"], row))
+        state = "needs_review" if statuses[row["id"]]["status"] == "needs_review" else row["state"]
+        details = {**row, "review": statuses[row["id"]], "citation_checks": [item for item in citation_checks["citations"] if item["claim_id"] == row["id"]]}
+        entries.append((row["id"], "claim", state, row["text"], details))
     for row in evidence:
         entries.append((row["id"], "evidence", "preserved", row["original_name"], row))
     for row in ledger:
@@ -76,15 +81,17 @@ def render_html(case, language="en", analyses=None):
                         + " ".join(tag for note in notes for tag in note["tags"]), {**row, "annotations": notes}))
     fr = language == "fr"
     kinds = ({"claim":"Conclusion", "evidence":"Pièce", "research":"Recherche", "entity":"Entité",
-              "relation":"Relation", "annotation":"Annotation", "event":"Événement"}
+              "relation":"Relation", "annotation":"Annotation", "event":"Événement",
+              "requirement":"Question", "analysis_revision":"Révision d’analyse"}
              if fr else {"claim":"Claim", "evidence":"Evidence", "research":"Research", "entity":"Entity",
-                         "relation":"Relation", "annotation":"Annotation", "event":"Event"})
-    states = ({"observed":"Observé", "inferred":"Déduit", "unconfirmed":"Non confirmé",
+                         "relation":"Relation", "annotation":"Annotation", "event":"Event",
+                         "requirement":"Requirement", "analysis_revision":"Analysis revision"})
+    states = ({"needs_review":"À réexaminer", "observed":"Observé", "inferred":"Déduit", "unconfirmed":"Non confirmé",
                "preserved":"Conservé", "recorded":"Enregistré", "candidate":"Candidat",
                "not_searched":"Non recherché", "no_result":"Sans résultat", "partial":"Partiel",
                "unavailable":"Indisponible", "completed":"Terminé", "normalized":"Heure normalisée",
                "timezone_unknown":"Fuseau inconnu", "missing":"Heure absente", "invalid":"Heure invalide"}
-              if fr else {})
+              if fr else {"needs_review":"Needs review"})
     title = "Relecture du dossier" if fr else "Case review"
     notice = ("Dossier privé. Références et relations déclarées par l'analyste ; authenticité et pertinence non établies. "
               "Les données sont affichées comme texte. Aucun accès réseau. Chronologies : uniquement les analyses sélectionnées."
@@ -136,7 +143,9 @@ def render_html(case, language="en", analyses=None):
             + f'</select></label><label><input type="checkbox" id="history">{"Historique" if fr else "History"}</label>'
             '<output id="count" aria-live="polite"></output></nav>'
             f'<div class="scroll"><table><thead><tr><th>ID</th><th>Type / {"État" if fr else "Status"}</th><th>Observation</th></tr></thead><tbody>'
-            + ''.join(rows_html) + '</tbody></table></div><h2>Relations</h2><div class="scroll">'
+            + ''.join(rows_html) + '</tbody></table></div>'
+            + f'<h2>{"Couverture déclarée" if fr else "Declared coverage"}</h2><pre>{escaped(json.dumps(coverage(ledger), ensure_ascii=False, indent=2), MAX_JSON)}</pre>'
+            + f'<h2>{"Contrôle des citations" if fr else "Citation checks"}</h2><pre>{escaped(json.dumps(citation_checks["counts"], ensure_ascii=False))}</pre><h2>Relations</h2><div class="scroll">'
             + graph_html + '</div>' + edge_list + f'<script>{SCRIPT}</script></body></html>')
     data = page.encode()
     require(len(data) <= MAX_JSON, "REPORT_TOO_LARGE")

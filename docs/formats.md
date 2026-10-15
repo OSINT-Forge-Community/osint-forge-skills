@@ -1,6 +1,6 @@
 # Data formats and semantics
 
-The [contract v2](../shared/case-contract.md) defines the invariants.
+The [contract v3](../shared/case-contract.md) defines the invariants.
 This guide provides fields and examples for reviewing or preparing inputs.
 Journal examples illustrate the format; create records with `init`, `add`
 and `claim`, never by inventing hashes.
@@ -28,7 +28,7 @@ without content conversion.
 
 | Created field | Value or meaning |
 | --- | --- |
-| `schema_version` | Integer `2` for new cases; `1` remains readable, separate from product version |
+| `schema_version` | Integer `3` for new cases; `1` and `2` remain readable, separate from product version |
 | `tool_version` | Tool version at creation |
 | `title` | Investigation title, 1 to 300 characters |
 | `scope` | Objective and limits, 1 to 8,000 characters |
@@ -194,10 +194,11 @@ investigation cases.
 
 ## Contract evolution
 
-Readers accept versions 1 and 2. New cases use 2; versions outside this set are
-rejected. V1 remains usable for its original operations. `upgrade --case OLD
---out NEW` copies a verified private case, records the old export digest and
-creates the v2 journal in NEW. OLD remains unchanged. Older readers reject v2.
+Readers accept versions 1, 2 and 3. New cases use 3; other versions are rejected.
+Older cases retain their original operations. `upgrade --case OLD --out NEW`
+copies a verified private case and records the old export digest. A v1 copy gains
+a review journal; a v2 copy keeps its journal unchanged. OLD is preserved. Older
+readers reject v3.
 Never edit the schema number to bypass compatibility checks.
 
 ## Review extension (schema 2)
@@ -236,3 +237,15 @@ and arguments), execution and, when reused, reused_from and reused_at. Reuse
 checks stored stdout and parsed output consistency. It is not fresh execution
 or independent verification; runtime libraries and OCR language data are not
 part of the identity. Reproduce untrusted results instead.
+
+## Schema 3 review extensions
+
+The [planning and evidence review guide](../shared/assurance-workflows.md)
+defines earlier-claim dependencies, time context, requirements, analysis revisions
+and entity identifiers. New features require schema 3; migrate old cases by
+verified copy. Review warnings and excerpt checks are derived assessments, not
+rewrites of the journals or semantic truth validation.
+
+The [agent export contract](../skills/of-agent-artifacts/references/workflow.md)
+defines the explicit normalized JSON/JSONL input for `agent-events`. Native
+client logs are not guessed or acquired. Unknown event types remain gaps.

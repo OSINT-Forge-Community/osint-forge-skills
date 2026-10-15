@@ -30,7 +30,7 @@ def checked_analysis(root, name, evidence, expected=None, evidence_id=None):
     return value, digest(data)
 
 
-def validate_review(root, evidence, claims, rows):
+def validate_review(root, evidence, claims, rows, schema=2):
     from .casefiles import bounded_text
     known, replaced = {}, set()
     evidence_ids = {row["id"] for row in evidence}
@@ -39,7 +39,7 @@ def validate_review(root, evidence, claims, rows):
         require(isinstance(identifier, str) and bool(REVIEW_ID.fullmatch(identifier))
                 and identifier not in known, "INVALID_REVIEW_ID")
         kind = row.get("kind")
-        require(kind in ("research", "entity", "relation", "annotation"), "INVALID_REVIEW_KIND")
+        require(kind in ("research", "entity", "relation", "annotation", "requirement", "analysis_revision"), "INVALID_REVIEW_KIND")
         bounded_text(row.get("recorded_at"), 100, "INVALID_REVIEW_TIME")
         bounded_text(row.get("rationale"), 8000, "INVALID_REVIEW_RATIONALE")
         references = row.get("evidence", [])
@@ -71,7 +71,7 @@ def validate_review(root, evidence, claims, rows):
             require(row["source"] != row["target"] and bool(references), "INVALID_RELATION")
             require(row.get("state") in ("observed", "candidate"), "INVALID_RELATION_STATE")
             bounded_text(row.get("label"), 300, "INVALID_RELATION_LABEL")
-        else:
+        elif kind == "annotation":
             allowed |= {"analysis", "sha256", "record_index", "tags", "note"}
             require(isinstance(row.get("sha256"), str) and bool(re.fullmatch(r"[0-9a-f]{64}", row["sha256"])),
                     "INVALID_DIGEST")
@@ -88,12 +88,21 @@ def validate_review(root, evidence, claims, rows):
                     and all(isinstance(tag, str) and bool(re.fullmatch(r"[a-zA-Z0-9_-]{1,40}", tag))
                             for tag in tags), "INVALID_TAGS")
             bounded_text(row.get("note"), 4000, "INVALID_ANNOTATION")
+        from .assurance import validate_review_extensions
+        validate_review_extensions(root, row, known, evidence, schema)
+        if schema >= 3:
+            extra_by_kind = {"research": {"question_id", "source_category"},
+                "entity": {"identifiers", "jurisdiction", "candidate_group"},
+                "relation": {"match_criteria"}, "annotation": set(),
+                "requirement": {"question_id", "question", "source_categories", "priority"},
+                "analysis_revision": {"previous_analysis", "previous_sha256", "replacement_analysis", "replacement_sha256"}}
+            allowed |= extra_by_kind[kind] | {"time_context"}
         require(set(row) <= allowed, "UNKNOWN_REVIEW_FIELD")
         known[identifier] = row
 
 
 def records(root, info):
-    return read_jsonl(root / "review.jsonl") if info["schema_version"] == 2 else []
+    return read_jsonl(root / "review.jsonl") if info["schema_version"] >= 2 else []
 
 
 def current(rows):
@@ -106,13 +115,13 @@ def append_review(case, record):
     require(isinstance(record, dict) and not {"id", "recorded_at"} & record.keys(), "INVALID_REVIEW_INPUT")
     verify(case)
     root, info, _, _ = load_case(case)
-    require(info["schema_version"] == 2, "CASE_UPGRADE_REQUIRED")
+    require(info["schema_version"] >= 2, "CASE_UPGRADE_REQUIRED")
     with case_lock(root):
         _, info, evidence, claims = load_case(root)
         rows = records(root, info)
         identifier = f"R{max((int(row['id'][1:]) for row in rows), default=0) + 1:06d}"
         entry = {**record, "id": identifier, "recorded_at": utc_now()}
-        validate_review(root, evidence, claims, rows + [entry])
+        validate_review(root, evidence, claims, rows + [entry], info["schema_version"])
         atomic_write(root / "review.jsonl", jsonl_bytes(rows + [entry]), replace=True)
     return {"id": identifier, "kind": entry["kind"]}
 

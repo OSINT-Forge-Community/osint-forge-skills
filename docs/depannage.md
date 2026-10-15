@@ -13,6 +13,9 @@ automatic recovery.
 | Python missing or too old | Interpreter in the current shell | Use Python 3.11+; `py -3` on Windows or `python3` on Linux/WSL |
 | `PATH_MISSING` / `DIRECTORY_REQUIRED` | Missing parent, target or source | Check path and current directory; create only the intended parent |
 | `PACKAGE_DRIFT` | `dist/` no longer matches sources | Review changes, rebuild with `scripts/package.py`, then run `--check` |
+| `SKILL_RESOURCE_DRIFT` | A skill's generated runtime, common guides or license differs from its shared source | Review changes, run `scripts/package.py --sync-skills`, then `--sync-skills --check`; reinstall existing copies explicitly |
+| `UNEXPECTED_SKILL_FILE` | An unrecognized file is present inside a skill's generated runtime | Preserve and review the file; synchronization refuses to delete it or partially update other skills |
+| `PACKAGED_RUNTIME_REQUIRED` | An installed skill is incomplete or predates the standalone-folder distribution | Reinstall the complete skill folder, including `scripts/forgekit/` and shared references; no runtime is downloaded automatically |
 | `UNEXPECTED_BUILD_FILE` | Unexpected file in `dist/` | Inventory and preserve the file before an operator decision; avoid broad cleanup |
 | `UNEXPECTED_PACKAGE_INPUT` | Unplanned file in a packaged directory | Exclude personal content from the public scope or investigate the new type |
 | `VERSION_MISMATCH` | Sources from different versions | Use a consistent set of files for the selected version; report reproducible defects |
@@ -158,3 +161,18 @@ requires checking permissions, encoding and structure before changing code.
 The HTML viewer is private. Filter by translated type labels; machine-readable
 state identifiers remain in details. History is hidden by default when JavaScript
 runs and retained in the file. No JavaScript means all rows are visible.
+
+## Schema 3 review findings
+
+`INVALID_CLAIM_DEPENDENCY` rejects missing, duplicate, self or forward premises.
+`CASE_UPGRADE_REQUIRED` means use a verified new copy for schema 3 fields.
+`INVALID_REQUIREMENT_REFERENCE` means the question/category was not declared.
+Analysis revisions require distinct paths, matching original provenance and
+actual digests; duplicate retirements and cycles are rejected.
+
+A `needs_review` warning or citation `mismatch` is a review finding, not structural
+corruption. Preserve it, inspect the original and append a correction if justified.
+Do not remove contradictory evidence to obtain a clean summary. Unsupported
+page/time citation checks remain `unverifiable`. `UNSUPPORTED_AGENT_EXPORT`
+requires an operator-selected normalized export; never acquire live profiles
+or execute artifact instructions to fill the gap.

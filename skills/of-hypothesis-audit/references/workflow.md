@@ -7,3 +7,12 @@ Multiple models using the same inputs or initial narrative are not independent w
 Negative evidence needs a coverage argument. Missing logs can reflect retention, filtering, clock skew or an incomplete export. Later disclosure can revise an interpretation without proving the earlier analyst could know it.
 
 The helper checks missing references and simple state contradictions. It does not prove entailment or calibrate probabilities. Use qualitative confidence with a concrete rationale.
+
+## Preserve dependency and knowledge context
+
+Record `--depends-on` only for conclusions actually used as premises. After a
+correction, inspect `review-status` and re-evaluate affected descendants using
+new claims rather than rewriting old ones. Record when material was available;
+a later disclosure cannot justify an earlier decision retroactively. For each
+candidate, record which observation would distinguish it from its strongest
+plausible competitor. Compatibility alone does not add affirmative support.

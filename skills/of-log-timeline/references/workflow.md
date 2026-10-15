@@ -7,3 +7,11 @@ Rows retain the piece ID and zero-based source-record index. Known UTC rows sort
 An ambiguous daylight-saving local time needs an offset or clock-context export. A minute-resolution timestamp cannot justify second-level sequencing.
 
 CSV escapes spreadsheet formula prefixes while JSON retains original timestamps. Vendor binary logs, raw EVTX and arbitrary text formats need a trusted structured export. Parse failure is a gap, not an empty timeline.
+
+## Four distinct dates
+
+Keep event time, publication time, acquisition time and analyst availability
+separate. Use optional `time_context` for supported source/availability dates;
+never copy an acquisition time into a missing event time. Retain resolution,
+clock assumptions and offset uncertainty. Link a search gap to the question
+whose answer depends on it. A complete query is not proof of complete logs.

@@ -1,6 +1,6 @@
 # Command reference
 
-This reference describes helper version **0.1.4**. The [contract v2](../shared/case-contract.md)
+This reference describes helper version **0.2.0**. The [contract v3](../shared/case-contract.md)
 defines invariants; [data formats](formats.md) describes the records.
 From source, prefix commands with `python3 scripts/forge.py`; on PowerShell,
 use `py -3 scripts/forge.py`. In a package, run a complete skill's
@@ -252,14 +252,14 @@ the fields, indexing, limits and interpretation of these offline commands.
 | `plan` | `--kind one supported input kind` | Suggested skills and stop conditions; executes nothing |
 | `intake` | `--case`, `--manifest` | Explicit files with individual provenance; committed prefix retained on failure |
 | `record` | `--case`, `--input` | Append validated research/entity/relation/annotation JSON |
-| `upgrade` | `--case`, `--out` | Verified new schema 2 copy of a schema 1 case |
+| `upgrade` | `--case`, `--out` | Verified schema 3 copy of a schema 1 or 2 case |
 | `capture` | `--case`, `--evidence`, `--format html or mhtml`, `--out` | Inert capture text, up to 4 MiB input and 100 MIME parts |
 | `compare` | `--case`, `--left`, `--right`, `--out` | UTF-8 changes, at most 200,000 bytes and 1,000 lines per input |
 | `import-events` | `--case`, `--evidence`, `--time-field`, `--event-field`, `--out` | Selected CSV fields, original indices and unmapped-column list |
 | `export-events` | `--case`, `--input analysis/events.json`, `--out` | Timesketch-field CSV, normalized times only; reports omissions |
 | `graph` | `--case`, `--out`; optional `--format json or graphml` | Evidence-linked relations and candidate status |
 
-`claim` accepts `--citations FILE` (JSON array) and `--supersedes C_ID` in schema 2.
+`claim` accepts `--citations FILE` (JSON array) and `--supersedes C_ID` in schema 2 or 3.
 `report --format html` writes the fixed private report path; repeat
 `--input analysis/events.json` for up to 20 selected event analyses (5,000 events
 total). `--lang en` is default; FR translates interface labels, not evidence.
@@ -270,3 +270,31 @@ to 4 MiB. No network resource or external library is loaded.
 `tool-run --reuse analysis/previous.json` explicitly reuses a compatible previous
 analysis after identity checks and a version probe. Omit it for fresh execution.
 No automatic cache, model call or tool installation is performed.
+
+## Contextual planning and review
+
+```text
+plan --kind organization
+plan --request selected-plan.json [--case CASE]
+sources [--category organization|domain|archive|imagery] [--jurisdiction FR]
+claim ... [--depends-on C000001] [--time-context dates.json]
+review-status --case CASE
+check-citations --case CASE
+agent-events --case CASE --evidence E000001 --format json|jsonl --out CASE/analysis/agent.json
+```
+
+The [review controls](../shared/assurance-workflows.md) define request fields,
+capability declarations, warning propagation, citation results and coverage
+requirements. Plans are advisory and do not launch tools. Excerpt checks compare
+qualified original lines/records or bound derived output; they never establish
+semantic support. Mismatches remain reportable review findings, while broken
+hash/reference integrity still fails verification.
+
+The [source profiles](../shared/source-workflows.md) are dated documentation,
+not API integrations. The [agent export schema](../skills/of-agent-artifacts/references/workflow.md)
+requires selected normalized data. No command discovers profiles, executes
+recorded tool calls, installs software or performs network research.
+
+New cases use schema 3; schemas 1 and 2 remain readable. Use
+`upgrade --case OLD --out NEW` to create a verified copy before recording new
+semantics. Existing journals and original cases are preserved.

@@ -21,3 +21,12 @@ coverage, candidate entities/relations, timeline annotations, private HTML,
 GraphML and CSV export losses. Its findings are scripted, not model discoveries.
 Run `python3 examples/review_demo.py --out cases/review-demo` from a public
 checkout or complete extracted plugin, choosing a new output directory.
+
+## Schema 3 assurance demonstration
+
+`assurance_demo.py` constructs original synthetic notices, two distinct fictional
+registry identifiers, a CSV and a normalized agent event export. No real person,
+organization or investigation is represented. It deliberately records one wrong
+excerpt so the check can display a mismatch; the fixture is not a product bug.
+All outputs are scripted helper results, not a model investigation or proof of
+general injection resistance. No network or external dataset is used.

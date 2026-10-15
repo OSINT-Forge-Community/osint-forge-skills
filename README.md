@@ -6,20 +6,20 @@
 
 <p align="center">
  <strong>From sources to findings. Keep the evidence.</strong><br>
- 15 OSINT &amp; forensic skills for AI assistants.<br>
+ 16 OSINT &amp; forensic skills for AI assistants.<br>
  Claude Code · Codex · OpenCode · Gemini CLI
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.1.4-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.1.4"></a>
- <a href="#the-skills"><img src="https://img.shields.io/badge/Skills-15-64748B?style=flat&amp;labelColor=24292F" alt="15 Skills"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.2.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.2.0"></a>
+ <a href="#the-skills"><img src="https://img.shields.io/badge/Skills-16-64748B?style=flat&amp;labelColor=24292F" alt="16 Skills"></a>
  <a href="#tools-you-can-use"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Optional Tools"></a>
  <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-5C6670?style=flat&amp;labelColor=24292F" alt="Software License: Apache-2.0"></a>
 </p>
 
 <p align="center">
- <a href="README.fr.md">Français</a> · <a href="#start-in-five-minutes">Quick start</a> · <a href="#tools-you-can-use">Tools</a> · <a href="#the-skills">15 skills</a> · <a href="#benchmarks">Benchmarks</a>
+ <a href="README.fr.md">Français</a> · <a href="#start-in-five-minutes">Quick start</a> · <a href="#tools-you-can-use">Tools</a> · <a href="#the-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
 Documents, source captures, logs and browser-history exports become a portable
@@ -63,6 +63,12 @@ export and restoration. [Walkthrough →](docs/demarrage.md)
 precise references, correction history, research gaps, annotated events and
 candidate relations. [Review and exchange guide](shared/review-workflows.md).
 
+**Review dependencies and citations:** run
+`python3 examples/assurance_demo.py --out cases/assurance-demo` and open its
+EN/FR HTML report. It shows transitive review warnings, declared coverage,
+source-record references and one intentional excerpt mismatch.
+[Planning and review](shared/assurance-workflows.md) · [Dated source cards](shared/source-workflows.md).
+
 <a id="tools-you-can-use"></a>
 
 ## Tools at your fingertips
@@ -92,7 +98,10 @@ Web search, DNS/RDAP and maps depend on your client's available, authorized tool
 
 ## Connect your assistant
 
-Build with `python3 scripts/package.py`, then install from `dist/`:
+Each complete folder in `skills/` is directly installable with its local runtime.
+[Copy a skill or use the Skills CLI →](docs/installation.md#direct-installation-with-the-skills-cli)
+
+For native plugins and ZIP archives, build with `python3 scripts/package.py`, then install from `dist/`:
 
 | Claude Code | Codex | OpenCode · Gemini CLI |
 | :---: | :---: | :---: |
@@ -110,7 +119,7 @@ Build with `python3 scripts/package.py`, then install from `dist/`:
 | --- | --- |
 | **Scope** | [Case start](skills/of-case-start/SKILL.md) |
 | **Check sources** | [Provenance](skills/of-source-provenance/SKILL.md) · [Domains](skills/of-domain-infrastructure/SKILL.md) · [Organizations](skills/of-organization-research/SKILL.md) · [Geolocation](skills/of-geolocation/SKILL.md) |
-| **Examine files** | [Documents](skills/of-document-triage/SKILL.md) · [Media](skills/of-media-forensics/SKILL.md) · [Browser history](skills/of-browser-artifacts/SKILL.md) · [Windows exports](skills/of-windows-artifacts/SKILL.md) |
+| **Examine files** | [Documents](skills/of-document-triage/SKILL.md) · [Media](skills/of-media-forensics/SKILL.md) · [Browser history](skills/of-browser-artifacts/SKILL.md) · [Windows exports](skills/of-windows-artifacts/SKILL.md) · [Agent event exports](skills/of-agent-artifacts/SKILL.md) |
 | **Test explanations** | [Timeline](skills/of-log-timeline/SKILL.md) · [Correlation](skills/of-evidence-correlate/SKILL.md) · [Hypotheses](skills/of-hypothesis-audit/SKILL.md) · [Version comparison](skills/of-version-compare/SKILL.md) |
 | **Hand off** | [Report](skills/of-investigation-report/SKILL.md) · [Export](skills/of-case-export/SKILL.md) |
 
@@ -119,16 +128,17 @@ Build with `python3 scripts/package.py`, then install from `dist/`:
 
 ## Tests & benchmarks
 
-Recorded on **October 14, 2026**: **117 tests passed** on Linux/WSL, including
+Recorded on **October 15, 2026**: **145 tests passed** on Linux/WSL, including
 **15 synthetic adapter tests**. [Benchmarks and real trials →](benchmarks/README.md)
 
 <details>
 <summary>What these checks cover, and what remains untested</summary>
 
-- 15 standalone runtimes, 4 installation adapters, demo export and restoration.
-- Four real forensic binaries and the EN/FR HTML viewer passed synthetic Linux container trials.
-- Six Codex review sessions completed; selected project skills were read in all three
-  sessions using them. Both conditions produced accepted assessments; no quality gain is demonstrated.
+- 16 standalone runtimes, 4 installation adapters, schema 3 review, citation checks, demo export and restoration.
+- Nine new Codex sessions completed across three conditions; content criteria were accepted in all nine,
+  with one workspace deviation. Skills were read in all three sessions using them; no general quality gain is demonstrated.
+- GraphML passed a NetworkX 3.7 round trip. Earlier real-binary, browser and six-session
+  review observations retain their October 14 snapshots.
 - Historical offline and SkillsBench results remain available with their limitations.
 - Full catalogue/client coverage, general investigation quality, prompt-injection resistance,
   native Windows/macOS and real third-party application imports remain unvalidated.

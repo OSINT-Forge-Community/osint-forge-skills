@@ -9,3 +9,11 @@ The operator supplies stable copies. Request a coherent browser backup rather th
 Resume a case by checking integrity and its original scope. Additional evidence never silently expands permission.
 
 For a bounded, explicitly selected list, `add-many` verifies the case before and after intake under one lock. It never crawls directories. Optional provenance applies to every selected file. A failure may leave completed additions: verify the case and inspect its journal before resuming only the remaining files. Sources are still copied one at a time; no original is modified.
+
+## Question and capability plan
+
+Use `plan --request` to attach the supplied question to the selected material,
+capabilities already available and authorized, and a step budget. Preserve
+ambiguous input types until the question resolves them. A plan's case state can
+surface conclusions needing review before new collection. Do not repeat intake
+already established or treat a capability declaration as host permission.

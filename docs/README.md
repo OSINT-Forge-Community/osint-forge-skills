@@ -1,6 +1,6 @@
 # OSINT Forge Skills user documentation
 
-These guides cover the fifteen skills in version **0.1.4**: install the tools,
+These guides cover the sixteen skills in version **0.2.0**: install the tools,
 try a synthetic case, analyze selected evidence, and hand off findings with
 references and limitations. The [main README](../README.md) introduces the
 catalogue and overall workflow. English is the primary documentation language.
@@ -10,10 +10,13 @@ catalogue and overall workflow. English is the primary documentation language.
 | I want to… | Start here |
 | --- | --- |
 | **Try a first case** without an account or model | [Guided demo](demarrage.md) |
-| **Install the skills** in my assistant | [Choose a client](installation.md) |
+| **Install the skills** in my assistant | [Copy a complete skill or use the Skills CLI](installation.md#direct-installation-with-the-skills-cli) · [Choose a client](installation.md) |
 | **Analyze or share evidence** with the local tools | [Commands and limits](cli.md) |
 | **Use metadata, PDF, OCR and media tools** | [Optional adapters](cli.md#optional-local-tools) · [Tool workflows](../shared/tool-workflows.md) |
 | **Review corrections, graphs or forensic exports** | [Review workflows](../shared/review-workflows.md) · [Synthetic viewer demo](../examples/review_demo.py) |
+| **Plan a question, review dependencies or check excerpts** | [Planning and evidence review](../shared/assurance-workflows.md) |
+| **Select a public source or forensic export profile** | [Dated sources and profiles](../shared/source-workflows.md) |
+| **Review supplied AI agent event exports** | [Agent event skill](../skills/of-agent-artifacts/SKILL.md) |
 | **Understand a case** and its references | [Data formats](formats.md) |
 | **Resolve an error** or interrupted operation | [Troubleshooting](depannage.md) |
 | **Share feedback or suggest an improvement** | [Contributing](../CONTRIBUTING.md) |
@@ -25,7 +28,7 @@ and [security model](../SECURITY.md). Asset notices are in the
 
 ## Private cases and the host environment
 
-The [contract v2](../shared/case-contract.md) describes preservation invariants.
+The [contract v3](../shared/case-contract.md) describes preservation invariants.
 Python helpers work offline on selected files. Assistant permissions, model
 choice and other tools depend on the host client. A hash verifies bytes; it
 does not establish authenticity.

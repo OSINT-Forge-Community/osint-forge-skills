@@ -2,14 +2,14 @@
 
 These commands are included in each generated skill. Prefix them with
 `python scripts/forge.py` from the loaded skill. All examples are synthetic.
-New cases use schema 2. Read schema 1 cases normally; use
-`upgrade --case OLD --out NEW` before adding v2 records. It preserves OLD.
+New cases use schema 3. Read schema 1 and 2 cases normally; use
+`upgrade --case OLD --out NEW` before adding newer record semantics. It preserves OLD.
 
 ## Select a workflow
 
 `plan --kind organization` suggests relevant skills without loading or executing
 them. Other kinds: documents, media, domain, versions, windows-export, browser,
-logs. Load one skill at a time and only the reference needed at that step.
+logs, agent-export. Load one skill at a time and only the reference needed at that step.
 The plan is a suggestion, not authorization for network activity or installation.
 Record missing capabilities and stop when further evidence would not discriminate
 the hypotheses or the authorized scope is exhausted.
@@ -118,3 +118,7 @@ the executable version. Reuse is marked explicitly and is not a fresh execution
 or independent corroboration. Omit --reuse to reproduce the analysis. A local
 actor able to rewrite an analysis can also rewrite its hashes; reproduce when
 the analysis is untrusted. System libraries and trained OCR data are not hashed.
+
+For contextual plans, dependency warnings, citations, requirements and dated
+identity context, read the shared assurance workflow. Source selection and
+forensic-export profiles are in the shared source workflow.

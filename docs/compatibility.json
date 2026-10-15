@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-14",
-  "skill_version": "0.1.4",
-  "evidence_policy": "Historical observations retain their recorded source snapshots. The review pilot and isolated integrations below use 0.1.4 development snapshots; final source checks are separate. Packaging does not establish real model behavior.",
+  "as_of": "2026-10-15",
+  "skill_version": "0.2.0",
+  "evidence_policy": "Each observation retains its source snapshot. Historical review, binary and browser results use earlier snapshots. Current 0.2.0 source checks and the nine-session assurance pilot are recorded separately; packaging is not proof of model behavior.",
   "clients": {
     "claude": {
       "observed_version": "2.1.220",
@@ -25,8 +25,8 @@
       "package_structure": "passed",
       "offline_standalone_installation": "passed_synthetic_workspace",
       "native_manifest": "schema_structure_only",
-      "actual_discovery_and_invocation": "selected_project_skills_read_and_helpers_used_in_three_review_sessions",
-      "model_trials": "historical_citation_pilot_and_six_review_sessions_completed",
+      "actual_discovery_and_invocation": "selected_project_skills_read_in_historical_review_and_current_assurance_sessions_native_plugin_discovery_not_qualified",
+      "model_trials": "historical_pilots_and_nine_current_assurance_sessions_completed",
       "model_trial_evidence": {
         "date": "2026-10-14",
         "model": "gpt-6.1-sol",
@@ -52,6 +52,26 @@
         "project_skill_sessions_with_explicit_reads": 3,
         "result": "../benchmarks/results/2026-10-14-review-model/results.json",
         "scope": "Three synthetic scenarios, one run per condition, non-blind review, helper drift in one baseline; no demonstrated quality gain."
+      },
+      "assurance_trial_evidence": {
+        "date": "2026-10-15",
+        "skill_version": "0.2.0",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "xhigh",
+        "sessions_attempted": 9,
+        "sessions_completed": 9,
+        "automatic_session_retries": 0,
+        "semantic_criteria_accepted": 9,
+        "strict_workspace_constraint_met": 8,
+        "project_skill_sessions_with_observed_reads": 3,
+        "distinct_project_skills_read": 5,
+        "functional_forge_invocation_sessions": 1,
+        "originals_unchanged": 9,
+        "citation_locators_checked": 57,
+        "exact_excerpts_checked": 40,
+        "result": "../benchmarks/results/2026-10-15-assurance-model/results.json",
+        "source_manifest": "../benchmarks/results/2026-10-15-assurance-model/source-manifest.json",
+        "scope": "Three development scenarios, one session per condition, non-blind review; one helpers-only scratch write outside workspace. No general quality gain demonstrated."
       }
     },
     "opencode": {
@@ -93,17 +113,20 @@
     "model_tool_invocation": "not_run",
     "automatic_installation": false,
     "executables_bundled": false,
-    "qualification_record": "../benchmarks/results/2026-10-14-review-integration/results.json"
+    "qualification_record": "../benchmarks/results/2026-10-14-review-integration/results.json",
+    "observed_on": "2026-10-14",
+    "source_snapshot": "historical_0.1.4_development"
   },
-  "recorded_evidence_skill_version": "mixed_0.1.0_historical_and_0.1.4_review_snapshots",
+  "recorded_evidence_skill_version": "historical_0.1.0_and_0.1.4_snapshots_plus_current_0.2.0_assurance_snapshot",
   "case_schema": {
-    "new_cases": 2,
+    "new_cases": 3,
     "readable": [
       1,
-      2
+      2,
+      3
     ],
     "upgrade": "explicit_verified_copy",
-    "older_v1_readers": "reject_v2"
+    "older_readers": "reject_v3"
   },
   "html_viewer": {
     "chromium": "155.0.8059.39",
@@ -111,11 +134,65 @@
     "en_fr_filters_history_annotations": "passed",
     "hostile_text_display": "inert_in_synthetic_trial",
     "remote_page_requests": 0,
-    "native_windows_macos": "not_run"
+    "native_windows_macos": "not_run",
+    "observed_on": "2026-10-14",
+    "source_snapshot": "historical_0.1.4_development_current_0.2.0_browser_visual_trial_not_run"
+  },
+  "standalone_folder_distribution": {
+    "as_of": "2026-10-15",
+    "skill_version": "0.2.0",
+    "skill_count": 16,
+    "copied_source_folders_without_build": "passed_isolated_python_doctor_and_synthetic_case",
+    "shared_resources": "generated_and_checked_against_shared_sources",
+    "skills_cli": {
+      "observed_version": "1.7.2",
+      "platform": "Linux/WSL",
+      "source": "local_public_fixture_without_shared_or_dist",
+      "scope": "temporary_project_codex_destination",
+      "mode": "copy",
+      "installed_skill_count": 16,
+      "all_installed_files_match_source": true,
+      "doctor_passed": 16,
+      "synthetic_init_add_verify": "passed",
+      "original_evidence_bytes_and_mtime": "preserved",
+      "telemetry_enabled": false,
+      "node_network_apis": "blocked_for_local_install_trial",
+      "network_attempts": 0,
+      "global_settings_changed": false,
+      "github_installation": "not_run",
+      "directory_indexing": "not_requested",
+      "model_trials": "not_run",
+      "native_windows_macos": "not_run"
+    }
   },
   "interoperability": {
-    "graphml": "standard_library_xml_parse_passed",
-    "timesketch_csv": "documented_field_mapping_and_omissions_tested",
-    "external_application_imports": "not_run"
+    "as_of": "2026-10-15",
+    "skill_version": "0.2.0",
+    "graphml": "passed_NetworkX_3.7_read_and_write_roundtrip_synthetic_ids_accents_jurisdictions_candidate_state_matching_criteria_and_time_metadata",
+    "timesketch_csv": "standard_library_parse_and_field_loss_checks_only_no_application_import",
+    "external_application_imports": "not_run",
+    "runtime_dependency_added": false
+  },
+  "current_preparation": {
+    "date": "2026-10-15",
+    "version": "0.2.0",
+    "source_checks": "passed_16_skills_20_python_sources_145_tests",
+    "model_trials": "nine_sessions_completed_non_blind_review_no_retries_one_workspace_deviation",
+    "client_invocation": "selected_project_skill_reads_and_one_functional_agent_helper_workflow_observed",
+    "scope": "Current model snapshot identifies 432 frozen files. Historical client, binary and visual observations retain their own snapshots."
+  },
+  "current_local_verification": {
+    "date": "2026-10-15",
+    "version": "0.2.0",
+    "case_schema": 3,
+    "source_validation": "passed",
+    "skills": 16,
+    "python_sources": 20,
+    "unit_tests_passed": 145,
+    "unit_tests_elapsed_seconds": 591.04,
+    "skill_format_validation": "passed_16_of_16_skill_creator",
+    "source_and_extracted_archive_demos": "passed_synthetic_isolated_python",
+    "claude_native_manifest": "passed_cli_2.1.220",
+    "current_browser_visual_trial": "not_run"
   }
 }

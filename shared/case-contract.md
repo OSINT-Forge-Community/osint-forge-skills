@@ -1,4 +1,4 @@
-# Case contract v2 (v1 readable)
+# Case contract v3 (v1 and v2 readable)
 
 The bundled utility runs without network access or optional Python packages.
 Use `python scripts/forge.py --help` relative to the loaded skill directory.
@@ -7,7 +7,7 @@ The authoring repository also exposes `python scripts/forge.py` at its root.
 
 ## Private case layout
 
-- `case.json`: schema version 2, scope, title and creation time.
+- `case.json`: schema version 3, scope, title and creation time.
 - `evidence.jsonl`: stable E000001 identifiers, relative raw paths, SHA-256,
   size, original basename, acquisition time, optional HTTPS source URL and
   analyst origin label. A label never establishes source independence.
@@ -15,7 +15,7 @@ The authoring repository also exposes `python scripts/forge.py` at its root.
   evidence IDs; `observed`, `inferred` or `unconfirmed` state; qualitative
   confidence; rationale containing assumptions, limitations and what would
   distinguish competing explanations.
-- `review.jsonl`: v2 research coverage, entities, relations and event annotations.
+- `review.jsonl`: research coverage, entities, relations, event annotations and schema 3 review extensions.
 - `raw/`: exact private copies of explicitly selected source files.
 - `analysis/`, `reports/`, `exports/`: derived local outputs.
 
@@ -97,21 +97,29 @@ export. Public bundles contain the reviewed view and its export manifest only.
 
 ## Versioned review records
 
-New cases use schema 2. Readers retain schema 1 support; older v1 clients reject
-v2 cases. `upgrade --case OLD --out NEW` creates a verified v2 copy without
-modifying OLD. Never change schema metadata by hand. V2 private exports include
-review.jsonl; the archive manifest format remains version 1.
+New cases use schema 3. Readers retain schema 1 and 2 support; older readers
+reject schema 3. `upgrade --case OLD --out NEW` creates a verified current-schema
+copy without modifying OLD or its historical journals. Never change schema
+metadata by hand. Private exports include review.jsonl for schemas 2 and 3;
+the archive manifest format remains version 1.
 
 Claims may add precise `citations` and `supersedes`. Citations locate pages,
 lines, source records or milliseconds; analysis citations bind a case-relative
-path and digest to the original evidence. References and ranges are validated,
-not semantic relevance or excerpt accuracy. Corrections append new claims and
+path and digest to the original evidence. References and ranges are validated structurally. `check-citations` additionally
+checks qualified text/record excerpts; it does not verify semantic relevance. Corrections append new claims and
 can replace only a current earlier claim. History remains available.
 
 Review records have R identifiers, kind, recorded_at and rationale. Research
 records distinguish not_searched, no_result, partial, unavailable and completed.
 Entities require evidence; relationships connect existing entities, carry evidence
 and state observed or candidate, and never automatically merge identities.
+Schema 3 adds earlier-claim `depends_on` links, optional `time_context`,
+requirement records with Q identifiers, explicit analysis revisions and optional
+entity identifiers/jurisdiction and relation matching criteria. Read the bundled
+assurance workflow for exact fields. `review-status` computes historical/current/
+needs_review states and declared coverage. A warning never rewrites a claim.
+A current state is not a truth assessment.
+
 Annotations bind an event index to a hashed analysis. Research and annotation
 corrections append a same-kind superseding entry. Unknown fields are rejected.
 
@@ -152,6 +160,11 @@ tool-run --case CASE --evidence E000001 --tool exiftool|pdftotext|tesseract|ffpr
          [--first-page N --last-page M] [--language eng] [--reuse analysis/previous.json]
 ```
 
-Additional commands: `plan`, `intake`, `record`, `upgrade`, `capture`, `compare`,
+Additional commands: `review-status`, `check-citations`, `sources`, `agent-events`, `plan`, `intake`, `record`, `upgrade`, `capture`, `compare`,
 `import-events`, `export-events`, and `graph`. Use each command's --help and the
 bundled review workflow guide. No command performs automatic remote collection.
+
+For contextual plans, dependency paths, exact excerpt checks and coverage, see
+the shared assurance workflow. Source cards and supplied-export profiles are
+static references; no command visits them automatically. Normalized agent-event
+exports are selected files, never live profiles or native-client auto-collection.

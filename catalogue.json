@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.1.4",
+  "version": "0.2.0",
   "skills": [
     {
       "name": "of-case-start",
@@ -76,6 +76,11 @@
       "name": "of-windows-artifacts",
       "title": "Review Windows artifact exports",
       "description": "Interpret explicitly supplied Windows forensic CSV exports with evidence-linked timelines. Use for EVTX, Prefetch, registry or NTFS exports from an operator-selected parser; not for live collection, binary artifact parsing or inferring execution from every artifact timestamp."
+    },
+    {
+      "name": "of-agent-artifacts",
+      "title": "Review supplied agent events",
+      "description": "Interpret explicitly supplied normalized AI agent event exports. Use for agent trace review, tool-call reconstruction and reported-effect verification; not for live profile collection, credentials or assuming that model text proves execution."
     }
   ]
 }

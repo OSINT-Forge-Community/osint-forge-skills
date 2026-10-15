@@ -68,3 +68,8 @@ dist/
 /benchmarks/results/2026-10-14-review-model/*
 !/benchmarks/results/2026-10-14-review-model/results.json
 !/benchmarks/results/2026-10-14-review-model/source-manifest.json
+
+!/benchmarks/results/2026-10-15-assurance-model/
+/benchmarks/results/2026-10-15-assurance-model/*
+!/benchmarks/results/2026-10-15-assurance-model/results.json
+!/benchmarks/results/2026-10-15-assurance-model/source-manifest.json

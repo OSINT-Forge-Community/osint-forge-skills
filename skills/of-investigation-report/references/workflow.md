@@ -7,3 +7,12 @@ Literal observations, supported inferences and unconfirmed candidates have diffe
 Qualitative confidence needs rationale. Do not claim calibrated probability, expert certification, judicial admissibility or absolute authenticity. Integrity checks are distinct from these conclusions.
 
 Reports can contain personal data. Markdown or hashes do not make them safe to share. Benchmark results name actual client/model, fixture and skill versions; unavailable trials remain not_run.
+
+## Pre-delivery review state
+
+Inspect `review-status` and `check-citations` before presenting conclusions.
+Keep needs-review warnings and their dependency paths visible. Distinguish
+excerpt matches, valid locators and automatically unverifiable citations from
+human assessment of meaning. Lead with findings relevant to the stated question,
+then unresolved competitors and critical declared coverage gaps. A current
+claim or completed search is not a truth verdict.

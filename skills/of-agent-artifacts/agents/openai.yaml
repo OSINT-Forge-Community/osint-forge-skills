@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review supplied agent event exports"
+  short_description: "Separate agent requests from verified host effects"
+  default_prompt: "Use $of-agent-artifacts to review this selected synthetic event export and distinguish requests, reported results and corroborated observations."

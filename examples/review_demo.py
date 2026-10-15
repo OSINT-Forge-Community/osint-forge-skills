@@ -71,6 +71,6 @@ def demo(destination):
 
 
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser(description='Create an original synthetic schema v2 review and exchange case.')
+    parser=argparse.ArgumentParser(description='Create an original synthetic review and exchange case.')
     parser.add_argument('--out',required=True)
     print(json.dumps(demo(parser.parse_args().out),sort_keys=True))

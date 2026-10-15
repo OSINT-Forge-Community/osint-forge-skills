@@ -1,11 +1,15 @@
 {
   "name": "osint-forge",
   "description": "Evidence-linked OSINT and forensic skills with offline case utilities",
-  "owner": {"name": "OSINT Forge"},
-  "plugins": [{
-    "name": "osint-forge-skills",
-    "source": "./dist/plugins/osint-forge-skills",
-    "description": "Portable evidence-linked OSINT and forensic skills",
-    "version": "0.1.4"
-  }]
+  "owner": {
+    "name": "OSINT Forge"
+  },
+  "plugins": [
+    {
+      "name": "osint-forge-skills",
+      "source": "./dist/plugins/osint-forge-skills",
+      "description": "Portable evidence-linked OSINT and forensic skills",
+      "version": "0.2.0"
+    }
+  ]
 }

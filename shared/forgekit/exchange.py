@@ -15,6 +15,7 @@ from .casefiles import evidence_bytes, load_case, verify
 from .review import checked_analysis, current, records
 from .safeio import ForgeError, MAX_JSON, MAX_RECORDS, digest, read_json, require, visible
 from .timestamps import timestamp
+from .assurance import dependency_status
 
 
 def source(case, identifier):
@@ -162,14 +163,20 @@ def graph(case):
     root, info, evidence, claims = load_case(case)
     rows = current(records(root, info))
     nodes = [{"id": row["id"], "kind": "evidence", "label": row["original_name"]} for row in evidence]
-    nodes += [{"id": row["id"], "kind": "claim", "label": row["text"]} for row in claims]
-    nodes += [{"id": row["id"], "kind": row["entity_type"], "label": row["label"]}
+    statuses = dependency_status(claims, rows)
+    nodes += [{"id": row["id"], "kind": "claim", "label": row["text"],
+               "review_status": statuses[row["id"]]["status"], "time_context": row.get("time_context", {})} for row in claims]
+    nodes += [{"id": row["id"], "kind": row["entity_type"], "label": row["label"],
+               **{key: row[key] for key in ("identifiers", "jurisdiction", "candidate_group", "time_context") if key in row}}
               for row in rows if row["kind"] == "entity"]
     edges = []
     for row in claims:
         for key in ("supports", "contradicts"):
             edges += [{"source": ref, "target": row["id"], "label": key,
                        "state": "analyst_asserted", "evidence": [ref]} for ref in row[key]]
+        for parent in row.get("depends_on", []):
+            edges.append({"source": parent, "target": row["id"], "label": "premise",
+                          "state": statuses[row["id"]]["status"], "evidence": row["supports"]})
         if row.get("supersedes"):
             edges.append({"source": row["id"], "target": row["supersedes"], "label": "supersedes",
                           "state": "recorded", "evidence": row["supports"]})
@@ -178,7 +185,7 @@ def graph(case):
             edges += [{"source": ref, "target": row["id"], "label": "documents",
                        "state": "analyst_asserted", "evidence": [ref]} for ref in row["evidence"]]
         if row["kind"] == "relation":
-            edges.append({key: row[key] for key in ("source", "target", "label", "state", "evidence")})
+            edges.append({key: row[key] for key in ("source", "target", "label", "state", "evidence", "time_context", "match_criteria") if key in row})
     return {"nodes": nodes, "edges": edges,
             "limitations": ["Relations are analyst assertions or candidates, not automatic identity resolution."]}
 
@@ -186,16 +193,21 @@ def graph(case):
 def graphml(case):
     data = graph(case)
     root = ET.Element("graphml", xmlns="http://graphml.graphdrawing.org/xmlns")
-    for key in ("kind", "label", "state", "evidence"):
+    for key in ("kind", "label", "state", "evidence", "review_status", "time_context", "identifiers", "jurisdiction", "candidate_group", "match_criteria"):
         ET.SubElement(root, "key", {"id": key, "for": "all", "attr.name": key, "attr.type": "string"})
     container = ET.SubElement(root, "graph", id="case", edgedefault="directed")
     for node in data["nodes"]:
         element = ET.SubElement(container, "node", id=node["id"])
-        for key in ("kind", "label"):
-            ET.SubElement(element, "data", key=key).text = visible(node[key])
+        for key in ("kind", "label", "review_status", "time_context", "identifiers", "jurisdiction", "candidate_group"):
+            if key in node:
+                value = node[key]
+                ET.SubElement(element, "data", key=key).text = visible(
+                    json.dumps(value, ensure_ascii=False, sort_keys=True) if isinstance(value, (dict, list)) else value, MAX_JSON)
     for index, edge in enumerate(data["edges"]):
         element = ET.SubElement(container, "edge", id=f"edge{index}", source=edge["source"], target=edge["target"])
-        for key in ("label", "state", "evidence"):
-            ET.SubElement(element, "data", key=key).text = visible(
-                json.dumps(edge[key]) if key == "evidence" else edge[key])
+        for key in ("label", "state", "evidence", "time_context", "match_criteria"):
+            if key in edge:
+                value = edge[key]
+                ET.SubElement(element, "data", key=key).text = visible(
+                    json.dumps(value, ensure_ascii=False, sort_keys=True) if isinstance(value, (dict, list)) else value, MAX_JSON)
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)

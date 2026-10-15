@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.2.0 - 2026-10-15
+
+Local preparation; no tag or publication is implied.
+
+- Add schema 3 premise dependencies and transitive review warnings, explicit
+  analysis revisions, declared coverage requirements and dated entity context.
+  Read schema 1/2 and migrate only through a verified copy.
+- Check qualified UTF-8 and structured-record citations without claiming
+  semantic support, OCR accuracy or authenticity.
+- Enrich advisory plans with questions, declared capabilities, budgets and
+  case review state; include nine dated static source cards and export profiles.
+- Strengthen all existing workflows, including competing geolocation candidates
+  and viewpoint checks. Add a selected normalized agent-event export skill
+  (16 total), with no live collection or tool-call execution.
+- Add an original offline assurance demo with EN/FR reports and export/restore.
+  Model trials and external application imports retain their actual test status.
+
+## Unreleased - directly installable skill folders
+
+- Include generated offline runtimes, common references, licenses and notices
+  in every versioned skill folder for direct copying or Skills CLI installation.
+- Synchronize from `shared/` with `scripts/package.py`; use `--sync-skills` for
+  folders only. Check mode refuses missing or divergent resources without writes,
+  and synchronization preserves unrecognized runtime files by refusing the update.
+- Document local Skills CLI installation separately from remote publication,
+  directory indexing and actual model trials.
+
 ## Unreleased - evidence review and interoperability
 
 - Use standard Shields.io badges embedded in HTML in both README editions.

@@ -6,20 +6,20 @@
 
 <p align="center">
  <strong>Des sources aux conclusions. Gardez les preuves.</strong><br>
- 15 skills OSINT et forensic pour les assistants IA.<br>
+ 16 skills OSINT et forensic pour les assistants IA.<br>
  Claude Code · Codex · OpenCode · Gemini CLI
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.1.4-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.1.4"></a>
- <a href="#les-skills"><img src="https://img.shields.io/badge/Skills-15-64748B?style=flat&amp;labelColor=24292F" alt="15 Skills"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.2.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.2.0"></a>
+ <a href="#les-skills"><img src="https://img.shields.io/badge/Skills-16-64748B?style=flat&amp;labelColor=24292F" alt="16 Skills"></a>
  <a href="#les-outils-utilisables"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Outils Optionnels"></a>
  <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-5C6670?style=flat&amp;labelColor=24292F" alt="Licence : Apache-2.0"></a>
 </p>
 
 <p align="center">
- <a href="README.md">English</a> · <a href="#démarrer-en-cinq-minutes">Démarrage</a> · <a href="#les-outils-utilisables">Outils</a> · <a href="#les-skills">15 skills</a> · <a href="#benchmarks">Benchmarks</a>
+ <a href="README.md">English</a> · <a href="#démarrer-en-cinq-minutes">Démarrage</a> · <a href="#les-outils-utilisables">Outils</a> · <a href="#les-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
 Documents, captures de sources, journaux et exports d’historique deviennent un
@@ -64,6 +64,12 @@ et sa restauration. Les libellés sont français, le corpus reste anglais.
 les références précises, l’historique des corrections, les recherches incomplètes,
 les événements annotés et les relations candidates. [Guide de relecture et d’échange](shared/review-workflows.md).
 
+**Revoir les dépendances et citations :** lancer
+`python3 examples/assurance_demo.py --out cases/assurance-demo`, puis ouvrir
+son rapport HTML FR. La démo affiche les conclusions à réexaminer, la couverture
+déclarée et une citation volontairement incorrecte.
+[Planification et revue](shared/assurance-workflows.md) · [Fiches de sources](shared/source-workflows.md).
+
 <a id="les-outils-utilisables"></a>
 
 ## Les outils à disposition
@@ -94,7 +100,10 @@ Recherche web, DNS/RDAP et cartes dépendent des outils disponibles et autorisé
 
 ## Connecter son assistant
 
-Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
+Chaque dossier complet dans `skills/` s’installe directement avec son runtime local.
+[Copie d’un skill ou installation avec le CLI Skills →](docs/installation.md#direct-installation-with-the-skills-cli)
+
+Pour les plugins natifs et les archives ZIP, construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 
 | Claude Code | Codex | OpenCode · Gemini CLI |
 | :---: | :---: | :---: |
@@ -112,7 +121,7 @@ Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 | --- | --- |
 | **Cadrer** | [Ouvrir un dossier](skills/of-case-start/SKILL.md) |
 | **Vérifier les sources** | [Provenance](skills/of-source-provenance/SKILL.md) · [Domaines](skills/of-domain-infrastructure/SKILL.md) · [Organisations](skills/of-organization-research/SKILL.md) · [Géolocalisation](skills/of-geolocation/SKILL.md) |
-| **Examiner les fichiers** | [Documents](skills/of-document-triage/SKILL.md) · [Médias](skills/of-media-forensics/SKILL.md) · [Historique navigateur](skills/of-browser-artifacts/SKILL.md) · [Exports Windows](skills/of-windows-artifacts/SKILL.md) |
+| **Examiner les fichiers** | [Documents](skills/of-document-triage/SKILL.md) · [Médias](skills/of-media-forensics/SKILL.md) · [Historique navigateur](skills/of-browser-artifacts/SKILL.md) · [Exports Windows](skills/of-windows-artifacts/SKILL.md) · [Exports d’agents](skills/of-agent-artifacts/SKILL.md) |
 | **Confronter les explications** | [Chronologie](skills/of-log-timeline/SKILL.md) · [Corrélation](skills/of-evidence-correlate/SKILL.md) · [Hypothèses](skills/of-hypothesis-audit/SKILL.md) · [Comparaison de versions](skills/of-version-compare/SKILL.md) |
 | **Transmettre** | [Rapport](skills/of-investigation-report/SKILL.md) · [Export](skills/of-case-export/SKILL.md) |
 
@@ -121,16 +130,17 @@ Construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
 
 ## Tests et benchmarks
 
-Consigné le **14 octobre 2026** : **117 tests réussis** sous Linux/WSL, dont
+Consigné le **15 octobre 2026** : **145 tests réussis** sous Linux/WSL, dont
 **15 tests synthétiques des adaptateurs**. [Benchmarks et essais réels →](benchmarks/README.md)
 
 <details>
 <summary>Périmètre des contrôles et essais restant à réaliser</summary>
 
-- 15 runtimes autonomes, 4 adaptateurs d’installation, export et restauration de la démo.
-- Quatre exécutables forensic réels et le lecteur HTML FR/EN vérifiés sur des données synthétiques en conteneur Linux.
-- Six sessions de revue Codex terminées ; les skills du projet ont été lus dans les trois
-  sessions qui en disposaient. Les deux conditions donnent des conclusions acceptées, sans gain de qualité démontré.
+- 16 runtimes autonomes, 4 adaptateurs d’installation, revue de schéma 3, citations, export et restauration de la démo.
+- Neuf nouvelles sessions Codex terminées sur trois conditions ; critères de contenu acceptés dans les neuf,
+  avec un écart de workspace. Skills lus dans les trois sessions qui en disposaient ; aucun gain général de qualité démontré.
+- GraphML lu et réécrit avec NetworkX 3.7. Les anciens essais de binaires, navigateur et
+  six sessions de revue gardent leurs snapshots du 14 octobre.
 - Les résultats historiques hors ligne et SkillsBench restent disponibles avec leurs limites.
 - La couverture de tous les skills et clients, la qualité générale d’enquête, la résistance aux injections,
   Windows/macOS natifs et les imports dans des applications tierces restent à valider.

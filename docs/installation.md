@@ -5,8 +5,12 @@ Start with the [main README](../README.md) and
 includes usage and troubleshooting guides. These commands register or copy
 skills; actual discovery/model behavior is tracked separately.
 
-Run Python 3.11+ from this repository and build with `python scripts/package.py`.
-The build is offline. In PowerShell use `py -3`; in Linux/WSL use `python3` when
+Every complete folder under `skills/` contains its local runtime, shared guides,
+license and notice. It can be copied directly into a target client's skills
+directory without building the repository. Retain the entire folder.
+
+Python 3.11+ is required for the helpers. Build archives and native plugin
+packages with `python scripts/package.py`. The build is offline. In PowerShell use `py -3`; in Linux/WSL use `python3` when
 `python` is not mapped. Quote paths with spaces. Install into the filesystem
 and user environment used by the target client; Windows and WSL homes differ.
 
@@ -20,12 +24,50 @@ python3 scripts/package.py --check
 ```
 
 On Windows/PowerShell, use `py -3` in place of `python3`. The build creates the
-full plugin, fifteen standalone archives and `SHA256SUMS` in `dist/`. The second
-command checks that the generated files match the current sources. Do not
-install the authoring folders in `skills/`: their runtime is added at build time.
+full plugin, one standalone archive per skill and `SHA256SUMS` in `dist/`.
+The build also synchronizes the generated resources in `skills/` from `shared/`.
+The second command verifies both the checked-in skill resources and `dist/`
+without changing files. Maintain shared resources in `shared/`, then regenerate;
+do not edit the generated copies inside skills by hand.
+
+To synchronize or check only the skill folders, without building archives:
+
+```bash
+python3 scripts/package.py --sync-skills
+python3 scripts/package.py --sync-skills --check
+```
 
 An extracted full distribution is already built. Follow the client sections
 below from its root; it does not contain the source build script.
+
+## Direct installation with the Skills CLI
+
+The third-party [Skills CLI](https://github.com/vercel-labs/skills) can install
+these complete folders. Node/npm is needed only if you choose this installer;
+the Python helpers remain standard-library-only and offline.
+
+Run from your target workspace, using the absolute path to your local checkout:
+
+```bash
+DISABLE_TELEMETRY=1 npx skills@1.7.2 add "/absolute/path/to/osint-forge-skills" --skill of-case-start --agent codex --copy
+```
+
+Choose project scope and a single installation route. `--copy` retains all
+runtime files inside the skill; replace `codex` with your intended agent.
+For PowerShell, set `$env:DISABLE_TELEMETRY = "1"` before invoking `npx`.
+Downloading the CLI through npm uses the network. Its telemetry is independently
+controlled by the installer; the examples disable it. No provider is installed.
+
+Once the complete folders are committed and pushed, the same source argument
+can be replaced with `OSINT-Forge-Community/osint-forge-skills`. That GitHub
+installation requires network access. Local CLI installation is recorded
+separately from remote installation, directory indexing and actual model use in
+[the compatibility ledger](compatibility.json).
+
+You can also copy one complete folder from `skills/` into the destination below
+without Node/npm. Stop if a same-name skill already exists. Skills CLI and manual
+copies do not create receipts for this repository's installer; use the selected
+installer's own removal procedure.
 
 ## Native Claude Code plugin
 

@@ -68,7 +68,7 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
         require(safe_path(root / folder).is_dir(), "INVALID_CASE_DIRECTORY")
     case = read_json(root / "case.json")
     require(isinstance(case, dict) and type(case.get("schema_version")) is int
-            and case["schema_version"] in (1, SCHEMA_VERSION),
+            and case["schema_version"] in (1, 2, SCHEMA_VERSION),
             "UNSUPPORTED_CASE_SCHEMA")
     bounded_text(case.get("title"), 300, "INVALID_TITLE")
     bounded_text(case.get("scope"), 8000, "INVALID_SCOPE")
@@ -106,12 +106,14 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
         require(previous is None or previous not in replaced, "CLAIM_ALREADY_REVISED")
         if previous is not None:
             replaced.add(previous)
-        require(case["schema_version"] == 2 or not (row.get("citations") or previous),
+        require(case["schema_version"] >= 2 or not (row.get("citations") or previous),
                 "CASE_UPGRADE_REQUIRED")
+        from .assurance import validate_claim_extensions
+        validate_claim_extensions(row, claim_ids, case["schema_version"])
         claim_ids.add(identifier)
-    if case["schema_version"] == 2:
+    if case["schema_version"] >= 2:
         from .review import validate_review
-        validate_review(root, evidence, claims, read_jsonl(root / "review.jsonl"))
+        validate_review(root, evidence, claims, read_jsonl(root / "review.jsonl"), case["schema_version"])
     else:
         require(not (root / "review.jsonl").exists(), "CASE_UPGRADE_REQUIRED")
     return root, case, evidence, claims
@@ -156,7 +158,7 @@ def validate_claim(row: dict, evidence_ids: set[str]) -> None:
     require(isinstance(citations, list) and len(citations) <= 100, "INVALID_CITATIONS")
     for citation in citations:
         require(isinstance(citation, dict)
-                and set(citation) <= {"evidence_id", "kind", "start", "end", "quote", "analysis", "sha256"}
+                and set(citation) <= {"evidence_id", "kind", "start", "end", "quote", "analysis", "sha256", "format", "field"}
                 and citation.get("evidence_id") in row["supports"] + row["contradicts"],
                 "INVALID_CITATION_REFERENCE")
         require(citation.get("kind") in ("page", "line", "record", "time_ms"), "INVALID_CITATION_KIND")
@@ -165,6 +167,11 @@ def validate_claim(row: dict, evidence_ids: set[str]) -> None:
                 and lower <= citation["start"] <= citation["end"] <= 10**12, "INVALID_CITATION_RANGE")
         if "quote" in citation:
             bounded_text(citation["quote"], 2000, "INVALID_CITATION_QUOTE")
+        if "format" in citation:
+            require(citation["format"] in ("text", "csv", "json", "jsonl"), "INVALID_CITATION_FORMAT")
+        if "field" in citation:
+            bounded_text(citation["field"], 200, "INVALID_CITATION_FIELD")
+            require(citation["kind"] == "record", "INVALID_CITATION_FIELD")
         if "analysis" in citation:
             relative_path(citation["analysis"])
             require(Path(citation["analysis"]).parts[0] == "analysis"
@@ -286,7 +293,8 @@ def add_many(path: str | Path, sources: list[str | Path], *, source_url: str | N
 
 def add_claim(path: str | Path, text: str, supports: list[str], contradicts: list[str],
               state: str, confidence: str, rationale: str, *, citations: list[dict] | None = None,
-              supersedes: str | None = None) -> dict:
+              supersedes: str | None = None, depends_on: list[str] | None = None,
+              time_context: dict | None = None) -> dict:
     require(citations is None or isinstance(citations, list), "INVALID_CITATIONS")
     verify(path)
     root, _, _, _ = load_case(path)
@@ -297,17 +305,23 @@ def add_claim(path: str | Path, text: str, supports: list[str], contradicts: lis
         row = {"id": identifier, "text": text, "supports": supports,
                "contradicts": contradicts, "state": state,
                "confidence": confidence, "rationale": rationale}
+        if depends_on is not None:
+            row["depends_on"] = depends_on
+        if time_context is not None:
+            row["time_context"] = time_context
         if citations or supersedes:
-            require(info["schema_version"] == 2, "CASE_UPGRADE_REQUIRED")
+            require(info["schema_version"] >= 2, "CASE_UPGRADE_REQUIRED")
         if citations:
             row["citations"] = citations
         if supersedes is not None:
             require(supersedes in {c["id"] for c in claims}, "INVALID_CLAIM_REVISION")
             require(not any(c.get("supersedes") == supersedes for c in claims), "CLAIM_ALREADY_REVISED")
             row["supersedes"] = supersedes
-        if info["schema_version"] == 2:
+        if info["schema_version"] >= 2:
             row["recorded_at"] = utc_now()
         validate_claim(row, {entry["id"] for entry in evidence})
+        from .assurance import validate_claim_extensions
+        validate_claim_extensions(row, {entry["id"] for entry in claims}, info["schema_version"])
         for citation in row.get("citations", []):
             if "analysis" in citation:
                 from .review import checked_analysis
