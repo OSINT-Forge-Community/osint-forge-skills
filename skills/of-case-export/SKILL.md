@@ -26,7 +26,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 2. Run `verify-export --archive ARCHIVE`. Retain an independently recorded archive hash for rewriting detection; internal hashes are not signatures.
 
-3. Resume with `restore --archive ARCHIVE --case NEW_CASE`. It verifies paths, hashes and case references, and refuses an existing destination. Reconfirm scope in the new client.
+3. Resume with `restore --archive ARCHIVE --case NEW_CASE`. It verifies paths, hashes and case references, and refuses an existing destination. Reconfirm scope in the new client; use `review-queue --case NEW_CASE` to pick up unresolved review work. Queue items are suggestions, not authorization for collection.
 
 4. For public sharing use `prepare-share --input PRIVATE_REPORT --out NEW_VIEW`, review sensitive context with the human and obtain approval of the exact view and digest.
 

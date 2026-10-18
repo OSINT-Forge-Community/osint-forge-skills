@@ -291,6 +291,7 @@ plan --request selected-plan.json [--case CASE]
 sources [--category organization|domain|archive|imagery] [--jurisdiction FR]
 claim ... [--depends-on C000001] [--time-context dates.json]
 review-status --case CASE
+review-queue --case CASE [--limit 20]
 check-citations --case CASE
 agent-events --case CASE --evidence E000001 --format json|jsonl --out CASE/analysis/agent.json
 ```
@@ -301,6 +302,15 @@ requirements. Plans are advisory and do not launch tools. Excerpt checks compare
 qualified original lines/records or bound derived output; they never establish
 semantic support. Mismatches remain reportable review findings, while broken
 hash/reference integrity still fails verification.
+
+`review-queue` returns current review tasks with priority, references, a suggested
+skill and next check. `--limit` accepts 1-100 (default 20); totals include omitted
+items. Priorities order work and are not confidence scores. Unavailable sources
+may warrant an explicit limitation. An empty queue does not establish completeness
+or truth. The command checks integrity, leaves files unchanged and executes no
+suggestion. Historical claims remain verified but are excluded from this queue.
+If a case journal changes during assembly, it fails with
+`CASE_CHANGED_DURING_REVIEW`; rerun after the writer finishes.
 
 The [source profiles](../shared/source-workflows.md) are dated documentation,
 not API integrations. The [agent export schema](../skills/of-agent-artifacts/references/workflow.md)

@@ -8,6 +8,7 @@ from .casefiles import verify
 from .dorking import FILETYPES, dorks
 from .planning import ROUTES, plan
 from .research import PIVOTS, QUERY_KINDS, pivots, query_templates
+from .queue import review_summary
 from .safeio import ForgeError, require, safe_path
 from .sources import source_cards
 
@@ -47,6 +48,7 @@ def tool_definitions(with_case=False):
     ]
     if with_case:
         definitions.append(("forge_verify_case", "Verify bytes and references in the single operator-selected case; return counts only.", object_schema({})))
+        definitions.append(("forge_review_summary", "Count outstanding review tasks in the startup-selected case; no evidence text or identifiers are returned.", object_schema({})))
     return [{"name": name, "description": description, "inputSchema": schema,
              "annotations": {"readOnlyHint": True, "destructiveHint": False,
                              "idempotentHint": True, "openWorldHint": False}}
@@ -96,6 +98,9 @@ class Server:
             return query_templates(**arguments)
         if name == "forge_dorks":
             return dorks(**arguments)
+        if name == "forge_review_summary":
+            require(self.case is not None, "UNKNOWN_TOOL")
+            return review_summary(self.case)
         require(name == "forge_verify_case" and self.case is not None, "UNKNOWN_TOOL")
         return verify(self.case)
 

@@ -188,12 +188,16 @@ def selected_excerpt(data, citation, derived):
         events = derived.get("events")
         require(isinstance(events, list), "CITATION_FORMAT_UNSUPPORTED")
         require(len(events) <= MAX_RECORDS and all(isinstance(row, dict) for row in events), "CITATION_FORMAT_UNSUPPORTED")
+        indexed = {}
+        for row in events:
+            index = row.get("record_index")
+            if type(index) is int and start <= index <= end:
+                require(index not in indexed, "CITATION_RANGE_MISMATCH")
+                indexed[index] = row
         selected = []
         for index in range(start, end + 1):
-            matches = [row for row in events if type(row.get("record_index")) is int
-                       and row["record_index"] == index]
-            require(len(matches) == 1, "CITATION_RANGE_MISMATCH")
-            selected.append(matches[0])
+            require(index in indexed, "CITATION_RANGE_MISMATCH")
+            selected.append(indexed[index])
         field = citation.get("field", "event")
     else:
         mode = citation.get("format")

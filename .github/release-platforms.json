@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "allowed_platforms": [
+    "release", "backend", "frontend", "gestion", "security", "worker",
+    "discord", "whois", "infrastructure", "honeypot", "docs"
+  ],
+  "version_format": "MAJOR.MINOR.PATCH.FIX",
+  "package_version_file": "VERSION",
+  "path_matching": "case-sensitive repository-relative globs; * matches across directory separators; all matching platforms apply",
+  "unmapped_paths": "error",
+  "platforms": {
+    "release": {
+      "version_file": ".github/versions/release/VERSION.md",
+      "paths": [
+        "shared/*", "skills/*", "scripts/*", "examples/*",
+        "plugin.json", "catalogue.json", "VERSION", "LICENSE", "NOTICE",
+        ".gitignore", ".gitattributes", ".github/*",
+        ".claude-plugin/*", ".agents/plugins/*"
+      ],
+      "exclude_paths": [".github/versions/docs/*"]
+    },
+    "docs": {
+      "version_file": ".github/versions/docs/VERSION.md",
+      "paths": [
+        "README*.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md",
+        "docs/*", "assets/*", "benchmarks/*", ".github/versions/docs/*"
+      ],
+      "exclude_paths": []
+    }
+  }
+}

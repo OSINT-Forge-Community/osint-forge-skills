@@ -28,7 +28,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 3. Test the same pieces against all candidates. Compatibility alone adds no positive support; recycled sources add no independent votes.
 
-4. Remove the strongest uncertain assumption or source group and reassess the result. Retain contradictions and revise claims; never rewrite evidence to fit the story.
+4. Remove the strongest uncertain assumption or source group and reassess the result. Use `review-queue --case CASE` for recorded premise revisions, citation issues and coverage gaps. Treat its priorities as a work order, not a truth score. Retain contradictions and revise claims; never rewrite evidence to fit the story.
 
 5. Record claims as observed, inferred or unconfirmed with a rationale, E references and precise locators when available. Use `--supersedes` for corrections; retain contrary evidence and research limitations. Give the smallest next observation that would discriminate between candidates.
 

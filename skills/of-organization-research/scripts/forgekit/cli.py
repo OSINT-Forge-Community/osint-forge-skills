@@ -26,6 +26,7 @@ from .sources import source_cards
 from .agents import agent_events
 from .research import PIVOTS, QUERY_KINDS, pivots, query_templates
 from .dorking import FILETYPES, dorks
+from .queue import review_queue
 
 
 class Parser(argparse.ArgumentParser):
@@ -93,7 +94,10 @@ def parser() -> argparse.ArgumentParser:
     dork.add_argument("--after", help="Google date filter in YYYY-MM-DD format")
     dork.add_argument("--before", help="Google date filter in YYYY-MM-DD format")
     mcp = commands.add_parser("mcp", help="Serve optional read-only MCP tools over local stdio")
-    mcp.add_argument("--case", help="Expose count-only verification for this single operator-selected case")
+    mcp.add_argument("--case", help="Expose count-only verification and review summaries for this selected case")
+    queue = commands.add_parser("review-queue", help="Prioritize recorded review gaps without changing the case")
+    queue.add_argument("--case", required=True)
+    queue.add_argument("--limit", type=int, default=20, help="Maximum tasks returned, 1-100; counts cover all tasks")
     for name in ("review-status", "check-citations"):
         child = commands.add_parser(name)
         child.add_argument("--case", required=True)
@@ -242,6 +246,8 @@ def dispatch(args) -> dict:
         return dorks(args.phrase, args.site, args.filetype, args.exclude, args.after, args.before)
     if command == "review-status":
         return case_status(args.case)
+    if command == "review-queue":
+        return review_queue(args.case, args.limit)
     if command == "check-citations":
         return check_citations(args.case)
     if command == "agent-events":

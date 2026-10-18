@@ -182,18 +182,21 @@
     "scope": "Historical assurance model snapshot identifies 432 frozen files. Historical client, binary and visual observations retain their own snapshots. Current helper checks are recorded in current_local_verification and mcp_verification."
   },
   "current_local_verification": {
-    "date": "2026-10-15",
+    "date": "2026-10-18",
     "version": "0.2.0",
     "case_schema": 3,
     "source_validation": "passed",
     "skills": 16,
-    "python_sources": 23,
-    "unit_tests_passed": 166,
-    "unit_tests_elapsed_seconds": 634.456,
+    "python_sources": 24,
+    "unit_tests_passed": 192,
+    "unit_tests_elapsed_seconds": 599.183,
     "skill_format_validation": "passed_16_of_16_skill_creator",
-    "source_and_extracted_archive_demos": "historical_research_mcp_snapshot_passed_not_rerun_for_dorking",
-    "claude_native_manifest": "passed_cli_2.1.220",
-    "current_browser_visual_trial": "not_run"
+    "standalone_isolated_review_queue_and_mcp_summary": "passed",
+    "synthetic_assurance_demo_export_restore": "passed_after_resource_synchronization",
+    "browser_interaction_trial": "not_run_local_socket_access_unavailable",
+    "new_model_trials": "not_run",
+    "native_windows_macos_runtime": "not_run",
+    "browser_visual_capture": "passed_1440_desktop_en_768_iframe_en_320_iframe_fr_visible_sections"
   },
   "mcp_verification": {
     "date": "2026-10-15",
@@ -240,5 +243,56 @@
     "text_bounds": "passed",
     "github_rendering": "not_run",
     "external_resources": false
+  },
+  "historical_local_verification": [
+    {
+      "date": "2026-10-15",
+      "version": "0.2.0",
+      "case_schema": 3,
+      "source_validation": "passed",
+      "skills": 16,
+      "python_sources": 23,
+      "unit_tests_passed": 166,
+      "unit_tests_elapsed_seconds": 634.456,
+      "skill_format_validation": "passed_16_of_16_skill_creator",
+      "source_and_extracted_archive_demos": "historical_research_mcp_snapshot_passed_not_rerun_for_dorking",
+      "claude_native_manifest": "passed_cli_2.1.220",
+      "current_browser_visual_trial": "not_run"
+    }
+  ],
+  "review_queue_verification": {
+    "date": "2026-10-18",
+    "unit_tests_passed": 9,
+    "scope": "Deterministic current-claim tasks, global counts before limits, history exclusion, integrity, journal-change detection, read-only case and count-only MCP privacy",
+    "default_mcp_tools": 5,
+    "mcp_tools_with_selected_case": 7,
+    "real_mcp_host": "not_run",
+    "model_quality_gain": "not_measured"
+  },
+  "citation_optimization_verification": {
+    "date": "2026-10-18",
+    "unit_tests_passed": 8,
+    "platform": "Linux/WSL Python 3.12.3",
+    "fixture": "One derived citation spanning 5000 synthetic events",
+    "measured_rounds": 5,
+    "check_citations_median_ms_before": 728.84,
+    "check_citations_median_ms_after": 4.46,
+    "output_and_original_bytes": "unchanged",
+    "selector_peak_allocation_extra_kib_approx": 144,
+    "scope_limit": "Maximum-range synthetic benchmark; not overall runtime or model speed"
+  },
+  "html_viewer_rd_verification": {
+    "date": "2026-10-18",
+    "platform": "Windows Chrome headless",
+    "visible_layouts_css_pixels": [
+      1440,
+      768,
+      320
+    ],
+    "method": "Screenshot-only local file captures; 768 and 320 use fixed-width iframes to avoid headless minimum window width",
+    "en_fr_visible_layouts": "passed_visual_inspection",
+    "interactive_filter_keyboard_theme_print_trials": "not_run",
+    "page_network_requests": "not_observed",
+    "scope": "Static screenshots of original synthetic reports, not full interactive or accessibility acceptance"
   }
 }

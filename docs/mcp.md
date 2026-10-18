@@ -51,8 +51,9 @@ automatically enables MCP. Standard skill installation works on its own.
 | `forge_queries` | Required `kind`, `value`; optional `site` | Three query strings without submitting them |
 | `forge_dorks` | Required `phrase`; optional `site`, `filetype`, `exclude` array, `after`, `before` | Google query and encoded search URL; host tools execute the search |
 | `forge_verify_case` | No arguments; only with startup `--case` | Byte/reference status and evidence/claim counts |
+| `forge_review_summary` | No arguments; only with startup `--case` | Counts of current review items by kind/priority; no task text or identifiers |
 
-Five tools are exposed by default, six with a startup-selected case.
+Five tools are exposed by default, seven with a startup-selected case.
 See [Google dorking](../shared/research-workflows.md#google-dorking-with-host-web-tools) and the
 [CLI reference](cli.md#contextual-planning-and-review) for argument values.
 Read-only, idempotent and closed-world annotations describe the tools;
@@ -60,14 +61,21 @@ enforcement comes from the explicit tool allowlist. No arbitrary commands,
 executables, file reads/writes, URL fetches, call replay, model calls or public
 exports are exposed.
 
-## Optional case verification
+## Optional case verification and review
 
 Add `"--case", "/absolute/path/selected-private-case"` after `"mcp"` in the
-host's args only to enable the extra tool. The case must already exist.
-The tool accepts no path argument and cannot select another case. Usual bounded
+host's args only to enable the two extra tools. The case must already exist.
+These tools accept no path argument and cannot select another case. Usual bounded
 reads, prohibited paths and symlink checks apply. Results contain counts, status
 and verification limits, without filenames, evidence text, claims, URLs or case
 paths. Errors use fixed codes. No transcript is written.
+
+`forge_review_summary` counts revised premises, citation issues and gaps in
+declared coverage. Full tasks are available only through the local CLI
+`review-queue`; the MCP summary omits question/category text and all identifiers.
+`no_recorded_gaps` is not a truth, completeness or publication-readiness verdict.
+The helper executes no follow-up and changes no case files. It rejects a case
+journal change detected during queue assembly with `CASE_CHANGED_DURING_REVIEW`.
 
 Verification reads registered evidence and references; it does not validate
 semantic support or authenticity. Large cases can block this sequential server.

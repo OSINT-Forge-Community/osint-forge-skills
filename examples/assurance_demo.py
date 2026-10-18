@@ -14,6 +14,7 @@ from forgekit.assurance import case_status, check_citations
 from forgekit.casefiles import add_claim, add_many, initialize, verify
 from forgekit.exchange import graphml, import_events, timesketch_csv
 from forgekit.planning import plan
+from forgekit.queue import review_queue
 from forgekit.reporting import export_case, render_report, restore_case
 from forgekit.review import append_review
 from forgekit.safeio import atomic_write, digest, json_bytes, read_bytes, require, safe_path
@@ -81,6 +82,10 @@ def demo(destination):
     require(status["needs_review"] == 2 and excerpts["counts"]["mismatch"] == 1, "DEMO_REVIEW_MISMATCH")
     atomic_write(case / "analysis/review-status.json", json_bytes(status))
     atomic_write(case / "analysis/citation-checks.json", json_bytes(excerpts))
+    queue = review_queue(case)
+    require(queue["counts_by_kind"]["dependency_review"] == 2
+            and queue["counts_by_kind"]["citation_mismatch"] == 1, "DEMO_REVIEW_MISMATCH")
+    atomic_write(case / "analysis/review-queue.json", json_bytes(queue))
     for language in ("en", "fr"):
         atomic_write(case / f"reports/report.{language}.md", render_report(case, language))
         atomic_write(case / f"reports/report.{language}.html", render_html(case, language, ["analysis/events.json", "analysis/agent.json"]))
@@ -89,9 +94,11 @@ def demo(destination):
     restored = output / "restored"
     restore_case(archive, restored)
     require(case_status(restored) == status and check_citations(restored) == excerpts, "DEMO_RESTORE_MISMATCH")
+    require(review_queue(restored) == queue, "DEMO_RESTORE_MISMATCH")
     require(originals == {path.name: digest(read_bytes(path)) for path in paths}, "DEMO_ORIGINAL_CHANGED")
     return {"status": "passed", "case": str(case), "verification": verify(case), "needs_review": status["needs_review"],
             "intentional_citation_mismatches": excerpts["counts"]["mismatch"], "exchange": losses,
+            "review_items": queue["total"],
             "plan": plan(request={"question": "Was the opening implemented?", "kinds": ["documents"], "max_steps": 2}, case=case),
             "network_calls": False, "model_calls": False}
 

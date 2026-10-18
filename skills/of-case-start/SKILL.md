@@ -30,7 +30,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 4. Register each explicitly selected file with `add --case CASE --source FILE`. Preserve source time separately from acquisition time. Origin labels need a documented basis.
 
-5. Use `plan --kind` for the supplied material (documents, media, domain, organization, versions, windows-export, browser or logs). Select the skills that can answer the question, load only their relevant instructions, and record missing capabilities as research records. A plan does not authorize network access or installation. Stop at the agreed bounds or when evidence cannot discriminate further.
+5. Use `plan --kind` for the supplied material (documents, media, domain, organization, versions, windows-export, browser, logs or agent-export). For an existing case, use `review-queue --case CASE` to prioritize recorded gaps before repeating intake. Select the skills that can answer the question, load only their relevant instructions, and record missing capabilities as research records. A plan does not authorize network access or installation. Stop at the agreed bounds or when evidence cannot discriminate further.
 
 6. Run `verify --case CASE`. List registered E identifiers, known gaps and the next discriminating observation. A copied-file hash does not prove its source's truth.
 

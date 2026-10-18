@@ -34,6 +34,7 @@ l’assistant et le modèle ; le runtime Python inclus reste hors ligne.
 | --- | --- |
 | **Conclusions traçables** | Originaux conservés, contrôle des octets, sources référencées et citations localisables |
 | **Relecture structurée** | Hypothèses concurrentes, contradictions, indépendance des sources et conclusions signalées lorsque leurs prémisses changent |
+| **Reprise guidée** | File de relecture priorisée avec références et skills suggérés ; tableau de bord HTML privé avec recherche, en français ou en anglais |
 | **Recherche ciblée** | Fiches de sources datées, six parcours de rebond et Google dorking pour préparer le prochain contrôle |
 | **Contrôle local** | Bibliothèque standard Python, aucune télémétrie du runtime, aucun service obligatoire ni installation automatique d’outils |
 | **Travail portable** | Skills autonomes, export/restauration de dossiers privés, rapports FR/EN, GraphML et CSV aux champs Timesketch |
@@ -82,7 +83,8 @@ les événements annotés et les relations candidates. [Guide de relecture et d�
 
 **Revoir les dépendances et citations :** lancer
 `python3 examples/assurance_demo.py --out cases/assurance-demo`, puis ouvrir
-son rapport HTML FR. La démo affiche les conclusions à réexaminer, la couverture
+son rapport HTML FR. Lancez `python3 scripts/forge.py review-queue --case cases/assurance-demo/case`
+pour les prochains contrôles priorisés. La démo affiche les conclusions à réexaminer, la couverture
 déclarée et une citation volontairement incorrecte.
 [Planification et revue](shared/assurance-workflows.md) · [Fiches de sources](shared/source-workflows.md).
 

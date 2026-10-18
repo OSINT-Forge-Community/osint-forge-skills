@@ -5,6 +5,33 @@ loaded skill's `scripts/forge.py`. New cases use schema 3. Schema 1 and 2 remain
 readable; `upgrade --case OLD --out NEW` makes a verified copy. Keep OLD intact.
 Older readers reject schema 3. No migration or collection runs automatically.
 
+## Prioritize the remaining review work
+
+Run `review-queue --case CASE --limit 20` when resuming a case or preparing a
+report. It checks integrity and returns current claims with revised premises,
+incorrect or unsupported citations, missing locators and gaps in declared
+source coverage. Each item identifies its references, a suggested skill and
+the next check. Load only that skill and the references needed for the task.
+
+Priority 1 covers revised premises, citation mismatches and absent evidence;
+priority 2 covers unverifiable citations, critical coverage gaps, absent claims
+and undefined coverage; priority 3 covers missing locators and supporting
+coverage gaps. These priorities organize work, not confidence or risk scores.
+An unavailable source can warrant a documented limitation rather than another
+search. Collection and case changes still require their existing scope.
+
+The limit accepts 1-100 items, default 20. `total`, `counts_by_kind` and
+`counts_by_priority` cover every item; `shown` and `omitted` explain the returned
+slice. Equal-priority items retain deterministic case order. Historical claims
+are excluded from the actionable queue but remain subject to integrity checks
+and `check-citations`. A missing coverage definition is reported explicitly.
+`no_recorded_gaps` is not a completeness, truth or publication-readiness verdict.
+This read-only command does not execute its suggestions or change the case.
+
+The optional MCP `forge_review_summary` returns only fixed status labels and
+counts for the case selected at server startup. It never exposes queue text,
+case paths, evidence IDs, category names or excerpts.
+
 ## Plan the next useful check
 
 `plan --kind organization` retains the short route. Repeat `--kind` only to

@@ -87,11 +87,27 @@ not guessed. Original analyses and annotations remain authoritative for review.
 
 `report --case CASE --format html --lang fr --input analysis/events.json`
 creates `reports/report.fr.html`. Repeat --input for up to 20 analyses. Open it
-locally: no server, CDN or network is required. Search, type filters, history,
-event annotations and a bounded relation diagram are included. Large graphs
-remain available through the graph export. Without JavaScript all rows remain
-visible. The HTML is a private review artifact, not a minimized public view.
-Use the Markdown prepare-share/export procedure for public sharing.
+locally: no server, CDN or network is required. The review dashboard separates
+preserved evidence, current claims, claims affected by revisions and current
+claims with citation issues. Select a review card or filter to examine revised
+premises, mismatched or unverifiable citations, or uncertain event times. These
+are review prompts, not credibility scores. Search supports multiple words and
+accent-insensitive matching across recorded text and details; type and history
+filters apply only to the records section.
+
+Declared coverage retains each source category and its separate research states.
+A completed search does not erase a partial search or prove absence. Citation
+checks show exact-excerpt, locator, mismatch and unverifiable outcomes, including
+marked historical claims; they do not establish semantic support. Original
+record details, current event annotations and a bounded relation diagram remain
+available. Large graphs remain available through the graph export.
+
+The responsive English/French view supports system, light and dark appearance.
+Search and appearance choices remain in the page; nothing is stored or sent.
+Printing includes all records and history regardless of screen filters. Without
+JavaScript all rows remain visible and interactive controls are disabled. The
+HTML is a private review artifact, not a minimized public view. Use the Markdown
+prepare-share/export procedure for public sharing.
 
 ## Captures and version changes
 

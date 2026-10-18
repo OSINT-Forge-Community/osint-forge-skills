@@ -160,7 +160,7 @@ tool-run --case CASE --evidence E000001 --tool exiftool|pdftotext|tesseract|ffpr
          [--first-page N --last-page M] [--language eng] [--reuse analysis/previous.json]
 ```
 
-Additional commands: `review-status`, `check-citations`, `sources`, `agent-events`, `plan`, `intake`, `record`, `upgrade`, `capture`, `compare`,
+Additional commands: `review-status`, `review-queue`, `check-citations`, `sources`, `agent-events`, `plan`, `intake`, `record`, `upgrade`, `capture`, `compare`,
 `import-events`, `export-events`, and `graph`. Use each command's --help and the
 bundled review workflow guide. No command performs automatic remote collection.
 

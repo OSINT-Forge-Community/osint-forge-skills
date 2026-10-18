@@ -164,6 +164,11 @@ runs and retained in the file. No JavaScript means all rows are visible.
 
 ## Schema 3 review findings
 
+`INVALID_REVIEW_LIMIT` requires a `review-queue --limit` integer from 1 to 100.
+The limit affects returned tasks, not total counts. `CASE_CHANGED_DURING_REVIEW`
+means a journal changed while assembling the queue; finish concurrent writes
+and rerun. This check does not lock the case or repair its contents.
+
 `INVALID_CLAIM_DEPENDENCY` rejects missing, duplicate, self or forward premises.
 `CASE_UPGRADE_REQUIRED` means use a verified new copy for schema 3 fields.
 `INVALID_REQUIREMENT_REFERENCE` means the question/category was not declared.

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - prioritized review and viewer improvements
+
+- Add a bounded, read-only review queue that links current premise revisions,
+  citation issues and declared coverage gaps to suggested skills and next checks.
+  Counts cover all items even when the displayed queue is limited; an empty
+  queue does not establish truth or completeness.
+- Add an optional count-only MCP review summary for the startup-selected case,
+  without returning case text, paths, identifiers or source-category names.
+- Refresh the private EN/FR HTML viewer with summary cards, readable coverage
+  and citation outcomes, focused filters, accessible themes and print styling.
+- Index derived event ranges for citation checks instead of rescanning every
+  event per requested record, preserving bounds and duplicate/missing checks.
+  Pre-index viewer search text and event annotations for repeated review.
+
 ## Unreleased - research, Google dorking and local MCP
 
 - Add six original advisory pivot cards and offline quoted search templates,

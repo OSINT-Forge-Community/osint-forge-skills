@@ -34,6 +34,7 @@ included Python runtime works offline.
 | --- | --- |
 | **Traceable findings** | Preserved originals, byte checks, source references and citation locators you can revisit |
 | **Structured review** | Competing hypotheses, contradictions, source independence and claims flagged when their premises change |
+| **Actionable handoff** | A prioritized review queue with evidence references and suggested skills; a searchable private HTML dashboard in English or French |
 | **Focused research** | Dated source cards, six pivot workflows and Google dorking to prepare the next public-source check |
 | **Local control** | Python standard library, no runtime telemetry, no mandatory service and no automatic tool installation |
 | **Portable work** | Self-contained skills, private case export/restore, EN/FR reports, GraphML and Timesketch-field CSV |
@@ -81,7 +82,8 @@ candidate relations. [Review and exchange guide](shared/review-workflows.md).
 
 **Review dependencies and citations:** run
 `python3 examples/assurance_demo.py --out cases/assurance-demo` and open its
-EN/FR HTML report. It shows transitive review warnings, declared coverage,
+EN/FR HTML report. Run `python3 scripts/forge.py review-queue --case cases/assurance-demo/case`
+for prioritized next checks. The demo shows transitive review warnings, declared coverage,
 source-record references and one intentional excerpt mismatch.
 [Planning and review](shared/assurance-workflows.md) · [Dated source cards](shared/source-workflows.md).
 

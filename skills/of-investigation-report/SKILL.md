@@ -22,7 +22,7 @@ For utility commands and record semantics, read [the case contract](references/c
 
 ## Workflow
 
-1. Run `verify --case CASE`; then review semantic support, independence and alternative hypotheses. Structural success is not a truth verdict.
+1. Run `review-queue --case CASE` to check integrity and identify recorded issues. Resolve or disclose relevant items; then review semantic support, independence and alternative hypotheses. An empty queue is not a truth or completeness verdict. Use the private HTML viewer when visual review helps.
 
 2. Record claims with `claim`. Observations need direct support, inferences need rationale and unconfirmed claims remain low confidence.
 
