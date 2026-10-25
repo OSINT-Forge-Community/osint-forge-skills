@@ -12,6 +12,7 @@ from .review import checked_analysis, current, records
 from .safeio import MAX_JSON, MAX_RECORDS, require, visible
 from .timestamps import timestamp
 from .assurance import check_citations, coverage, dependency_status
+from .snapshot import read_operation
 
 SCRIPT = """const search=document.getElementById('search');
 const kind=document.getElementById('kind');
@@ -59,12 +60,16 @@ def badge(value, labels, tone=""):
     return f'<span class="badge {tone}">{escaped(labels.get(value, value))}</span>'
 
 
+@read_operation
 def render_html(case, language="en", analyses=None):
     require(language in ("en", "fr"), "UNSUPPORTED_LANGUAGE")
     verify(case)
     root, info, evidence, claims = load_case(case)
     ledger = records(root, info)
     replaced = {row.get("supersedes") for row in claims + ledger}
+    replaced.update(row["id"] for row in ledger if row.get("retired"))
+    from .investigation import investigation_status
+    test_statuses = {row["id"]: row for row in investigation_status(ledger)["tests"]}
     statuses = dependency_status(claims, ledger)
     citation_checks = check_citations(case)
     citations_by_claim = {}
@@ -82,8 +87,9 @@ def render_html(case, language="en", analyses=None):
     for row in evidence:
         entries.append((row["id"], "evidence", "preserved", row["original_name"], row))
     for row in ledger:
-        entries.append((row["id"], row["kind"], row.get("status", row.get("state", "recorded")),
-                        row.get("question", row.get("label", row.get("note", ""))), row))
+        state = "retired" if row.get("retired") else "needs_review" if test_statuses.get(row["id"], {}).get("needs_review") else row.get("status", row.get("state", "recorded"))
+        text = row.get("question", row.get("label", row.get("note", row.get("statement", row.get("action", row.get("basis", ""))))))
+        entries.append((row["id"], row["kind"], state, text, row))
     paths = analyses or []
     require(len(paths) <= 20 and len(set(paths)) == len(paths), "INVALID_TIMELINE_INPUTS")
     events = []
@@ -116,7 +122,9 @@ def render_html(case, language="en", analyses=None):
              "research":tr("Research", "Recherche"), "entity":tr("Entity", "Entité"),
              "relation":tr("Relation", "Relation"), "annotation":tr("Annotation", "Annotation"),
              "event":tr("Event", "Événement"), "requirement":tr("Requirement", "Question"),
-             "analysis_revision":tr("Analysis revision", "Révision d’analyse")}
+             "analysis_revision":tr("Analysis revision", "Révision d’analyse"),
+             "hypothesis":tr("Hypothesis", "Hypothèse"), "test":tr("Discriminating test", "Test discriminant"),
+             "origin":tr("Assertion origin", "Origine de l'assertion")}
     states = {key:tr(en, french) for key, en, french in (
         ("needs_review", "Needs review", "À réexaminer"), ("observed", "Observed", "Observé"),
         ("inferred", "Inferred", "Déduit"), ("unconfirmed", "Unconfirmed", "Non confirmé"),
@@ -130,7 +138,11 @@ def render_html(case, language="en", analyses=None):
         ("locator_found", "Locator found", "Repère retrouvé"), ("mismatch", "Mismatch", "Discordance"),
         ("unverifiable", "Unverifiable", "Invérifiable"), ("critical", "Critical", "Critique"),
         ("supporting", "Supporting", "Complémentaire"), ("current", "Current", "Actuel"),
-        ("low", "Low", "Faible"), ("medium", "Medium", "Moyenne"), ("high", "High", "Élevée"))}
+        ("low", "Low", "Faible"), ("medium", "Medium", "Moyenne"), ("high", "High", "Élevée"),
+        ("supported", "Supported", "Appuyée"), ("rejected", "Rejected", "Écartée"),
+        ("unresolved", "Unresolved", "Non résolue"), ("planned", "Planned", "Prévu"),
+        ("blocked", "Blocked", "Bloqué"), ("inconclusive", "Inconclusive", "Non concluant"),
+        ("retired", "Withdrawn", "Retiré"))}
     title = tr("Case review", "Relecture du dossier")
     notice = tr("Private case. Analyst-supplied references and relations; authenticity and relevance are not established. "
                 "Evidence is displayed as text. No network access. Timelines include only selected analyses.",
@@ -155,6 +167,13 @@ def render_html(case, language="en", analyses=None):
             context.extend(escaped(note["note"]) for note in details["annotations"])
         if details.get("rationale"):
             context.append(escaped(details["rationale"]))
+        if kind in ("hypothesis", "test", "origin"):
+            for key, en, french in (("statement", "Statement", "Proposition"), ("prediction", "Prediction", "Prédiction"),
+                    ("expected", "Expected observation", "Observation attendue"), ("observation", "Recorded observation", "Observation enregistrée"),
+                    ("hypothesis", "Hypothesis", "Hypothèse"), ("outcome", "Declared outcome", "Résultat déclaré"),
+                    ("origin_group", "Upstream origin", "Origine amont"), ("relationship", "Origin relationship", "Relation d'origine")):
+                if key in details:
+                    context.append(f'<strong>{tr(en, french)}</strong>: {escaped(details[key])}')
         reason_html = []
         for reason in details.get("review", {}).get("reasons", []):
             if reason["kind"] == "claim_revised":

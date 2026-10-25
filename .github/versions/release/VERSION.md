@@ -6,6 +6,27 @@ the platform convention; earlier three-part commit titles are not rewritten.
 The first entry advances the existing 0.2.0 product baseline for compatible
 features. Recording an entry does not publish a package or authorize a push.
 
+## 1.0.0.0 - 2026-10-25
+
+Summary: Add coherent case exports, strict CSV intake, operation-scoped integrity
+and citation caches, transactional selected skill installation, phased planning,
+and schema 4 hypotheses, tests, assertion origins and append-only corrections.
+Extend optional MCP with methods, output contracts and bounded cancellation.
+Support qualified PDF page citations, derived comparisons and selected Codex
+event exports. Package SemVer is 0.3.0, distinct from this delivery version.
+
+Threat impact: Reject mixed export states and ambiguous records. Retain bounded
+read-only analysis, integrity checks, exact-path ownership and modified-file
+refusal. Schema 4 requires a verified-copy upgrade for new record semantics.
+
+Sovereignty impact: Keep the distributed runtime standard-library-only and
+offline. Enable no provider, telemetry, collection, installation or global
+client configuration automatically. Host specialization remains advisory.
+
+Validation: Synthetic regression, isolated distribution, official MCP SDK and
+native Windows checks are recorded with their exact snapshots and limitations.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.3.0.0 - 2026-10-18
 
 Summary: Add prioritized case review and a count-only MCP summary, refresh the

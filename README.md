@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.2.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.2.0"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.3.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.3.0"></a>
  <a href="#the-skills"><img src="https://img.shields.io/badge/Skills-16-64748B?style=flat&amp;labelColor=24292F" alt="16 Skills"></a>
  <a href="#tools-you-can-use"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Optional Tools"></a>
  <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
@@ -185,6 +185,13 @@ For native plugins and ZIP archives, build with `python3 scripts/package.py`, th
 <a id="benchmarks"></a>
 
 ## Tests & benchmarks
+
+Version **0.3.0** adds coherent exports, archive-free selected installation,
+phased planning, schema 4 hypotheses/tests/origins, qualified PDF page citations
+and direct derived-text comparison. The optional MCP exposes static methods,
+validated output contracts and bounded cancellable case operations.
+See [commands and limits](docs/cli.md#schema-4-investigation-workflow),
+[MCP qualification](docs/mcp.md) and the dated [compatibility ledger](docs/compatibility.json).
 
 Recorded on **October 15, 2026**: **166 tests passed** on Linux/WSL, including
 **15 synthetic adapter tests**. [Benchmarks and real trials →](benchmarks/README.md)

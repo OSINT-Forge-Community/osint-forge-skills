@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-15",
-  "skill_version": "0.2.0",
-  "evidence_policy": "Each observation retains its source snapshot. Historical review, binary and browser results use earlier snapshots. Current 0.2.0 source checks and the nine-session assurance pilot are recorded separately; packaging is not proof of model behavior.",
+  "as_of": "2026-10-25",
+  "skill_version": "0.3.0",
+  "evidence_policy": "Each observation retains its dated source snapshot. Historical client/model observations remain unchanged. Version 0.3.0 source, SDK and native Windows checks are recorded separately. Package validation is not model quality or authenticity proof.",
   "clients": {
     "claude": {
       "observed_version": "2.1.220",
@@ -181,23 +181,6 @@
     "client_invocation": "selected_project_skill_reads_and_one_functional_agent_helper_workflow_observed",
     "scope": "Historical assurance model snapshot identifies 432 frozen files. Historical client, binary and visual observations retain their own snapshots. Current helper checks are recorded in current_local_verification and mcp_verification."
   },
-  "current_local_verification": {
-    "date": "2026-10-18",
-    "version": "0.2.0",
-    "case_schema": 3,
-    "source_validation": "passed",
-    "skills": 16,
-    "python_sources": 24,
-    "unit_tests_passed": 192,
-    "unit_tests_elapsed_seconds": 599.183,
-    "skill_format_validation": "passed_16_of_16_skill_creator",
-    "standalone_isolated_review_queue_and_mcp_summary": "passed",
-    "synthetic_assurance_demo_export_restore": "passed_after_resource_synchronization",
-    "browser_interaction_trial": "not_run_local_socket_access_unavailable",
-    "new_model_trials": "not_run",
-    "native_windows_macos_runtime": "not_run",
-    "browser_visual_capture": "passed_1440_desktop_en_768_iframe_en_320_iframe_fr_visible_sections"
-  },
   "mcp_verification": {
     "date": "2026-10-15",
     "product_version": "0.2.0",
@@ -294,5 +277,131 @@
     "interactive_filter_keyboard_theme_print_trials": "not_run",
     "page_network_requests": "not_observed",
     "scope": "Static screenshots of original synthetic reports, not full interactive or accessibility acceptance"
+  },
+  "implementation_verification_2026_10_25": {
+    "date": "2026-10-25",
+    "version": "0.3.0",
+    "case_schema": 4,
+    "independent_heldout_trial": "not_run_requires_independently_authored_inputs",
+    "general_quality_gain": "not_established",
+    "runtime_dependencies": "standard_library_only",
+    "native_windows_source_snapshot_matches": true,
+    "local_selection_comparison": {
+      "repeats": 3,
+      "same_selected_payload": true,
+      "before_median_seconds": 26.12785685700146,
+      "after_median_seconds": 8.114201502998185,
+      "before_archives": 17,
+      "after_archives": 0,
+      "scope": "One selected skill, same current payload, legacy installer from recorded Git parent, local WSL only. Python allocations are not process RSS."
+    },
+    "complete_zip_comparison": {
+      "same_member_count": 647,
+      "same_member_bytes": 9074784,
+      "stored_bytes": 9222636,
+      "deflated_bytes": 5048653,
+      "same_extracted_bytes": true,
+      "same_environment_reproducible": true
+    },
+    "raw_read_comparison": {
+      "scope": "Synthetic descriptor opens and bytes, no physical disk or latency claim",
+      "report_reads_per_original_before": 3,
+      "report_reads_per_original_after": 2,
+      "one_hundred_citations_original_reads_before": 101,
+      "one_hundred_citations_original_reads_after": 2,
+      "exact_excerpts_found_both": 100
+    }
+  },
+  "local_verification_2026_10_18": {
+    "date": "2026-10-18",
+    "version": "0.2.0",
+    "case_schema": 3,
+    "source_validation": "passed",
+    "skills": 16,
+    "python_sources": 24,
+    "unit_tests_passed": 192,
+    "unit_tests_elapsed_seconds": 599.183,
+    "skill_format_validation": "passed_16_of_16_skill_creator",
+    "standalone_isolated_review_queue_and_mcp_summary": "passed",
+    "synthetic_assurance_demo_export_restore": "passed_after_resource_synchronization",
+    "browser_interaction_trial": "not_run_local_socket_access_unavailable",
+    "new_model_trials": "not_run",
+    "native_windows_macos_runtime": "not_run",
+    "browser_visual_capture": "passed_1440_desktop_en_768_iframe_en_320_iframe_fr_visible_sections"
+  },
+  "current_local_verification": {
+    "date": "2026-10-25",
+    "version": "0.3.0",
+    "case_schema": 4,
+    "source_validation": "passed",
+    "skills": 16,
+    "python_sources": 27,
+    "unit_tests_passed": 274,
+    "unit_tests_elapsed_seconds": 325.802,
+    "skill_format_validation": "passed_16_of_16_skill_creator",
+    "standalone_resources": 512,
+    "resource_drift_files": 0,
+    "public_source_links_checked": 424,
+    "public_source_link_errors": 0,
+    "synthetic_demos": "passed_basic_review_assurance_export_restore",
+    "official_mcp_sdk": "passed_mcp_2.3.0_stdio_5_and_7_tools_24_resources",
+    "native_windows": "passed_selected_suites_python_3.11.9_and_3.13.7",
+    "native_windows_tests_per_version": 58,
+    "native_windows_passed_per_version": 56,
+    "native_windows_skipped_per_version": 2,
+    "native_windows_skips": "symlink_creation_unavailable",
+    "native_windows_full_suite": "not_run",
+    "native_macos": "not_run",
+    "acl_confidentiality_tested": false,
+    "browser_interaction_trial": "not_run",
+    "general_model_quality_gain": "not_established",
+    "post_suite_documentation_delta": "The assurance demo CLI help now describes the current schema; the complete demo passed after this text-only change."
+  },
+  "mcp_verification_2026_10_25": {
+    "default": {
+      "actionable_tool_error": true,
+      "all_tools_called": true,
+      "arbitrary_resource_rejected": true,
+      "ping": "passed",
+      "protocol_version": "2025-11-25",
+      "resource_count": 24,
+      "schemas_validated_by_jsonschema": true,
+      "shutdown": "passed",
+      "static_resources_read": true,
+      "tool_count": 5
+    },
+    "global_configuration_changed": false,
+    "model_trial": "not_run",
+    "observed_at": "2026-10-25T21:23:25.807495+00:00",
+    "provider_configuration_changed": false,
+    "python_version": "3.12.3",
+    "real_host_trial": "not_run",
+    "scope": "official_sdk_stdio_synthetic",
+    "sdk_package": "mcp",
+    "sdk_version": "2.3.0",
+    "startup_case": {
+      "actionable_tool_error": true,
+      "all_tools_called": true,
+      "arbitrary_resource_rejected": true,
+      "ping": "passed",
+      "protocol_version": "2025-11-25",
+      "resource_count": 24,
+      "schemas_validated_by_jsonschema": true,
+      "shutdown": "passed",
+      "static_resources_read": true,
+      "tool_count": 7
+    },
+    "status": "passed"
+  },
+  "host_observation_2026_10_25": {
+    "client": "codex",
+    "observed_version": "0.164.0",
+    "source_scope": "frozen_development_snapshot",
+    "stdio_tool_invocation": "forge_plan_observed",
+    "static_resource_discovery_and_reads": "observed",
+    "three_selected_local_skills": "prompt_catalog_and_explicit_reads_observed",
+    "global_client_configuration_changed": false,
+    "model_quality": "limited_development_pilot_not_general_gain",
+    "comparison_limitation": "Both arms retain MCP method resources; this is not a methods-free baseline."
   }
 }

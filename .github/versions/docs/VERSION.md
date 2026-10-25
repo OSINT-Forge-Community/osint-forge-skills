@@ -3,6 +3,24 @@
 This independent four-part history starts with the adoption of platform
 versions. Earlier documentation changes have no retroactive platform version.
 
+## 0.2.0.0 - 2026-10-25
+
+Summary: Document schema 4 investigation records and verified-copy upgrades,
+phased planning, selected transactional installation and recovery, native agent
+exports, PDF page citations, direct derived comparison and optional MCP methods.
+Provide compact skill recipes and an independent SDK qualification runner.
+
+Threat impact: Explain concurrency refusal, unknown source independence,
+analyst-declared outcomes, recovery conflicts and bounded cancellable operations.
+Keep historical observations separate from current checks and model findings.
+
+Sovereignty impact: Retain local portable artifacts, explicit host capabilities
+and independently chosen clients/models without mandatory remote services.
+
+Validation: Public source/package links and dated observations are checked in
+the local delivery workflow. General model quality remains unestablished.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.1.1.0 - 2026-10-25
 
 Summary: Refresh the English README banner and align its recorded integrity hash

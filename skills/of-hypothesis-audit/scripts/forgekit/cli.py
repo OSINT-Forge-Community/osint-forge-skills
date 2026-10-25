@@ -20,7 +20,7 @@ from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
 from .timestamps import timestamp
 from .tooling import TOOLS, inventory, run_tool
 
-from .planning import ROUTES, plan as build_plan
+from .planning import ROUTES, PHASES, INPUTS, plan as build_plan
 from .assurance import case_status, check_citations
 from .sources import source_cards
 from .agents import agent_events
@@ -67,7 +67,7 @@ def parser() -> argparse.ArgumentParser:
     intake = commands.add_parser("intake", help="Import an explicit per-file provenance manifest")
     intake.add_argument("--case", required=True)
     intake.add_argument("--manifest", required=True)
-    review = commands.add_parser("record", help="Append a research, entity, relation or annotation record")
+    review = commands.add_parser("record", help="Append an evidence-linked review, hypothesis, test or origin record")
     review.add_argument("--case", required=True)
     review.add_argument("--input", required=True)
     upgrade = commands.add_parser("upgrade", help="Create a verified copy using the current case schema")
@@ -77,9 +77,16 @@ def parser() -> argparse.ArgumentParser:
     plan.add_argument("--kind", choices=tuple(ROUTES), action="append")
     plan.add_argument("--request", help="Selected JSON question, kinds, declared capabilities and budget")
     plan.add_argument("--case", help="Optional case whose review state should inform the plan")
+    plan.add_argument("--max-steps", type=int)
+    plan.add_argument("--resume-from", choices=tuple(PHASES))
+    plan.add_argument("--completed-step", action="append")
+    plan.add_argument("--available-input", choices=tuple(INPUTS), action="append")
+    plan.add_argument("--stop-reason", choices=("question_answered", "scope_exhausted", "operator_stopped"))
+    plan.add_argument("--specialize", action="store_true")
     sources = commands.add_parser("sources", help="Filter static dated source cards without network access")
     sources.add_argument("--category", choices=("organization", "domain", "archive", "imagery"))
     sources.add_argument("--jurisdiction")
+    sources.add_argument("--applicable-to")
     pivot = commands.add_parser("pivots", help="Read advisory follow-up checks without collection")
     pivot.add_argument("--kind", choices=tuple(PIVOTS))
     queries = commands.add_parser("queries", help="Prepare search queries offline without submitting them")
@@ -104,7 +111,8 @@ def parser() -> argparse.ArgumentParser:
     agent = commands.add_parser("agent-events", help="Interpret a supplied normalized agent export offline")
     agent.add_argument("--case", required=True)
     agent.add_argument("--evidence", required=True)
-    agent.add_argument("--format", choices=("json", "jsonl"), required=True)
+    agent.add_argument("--format", choices=("json", "jsonl", "codex-exec-jsonl"), required=True)
+    agent.add_argument("--exporter-version")
     agent.add_argument("--out", required=True)
     imported = commands.add_parser("import-events", help="Map two columns of a supplied forensic CSV")
     imported.add_argument("--case", required=True)
@@ -119,8 +127,12 @@ def parser() -> argparse.ArgumentParser:
     captured.add_argument("--out", required=True)
     compare = commands.add_parser("compare", help="Compare two selected UTF-8 text versions")
     compare.add_argument("--case", required=True)
-    compare.add_argument("--left", required=True)
-    compare.add_argument("--right", required=True)
+    compare.add_argument("--left")
+    compare.add_argument("--right")
+    compare.add_argument("--left-analysis")
+    compare.add_argument("--right-analysis")
+    compare.add_argument("--left-sha256")
+    compare.add_argument("--right-sha256")
     compare.add_argument("--out", required=True)
     network = commands.add_parser("graph", help="Export evidence and analyst relations")
     network.add_argument("--case", required=True)
@@ -235,9 +247,18 @@ def dispatch(args) -> dict:
                         first_page=args.first_page, last_page=args.last_page, language=args.language,
                         reuse=args.reuse)
     if command == "plan":
-        return build_plan(args.kind, read_json(args.request) if args.request else None, args.case)
+        request = read_json(args.request) if args.request else {}
+        require(isinstance(request, dict), "INVALID_PLAN_REQUEST")
+        for key, value in (("max_steps", args.max_steps), ("resume_from", args.resume_from),
+                           ("completed_steps", args.completed_step), ("available_inputs", args.available_input),
+                           ("stop_reason", args.stop_reason)):
+            if value is not None:
+                request[key] = value
+        if args.specialize:
+            request["specialize"] = True
+        return build_plan(args.kind, request or None, args.case)
     if command == "sources":
-        return source_cards(args.category, args.jurisdiction)
+        return source_cards(args.category, args.jurisdiction, args.applicable_to)
     if command == "pivots":
         return pivots(args.kind)
     if command == "queries":
@@ -251,7 +272,7 @@ def dispatch(args) -> dict:
     if command == "check-citations":
         return check_citations(args.case)
     if command == "agent-events":
-        return save_analysis(args.case, args.out, agent_events(args.case, args.evidence, args.format))
+        return save_analysis(args.case, args.out, agent_events(args.case, args.evidence, args.format, args.exporter_version))
     if command == "intake":
         return intake_manifest(args.case, args.manifest)
     if command == "record":
@@ -264,7 +285,8 @@ def dispatch(args) -> dict:
     if command == "capture":
         return save_analysis(args.case, args.out, capture(args.case, args.evidence, args.format))
     if command == "compare":
-        return save_analysis(args.case, args.out, compare_text(args.case, args.left, args.right))
+        return save_analysis(args.case, args.out, compare_text(args.case, args.left, args.right,
+                             args.left_analysis, args.right_analysis, args.left_sha256, args.right_sha256))
     if command in ("graph", "export-events"):
         root, _, _, _ = load_case(args.case)
         destination = safe_path(args.out, exists=False)

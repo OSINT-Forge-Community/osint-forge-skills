@@ -1,13 +1,13 @@
-# Case contract v3 (v1 and v2 readable)
+# Case contract v4 (v1, v2 and v3 readable)
 
 The bundled utility runs without network access or optional Python packages.
-Use `python scripts/forge.py --help` relative to the loaded skill directory.
+Use `python3 scripts/forge.py --help` relative to the loaded skill directory.
 On Windows, `py -3` is an equivalent launcher. Quote every user-supplied path.
-The authoring repository also exposes `python scripts/forge.py` at its root.
+The authoring repository also exposes `python3 scripts/forge.py` at its root.
 
 ## Private case layout
 
-- `case.json`: schema version 3, scope, title and creation time.
+- `case.json`: schema version 4, scope, title and creation time.
 - `evidence.jsonl`: stable E000001 identifiers, relative raw paths, SHA-256,
   size, original basename, acquisition time, optional HTTPS source URL and
   analyst origin label. A label never establishes source independence.
@@ -97,11 +97,53 @@ export. Public bundles contain the reviewed view and its export manifest only.
 
 ## Versioned review records
 
-New cases use schema 3. Readers retain schema 1 and 2 support; older readers
-reject schema 3. `upgrade --case OLD --out NEW` creates a verified current-schema
+Read [the compact invariants](quick-reference.md) once per case and runtime
+version. Load command-specific [recipes](recipes.md) and this complete contract
+only when the operation requires their details.
+
+New cases use schema 4. Readers retain schema 1, 2 and 3 support; older readers
+reject schema 4. `upgrade --case OLD --out NEW` creates a verified current-schema
 copy without modifying OLD or its historical journals. Never change schema
-metadata by hand. Private exports include review.jsonl for schemas 2 and 3;
+metadata by hand. Private exports include review.jsonl for schemas 2, 3 and 4;
 the archive manifest format remains version 1.
+
+## Schema 4 investigation records
+
+`record --input FILE` appends validated hypothesis, test and assertion-origin
+records. All require a rationale. Referenced E, C and earlier R identifiers must
+exist. These are analyst assertions, not automatic semantic verification.
+
+| Kind | Required specialized fields | Meaning |
+| --- | --- | --- |
+| `hypothesis` | `label`, `statement`, `status` | Candidate, supported, rejected or unresolved alternative. Supported/rejected states require evidence. Optional `prediction`, earlier hypothesis `alternatives` and declared `question_id` retain the discriminating context. |
+| `test` | `hypothesis`, `action`, `expected`, `status` | Planned, blocked, completed or inconclusive test. Completed tests require evidence and an observation. `outcome` is supports, contradicts or undetermined and remains analyst-declared. |
+| `origin` | `claim_id`, `citation_index`, `origin_group`, `relationship`, `basis`, `evidence` | Citation-level upstream attribution. Copied, direct observation and unknown relationships do not establish independence. |
+
+Schema 4 also permits same-kind `supersedes` for entities, relations,
+requirements, hypotheses, tests and origins. A requirement revision retains its
+Q identifier. `retired: true` on a complete replacement record withdraws it from
+the active view while preserving both records. References remain resolvable.
+Tests against revised hypotheses enter the review queue. Graph edges resolve
+entity revisions and flag endpoints withdrawn by the analyst.
+Research recorded before a requirement revision remains visible but does not
+complete the revised requirement's coverage. Review it against the current
+question and append a justified replacement research record when warranted.
+
+Report, citation, graph and review operations share a verified state and bounded
+read caches for their invocation. Changed files or inventories abort the read.
+Private exports validate the captured state before publishing the archive.
+On every platform, a final streaming byte check also detects rapid same-size rewrites
+whose timestamps remain equal. Cached excerpts are still reused within the
+operation. Each operation performs one additional integrity read per selected
+file before accepting the result.
+These checks detect ordinary concurrent changes, not a hostile local user who
+controls the host. Case directories have at most 5,000 entries per derived/raw
+folder. Caches expire after each operation and never replace integrity checks.
+
+Page citations can reference qualified `pdftotext` analyses with an exact hash,
+tool identity and first/last page coverage. Page separators and empty pages must
+map exactly to that range. Ambiguous mappings remain unverifiable. Millisecond
+citations still require analyst review. Matching an excerpt is not semantic proof.
 
 Claims may add precise `citations` and `supersedes`. Citations locate pages,
 lines, source records or milliseconds; analysis citations bind a case-relative

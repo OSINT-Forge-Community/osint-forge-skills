@@ -16,3 +16,10 @@ excerpt matches, valid locators and automatically unverifiable citations from
 human assessment of meaning. Lead with findings relevant to the stated question,
 then unresolved competitors and critical declared coverage gaps. A current
 claim or completed search is not a truth verdict.
+
+## Hypothesis and attribution history
+
+Review recorded hypotheses/tests and assertion-origin relations alongside
+claims and coverage. Show blocked or inconclusive checks and remaining
+competitors. Keep withdrawn entities/relations in historical views. An
+origin label or completed test is an analyst record, not a truth score.

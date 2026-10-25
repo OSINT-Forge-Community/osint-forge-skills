@@ -9,6 +9,7 @@ from html.parser import HTMLParser
 import io
 import json
 from pathlib import Path
+import re
 import xml.etree.ElementTree as ET
 
 from .casefiles import evidence_bytes, load_case, verify
@@ -16,6 +17,7 @@ from .review import checked_analysis, current, records
 from .safeio import ForgeError, MAX_JSON, MAX_RECORDS, digest, read_json, require, visible
 from .timestamps import timestamp
 from .assurance import dependency_status
+from .snapshot import read_operation
 
 
 def source(case, identifier):
@@ -28,12 +30,8 @@ def import_events(case, identifier, time_field, event_field):
     provenance, data = source(case, identifier)
     require(time_field != event_field, "INVALID_EVENT_MAPPING")
     try:
-        reader = csv.DictReader(io.StringIO(data.decode("utf-8-sig"), newline=""), strict=True)
-        headers = reader.fieldnames
-        rows = []
-        for row in reader:
-            require(len(rows) < MAX_RECORDS, "TOO_MANY_EVENTS")
-            rows.append(row)
+        from .csvio import strict_csv
+        headers, rows = strict_csv(data.decode("utf-8-sig"), "INVALID_EVENT_MAPPING")
     except (csv.Error, UnicodeError) as exc:
         raise ForgeError("INVALID_CSV_INPUT") from exc
     require(headers is not None and len(headers) == len(set(headers))
@@ -141,10 +139,28 @@ def capture(case, identifier, format_name):
                             "Scripts, attachments and linked resources are not executed or fetched."]}
 
 
-def compare_text(case, left, right):
-    first, a = source(case, left)
-    second, b = source(case, right)
-    require(left != right and len(a) <= 200000 and len(b) <= 200000, "TEXT_DIFF_LIMIT")
+@read_operation
+def compare_text(case, left=None, right=None, left_analysis=None, right_analysis=None,
+                 left_sha256=None, right_sha256=None):
+    root, _, evidence, _ = load_case(case)
+
+    def selected(identifier, analysis, fingerprint):
+        require((identifier is None) != (analysis is None), "INVALID_COMPARISON_SELECTOR")
+        if analysis is None:
+            require(fingerprint is None, "INVALID_COMPARISON_SELECTOR")
+            return source(case, identifier)
+        require(isinstance(fingerprint, str) and bool(re.fullmatch(r"[0-9a-f]{64}", fingerprint)),
+                "ANALYSIS_DIGEST_REQUIRED")
+        value, actual = checked_analysis(root, analysis, evidence, fingerprint)
+        text = value.get("text", value.get("result"))
+        require(isinstance(text, str), "TEXT_ANALYSIS_REQUIRED")
+        return {**value["input"], "analysis": analysis, "analysis_sha256": actual,
+                "derivation": "derived_not_independent_source", "tool": value.get("tool"),
+                "coverage": value.get("coverage", {})}, text.encode("utf-8")
+
+    first, a = selected(left, left_analysis, left_sha256)
+    second, b = selected(right, right_analysis, right_sha256)
+    require(first != second and len(a) <= 200000 and len(b) <= 200000, "TEXT_DIFF_LIMIT")
     a_lines, b_lines = a.decode("utf-8-sig").splitlines(), b.decode("utf-8-sig").splitlines()
     require(len(a_lines) <= 1000 and len(b_lines) <= 1000, "TEXT_DIFF_LIMIT")
     changes = []
@@ -158,17 +174,29 @@ def compare_text(case, left, right):
                             "Empty ranges mark insertions/deletions. BOM and line-ending changes are not text changes."]}
 
 
+@read_operation
 def graph(case):
     verify(case)
     root, info, evidence, claims = load_case(case)
-    rows = current(records(root, info))
+    ledger = records(root, info)
+    rows = current(ledger)
     nodes = [{"id": row["id"], "kind": "evidence", "label": row["original_name"]} for row in evidence]
     statuses = dependency_status(claims, rows)
     nodes += [{"id": row["id"], "kind": "claim", "label": row["text"],
                "review_status": statuses[row["id"]]["status"], "time_context": row.get("time_context", {})} for row in claims]
+    active = {row["id"] for row in rows}
+    replacements = {row["supersedes"]: row["id"] for row in ledger if row.get("supersedes")}
+    entities = {row["id"]: row for row in ledger if row["kind"] == "entity"}
+
+    def endpoint(identifier):
+        while identifier in replacements:
+            identifier = replacements[identifier]
+        return identifier
+
     nodes += [{"id": row["id"], "kind": row["entity_type"], "label": row["label"],
+               "review_status": "retired" if row.get("retired") else "current" if row["id"] in active else "historical",
                **{key: row[key] for key in ("identifiers", "jurisdiction", "candidate_group", "time_context") if key in row}}
-              for row in rows if row["kind"] == "entity"]
+              for row in entities.values()]
     edges = []
     for row in claims:
         for key in ("supports", "contradicts"):
@@ -185,7 +213,11 @@ def graph(case):
             edges += [{"source": ref, "target": row["id"], "label": "documents",
                        "state": "analyst_asserted", "evidence": [ref]} for ref in row["evidence"]]
         if row["kind"] == "relation":
-            edges.append({key: row[key] for key in ("source", "target", "label", "state", "evidence", "time_context", "match_criteria") if key in row})
+            edge = {key: row[key] for key in ("source", "target", "label", "state", "evidence", "time_context", "match_criteria") if key in row}
+            edge.update(source=endpoint(row["source"]), target=endpoint(row["target"]))
+            if entities[edge["source"]].get("retired") or entities[edge["target"]].get("retired"):
+                edge["state"] = "needs_review"
+            edges.append(edge)
     return {"nodes": nodes, "edges": edges,
             "limitations": ["Relations are analyst assertions or candidates, not automatic identity resolution."]}
 

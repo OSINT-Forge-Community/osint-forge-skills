@@ -9,7 +9,7 @@
       "name": "osint-forge-skills",
       "source": "./dist/plugins/osint-forge-skills",
       "description": "Portable evidence-linked OSINT and forensic skills",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

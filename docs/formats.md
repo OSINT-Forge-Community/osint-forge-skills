@@ -249,3 +249,23 @@ rewrites of the journals or semantic truth validation.
 The [agent export contract](../skills/of-agent-artifacts/references/workflow.md)
 defines the explicit normalized JSON/JSONL input for `agent-events`. Native
 client logs are not guessed or acquired. Unknown event types remain gaps.
+
+## Schema 4 investigation and revisions
+
+New cases use schema 4. Schemas 1, 2 and 3 remain readable. Upgrade by verified
+copy before adding new semantics. The
+[schema 4 record contract](../shared/case-contract.md#schema-4-investigation-records)
+defines hypotheses, discriminating tests, assertion origins and same-kind
+revisions/withdrawals for entities, relations and requirements. Current views
+exclude superseded/withdrawn records, while journals preserve their full history.
+
+Tests bind an earlier hypothesis R identifier to an expected observation and
+declared outcome. A revised hypothesis makes its earlier tests review work.
+Origins bind a claim and zero-based citation index to a documented upstream
+group. Shared groups indicate declared common provenance, not independent
+corroboration. Direct observations also require a basis and evidence.
+
+`codex-exec-jsonl` is a separate explicit input profile for selected public
+Codex CLI event exports. Original physical indices, item IDs, reported statuses,
+exporter context, unmapped field counts and omission gaps remain in the derived
+analysis. No private internal rollout format or live profile is collected.

@@ -58,6 +58,7 @@ dist/
 !/docs/branding/provenance.json
 
 !/benchmarks/review.py
+!/benchmarks/mcp_client.py
 !/benchmarks/results/2026-10-14-review-cli/
 /benchmarks/results/2026-10-14-review-cli/*
 !/benchmarks/results/2026-10-14-review-cli/results.json

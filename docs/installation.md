@@ -26,6 +26,9 @@ python3 scripts/package.py --check
 On Windows/PowerShell, use `py -3` in place of `python3`. The build creates the
 full plugin, one standalone archive per skill and `SHA256SUMS` in `dist/`.
 The build also synchronizes the generated resources in `skills/` from `shared/`.
+Distribution ZIPs use Deflate with fixed member order and timestamps. Exact
+byte-for-byte rebuild checks apply to the same Python/compression toolchain.
+Private case exports retain their separate uncompressed archive contract.
 The second command verifies both the checked-in skill resources and `dist/`
 without changing files. Maintain shared resources in `shared/`, then regenerate;
 do not edit the generated copies inside skills by hand.
@@ -130,6 +133,22 @@ Select individual skills by repeating `--skill NAME`. Every installed skill
 contains its own runtime and case contract. The tool validates all collisions
 before copying and records exact installed-file hashes in a local receipt.
 
+The source installer selects only the requested skill files. It does not build
+ZIP archives. Repeating `install` can add another skill to an existing receipt
+and leaves unchanged installed selections intact. Use explicit `update` to
+replace a previously installed selection with the current package:
+
+```bash
+python3 scripts/install.py install --client codex --target /path/to/workspace --skill of-case-start
+python3 scripts/install.py install --client codex --target /path/to/workspace --skill of-geolocation
+python3 scripts/install.py update --client codex --target /path/to/workspace --skill of-case-start --dry-run
+python3 scripts/install.py update --client codex --target /path/to/workspace --skill of-case-start
+```
+
+Updates and removals check the exact hashes in the versioned receipt and retain
+the refusal to overwrite modified or unowned files. Old receipt versions remain
+supported even when a file was removed from the current source distribution.
+
 Gemini also supports its own native installation:
 
 ```text
@@ -152,6 +171,21 @@ All recorded files must be unchanged. A modification blocks the entire removal
 so the operator can preserve it. Unrecorded additional files are left intact.
 The receipt assumes an operator-controlled target; it is not an authenticated
 ownership record against a malicious local user.
+
+Repeat `--skill NAME` to remove only selected installed skills. Other receipt
+entries and unrelated user files remain present. A process lock prevents two
+installer operations from modifying one client/scope simultaneously.
+
+Interrupted transactions remain visible. Preserve the target and preview
+recovery before continuing:
+
+```bash
+python3 scripts/install.py recover --client codex --target /path/to/workspace --dry-run
+python3 scripts/install.py recover --client codex --target /path/to/workspace
+```
+
+Recovery checks its journal and owned bytes before rollback or cleanup. It
+refuses conflicting or unknown staging content and does not remove operator files.
 
 For native installations use the client's own uninstall command. This project
 does not alter existing plugin registrations during build or testing.

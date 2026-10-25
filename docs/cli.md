@@ -1,6 +1,6 @@
 # Command reference
 
-This reference describes helper version **0.2.0**. The [contract v3](../shared/case-contract.md)
+This reference describes helper version **0.3.0**. The [contract v4](../shared/case-contract.md)
 defines invariants; [data formats](formats.md) describes the records.
 From source, prefix commands with `python3 scripts/forge.py`; on PowerShell,
 use `py -3 scripts/forge.py`. In a package, run a complete skill's
@@ -252,7 +252,7 @@ the fields, indexing, limits and interpretation of these offline commands.
 | `plan` | `--kind one supported input kind` | Suggested skills and stop conditions; executes nothing |
 | `intake` | `--case`, `--manifest` | Explicit files with individual provenance; committed prefix retained on failure |
 | `record` | `--case`, `--input` | Append validated research/entity/relation/annotation JSON |
-| `upgrade` | `--case`, `--out` | Verified schema 3 copy of a schema 1 or 2 case |
+| `upgrade` | `--case`, `--out` | Verified schema 4 copy of a schema 1, 2 or 3 case |
 | `capture` | `--case`, `--evidence`, `--format html or mhtml`, `--out` | Inert capture text, up to 4 MiB input and 100 MIME parts |
 | `compare` | `--case`, `--left`, `--right`, `--out` | UTF-8 changes, at most 200,000 bytes and 1,000 lines per input |
 | `import-events` | `--case`, `--evidence`, `--time-field`, `--event-field`, `--out` | Selected CSV fields, original indices and unmapped-column list |
@@ -317,6 +317,69 @@ not API integrations. The [agent export schema](../skills/of-agent-artifacts/ref
 requires selected normalized data. No command discovers profiles, executes
 recorded tool calls, installs software or performs network research.
 
-New cases use schema 3; schemas 1 and 2 remain readable. Use
+New cases use schema 4; schemas 1, 2 and 3 remain readable. Use
 `upgrade --case OLD --out NEW` to create a verified copy before recording new
 semantics. Existing journals and original cases are preserved.
+
+## Schema 4 investigation workflow
+
+`record` also accepts validated `hypothesis`, `test` and citation-level `origin`
+records. See the [JSON recipes](../shared/recipes.md) and the
+[record contract](../shared/case-contract.md#schema-4-investigation-records).
+The review queue includes unfinished tests and tests whose hypothesis changed.
+HTML and Markdown reports retain their evidence, predictions and outcomes.
+Same-kind `supersedes` can revise entities, relations and requirements. A complete
+replacement with `retired: true` withdraws an assertion without rewriting it.
+
+`plan --max-steps 8` budgets actual actions. Optional `--resume-from`, repeated
+`--completed-step KIND:PHASE`, repeated `--available-input` and `--stop-reason`
+control a declared continuation. A selected `--case` prioritizes its recorded
+review tasks before generic material checks. `--specialize` returns advisory
+read-only host tasks and one case writer. It launches no agents or collection.
+The JSON request also supports bounded `available`, `authorized` and
+`deferred_leads`. Missing input/capability/prerequisite states remain visible.
+
+`sources --applicable-to FR` includes bundled global and applicable regional
+cards. `--jurisdiction FR` retains its exact-match behavior. These modes cannot
+be combined. Cards remain dated documentation, not tested API availability.
+
+## Native selected agent exports
+
+```bash
+python3 scripts/forge.py agent-events --case CASE --evidence E000001 --format codex-exec-jsonl --exporter-version VERSION --out CASE/analysis/agent-events.json
+```
+
+Only the documented Codex `exec --json` event export is interpreted by this
+adapter. It never discovers session files or live profiles. The original stays
+registered. Derived events retain physical-line indices, item IDs, declared
+exporter version, omitted/unknown fields and reported statuses. Requests without
+results and duplicate or ambiguous calls remain gaps. A reported completion
+does not prove execution or an external effect.
+
+## Qualified derived text and PDF pages
+
+`compare` accepts one original E selector or one qualified analysis selector
+per side. Derived selectors require their exact hashes:
+
+```bash
+python3 scripts/forge.py compare --case CASE --left-analysis analysis/first.json --left-sha256 HASH --right-analysis analysis/second.json --right-sha256 HASH --out CASE/analysis/comparison.json
+```
+
+The output retains both original E IDs and hashes, extraction identities and
+coverage. A second extraction of one original is not independent evidence.
+Page citations can reference bounded `pdftotext` analyses with exact hashes and
+unambiguous page separators/coverage. Empty pages and starting offsets are kept.
+Unsupported or uncertain mappings remain unverifiable. Millisecond citations
+still need separately qualified timing evidence and analyst review.
+
+## Concurrent reads and bounded work
+
+Reports, citation checks, graphs, plans and review share verified read state.
+Per-operation caches expire afterward. Concurrent changes fail with
+`CASE_CHANGED_DURING_READ` or `CASE_CHANGED_DURING_REVIEW` before the result is
+accepted. Private export publication occurs after this coherence check.
+Source changes, byte limits and cancellation never become successful excerpts.
+The optional MCP adds bounded work and cancellation without blocking pings.
+Each platform also performs a final streaming byte check, because rapid same-size
+rewrites can retain identical filesystem timestamps. It adds one integrity read
+per selected file without repeating the parse for each citation.

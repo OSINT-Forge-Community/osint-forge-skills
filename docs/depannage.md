@@ -1,5 +1,30 @@
 # Troubleshooting and error recovery
 
+For `CASE_CHANGED_DURING_READ` or `CASE_CHANGED_DURING_REVIEW`, wait for the
+authorized writer to finish, run `verify`, then repeat the read operation.
+Do not disable integrity checks or reuse the rejected result. An export refused
+during capture has not published its output archive.
+
+`INVALID_CSV_HEADERS`, `INVALID_CSV_ROW` or `INVALID_EVENT_MAPPING` can indicate
+duplicate/empty column names or inconsistent row widths. Preserve the original
+and request a corrected export. Do not silently choose one duplicate column.
+
+`CITATION_PAGE_MAPPING_UNCERTAIN` means extracted page separators do not match
+the declared range. Review the pages or provide a newly qualified extraction.
+`CASE_UPGRADE_REQUIRED` for investigation records requires `upgrade --case OLD
+--out NEW`; never edit schema metadata in place.
+
+Installer `INSTALL_UPDATE_REQUIRED` requires an explicit targeted `update`.
+`INSTALL_BUSY` means another operation owns the client/scope lock.
+`INSTALL_TRANSACTION_PENDING` or `INSTALL_RECOVERY_REQUIRED` requires a recovery
+preview. `INSTALL_RECOVERY_CONFLICT` and `INSTALL_TRANSACTION_CONTENT_CHANGED`
+preserve conflicting bytes for operator review. `INSTALLATION_TOO_LARGE` rejects
+an operation beyond the bounded payload. See [installation recovery](installation.md).
+
+MCP `OPERATION_BUDGET_EXCEEDED` and `OPERATION_CANCELLED` do not establish a
+completed verification. `CASE_TOOL_BUSY` allows one expensive case operation at
+a time. Reduce the selected case or rerun a bounded operation after completion.
+
 Start by recording the **command, fixed code and step**, without copying private
 evidence. Avoid repeating a mutation without knowing its outcome. `verify`
 and `verify-export` are the first read-only checks. Never resolve a preservation

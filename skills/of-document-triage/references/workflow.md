@@ -11,7 +11,9 @@ PDF signature recognition is not text extraction, signature verification or auth
 ## Excerpt and receiver context
 
 Use `check-citations` for qualified UTF-8 or explicitly mapped records and retain
-unverifiable page/OCR limitations. An exact excerpt confirms its location, not
+page/OCR limitations. Page excerpts from a qualified pdftotext analysis can
+be checked against original page numbering and analysis hashes. OCR matches
+still establish derived text only, never the truth of the photographed scene. An exact excerpt confirms its location, not
 its implication. For mail, identify which receiver's logs and authentication
 results are trusted before interpreting earlier untrusted headers. A sender
 field, forwarded header or displayed authentication result alone does not

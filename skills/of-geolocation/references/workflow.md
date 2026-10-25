@@ -23,9 +23,10 @@ only by a prior unrelated image or conversation, set it aside until current
 image evidence independently supports it.
 
 A missing feature is negative evidence only when it should have been visible,
-within the capture's resolution, field of view and date. Mark each proposed
-test as not_run, unavailable, match or contradiction and cite the actual capture
-for executed tests. These are review states, not probability scores. Do not
+within the capture's resolution, field of view and date. Use schema 4 hypothesis/test records from the [recipes](recipes.md#hypotheses-and-tests).
+Keep the test state planned, blocked, completed or inconclusive separate from
+its supports, contradicts or undetermined outcome. Cite the actual observation
+and capture for completed tests. These are review states, not probability scores. Do not
 promote an exact public location while a material contradiction or equally
 plausible competitor remains. Return the supported region or indeterminate.
 

@@ -16,3 +16,13 @@ new claims rather than rewriting old ones. Record when material was available;
 a later disclosure cannot justify an earlier decision retroactively. For each
 candidate, record which observation would distinguish it from its strongest
 plausible competitor. Compatibility alone does not add affirmative support.
+
+## Structured alternatives and tests
+
+Use schema 4 hypothesis records for candidate statements, predictions and
+explicit alternatives, then test records for action, expected observation,
+state and outcome. Follow the [validated record recipes](recipes.md#hypotheses-and-tests).
+A completed test requires its actual observation and E references. A blocked
+test is a gap. Preserve inconclusive results without converting them into
+support or contradiction. Revise or retire records by appending a complete
+superseding record with a rationale. These states are not calibrated confidence.

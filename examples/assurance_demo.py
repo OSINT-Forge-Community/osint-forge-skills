@@ -104,6 +104,6 @@ def demo(destination):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Create a synthetic schema 3 case with dependency warnings and excerpt checks.")
+    parser = argparse.ArgumentParser(description="Create a synthetic current-schema case with dependency warnings and excerpt checks.")
     parser.add_argument("--out", required=True)
     print(json.dumps(demo(parser.parse_args().out), sort_keys=True))

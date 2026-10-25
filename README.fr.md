@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
- <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.2.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.2.0"></a>
+ <a href="VERSION"><img src="https://img.shields.io/badge/Version-0.3.0-965D31?style=flat&amp;labelColor=24292F&amp;logo=github&amp;logoColor=white" alt="Version 0.3.0"></a>
  <a href="#les-skills"><img src="https://img.shields.io/badge/Skills-16-64748B?style=flat&amp;labelColor=24292F" alt="16 Skills"></a>
  <a href="#les-outils-utilisables"><img src="https://img.shields.io/badge/Optional_Tools-4-786452?style=flat&amp;labelColor=24292F" alt="4 Outils Optionnels"></a>
  <a href="docs/installation.md"><img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&amp;labelColor=24292F&amp;logo=python&amp;logoColor=white" alt="Python 3.11+"></a>
@@ -189,6 +189,14 @@ Pour les plugins natifs et les archives ZIP, construisez avec `python3 scripts/p
 <a id="benchmarks"></a>
 
 ## Tests et benchmarks
+
+La version **0.3.0** ajoute les exports cohérents, l'installation ciblée sans
+fabrication d'archives, la planification par actions, les hypothèses/tests/origines
+du schéma 4, les citations PDF par page et la comparaison directe de textes dérivés.
+Le MCP optionnel expose les méthodes statiques, des contrats de sortie validés
+et des opérations de dossier bornées et annulables.
+Voir les [commandes et limites](docs/cli.md#schema-4-investigation-workflow),
+la [qualification MCP](docs/mcp.md) et le [registre daté](docs/compatibility.json).
 
 Consigné le **15 octobre 2026** : **166 tests réussis** sous Linux/WSL, dont
 **15 tests synthétiques des adaptateurs**. [Benchmarks et essais réels →](benchmarks/README.md)

@@ -1,5 +1,23 @@
 # Benchmarks and reproducible results
 
+## Optional MCP client qualification
+
+`mcp_client.py` exercises the stdio runtime through an independently installed
+official MCP Python SDK and `jsonschema`. These are optional development
+dependencies, not runtime requirements. The runner installs nothing and makes
+no provider/model calls. In an explicitly prepared development environment:
+
+```bash
+python3 benchmarks/mcp_client.py --runtime-python /usr/bin/python3
+```
+
+It negotiates the protocol, calls every default and startup-case tool on
+synthetic data, checks output schemas and actionable errors, reads allowlisted
+resources, rejects arbitrary paths and verifies ping/shutdown. The dated
+[compatibility record](../docs/compatibility.json) distinguishes SDK results,
+native host trials and model behavior. A passing SDK test establishes neither
+general host compatibility nor investigation quality.
+
 Deterministic helper checks and model/client pilots are recorded separately.
 Each observation retains its evaluated source snapshot. The external benchmark
 comparisons were researched on **October 14, 2026**; unperformed benchmarks

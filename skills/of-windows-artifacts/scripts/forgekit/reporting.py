@@ -42,6 +42,10 @@ def mask_credentials(text: str) -> tuple[str, int]:
     return "".join(parts), count
 
 
+from .snapshot import active_case, read_operation, verified_case
+
+
+@read_operation
 def render_report(case: str | Path, language: str = "en") -> bytes:
     verify(case)
     _, info, evidence, claims = load_case(case)
@@ -97,6 +101,11 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
             lines.append(f"- {row['id']} [{row['kind']} / {row.get('status', row.get('state', 'recorded'))}] "
                          f"{markdown(row.get('question', row.get('label', row.get('note', ''))))}: "
                          f"{markdown(row['rationale'], 8000)}")
+    from .investigation import investigation_status
+    investigation = investigation_status(review)
+    if investigation["hypotheses"] or investigation["tests"] or investigation["origins"]:
+        lines.extend(["", "## Hypothèses, tests et origines" if language == "fr" else "## Hypotheses, tests and origins", "",
+                      markdown(json.dumps(investigation, ensure_ascii=False), MAX_JSON), ""])
     lines.extend(["", "## Couverture déclarée" if language == "fr" else "## Declared coverage", "",
                   markdown(json.dumps(coverage(review), ensure_ascii=False), MAX_JSON), "",
                   "## Contrôle des citations" if language == "fr" else "## Citation checks", "",
@@ -163,6 +172,14 @@ def zip_bytes(members: dict[str, bytes]) -> bytes:
 
 def export_case(case: str | Path, output: str | Path, mode: str,
                 view: str | Path | None = None, approved_sha256: str | None = None) -> dict:
+    require(active_case(case) is None, "EXPORT_REQUIRES_OWN_SNAPSHOT")
+    with verified_case(case):
+        destination, data, result = _capture_export(case, output, mode, view, approved_sha256)
+    atomic_write(destination, data)
+    return result
+
+
+def _capture_export(case, output, mode, view, approved_sha256):
     verify(case)
     root, _, evidence, _ = load_case(case)
     destination = safe_path(output, exists=False)
@@ -198,8 +215,7 @@ def export_case(case: str | Path, output: str | Path, mode: str,
         members["sharing.json"] = json_bytes({"mode": "private", "contains_originals": True})
     data = zip_bytes(members)
     verify(root)
-    atomic_write(destination, data)
-    return {"mode": mode, "sha256": digest(data), "member_count": len(members) + 1}
+    return destination, data, {"mode": mode, "sha256": digest(data), "member_count": len(members) + 1}
 
 
 def inspect_export(path: str | Path) -> dict[str, bytes]:

@@ -87,10 +87,8 @@ def timeline(case: str | Path, identifier: str, format_name: str) -> dict:
     try:
         text = data.decode("utf-8-sig")
         if format_name == "csv":
-            rows = []
-            for record in csv.DictReader(io.StringIO(text)):
-                require(len(rows) < MAX_RECORDS, "TOO_MANY_RECORDS")
-                rows.append(record)
+            from .csvio import strict_csv
+            _, rows = strict_csv(text)
         elif format_name == "jsonl":
             rows = []
             for line in io.StringIO(text):

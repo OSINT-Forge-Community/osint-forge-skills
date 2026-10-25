@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.3.0 - 2026-10-25
+
+- Capture coherent private exports and reject ambiguous CSV headers and rows.
+- Reuse verified read state and bounded citation caches within an operation.
+- Install, update and remove selected skills without building archives. Retain
+  old receipt support, modified-file refusal and recoverable transactions.
+- Add schema 4 hypotheses, discriminating tests, citation-level origins and
+  append-only entity/relation/requirement correction or withdrawal. Older cases
+  remain readable and upgrade only through a verified copy.
+- Plan concrete phased actions, prioritize recorded review gaps and retain
+  prerequisites, budgets, resume state and advisory host specialization.
+- Expose allowlisted methods and recipes through MCP resources, validate output
+  schemas, return actionable errors and support bounded cancellable case work.
+- Verify qualified PDF page excerpts, compare derived text directly, interpret
+  explicitly selected Codex event exports and flag incomplete tool-call pairs.
+- Add compact skill invariants and recipes, applicable-region source filtering,
+  and reproducible optional MCP SDK qualification. Compress distribution ZIPs
+  without changing the private case archive format.
+
+This is a local source delivery. Compatibility observations retain their exact
+versions and scope. No publication or general model quality gain is implied.
+
 ## Unreleased - prioritized review and viewer improvements
 
 - Add a bounded, read-only review queue that links current premise revisions,

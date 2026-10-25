@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 from . import SCHEMA_VERSION, VERSION
 from .safeio import (ForgeError, MAX_RECORDS, MAX_TOTAL, atomic_write, digest, json_bytes,
                      jsonl_bytes, read_bytes, read_json, read_jsonl, relative_path,
-                     require, safe_path)
+                     require, safe_path, checkpoint)
 
 EVIDENCE_ID = re.compile(r"E[0-9]{6}\Z")
 CLAIM_ID = re.compile(r"C[0-9]{6}\Z")
@@ -62,13 +62,17 @@ def initialize(path: str | Path, title: str, scope: str) -> dict:
 
 
 def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
+    from .snapshot import active_case
+    cached = active_case(path)
+    if cached is not None:
+        return cached
     root = safe_path(path)
     require(root.is_dir(), "DIRECTORY_REQUIRED")
     for folder in ("raw", "analysis", "reports", "exports"):
         require(safe_path(root / folder).is_dir(), "INVALID_CASE_DIRECTORY")
     case = read_json(root / "case.json")
     require(isinstance(case, dict) and type(case.get("schema_version")) is int
-            and case["schema_version"] in (1, 2, SCHEMA_VERSION),
+            and case["schema_version"] in (1, 2, 3, SCHEMA_VERSION),
             "UNSUPPORTED_CASE_SCHEMA")
     bounded_text(case.get("title"), 300, "INVALID_TITLE")
     bounded_text(case.get("scope"), 8000, "INVALID_SCOPE")
@@ -77,6 +81,7 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
     ids = set()
     total = 0
     for row in evidence:
+        checkpoint()
         identifier = row.get("id")
         require(isinstance(identifier, str) and bool(EVIDENCE_ID.fullmatch(identifier))
                 and identifier not in ids, "INVALID_EVIDENCE_ID")
@@ -96,6 +101,7 @@ def load_case(path: str | Path) -> tuple[Path, dict, list[dict], list[dict]]:
     require(total <= MAX_TOTAL, "CASE_TOO_LARGE")
     claim_ids, replaced = set(), set()
     for row in claims:
+        checkpoint()
         identifier = row.get("id")
         require(isinstance(identifier, str) and bool(CLAIM_ID.fullmatch(identifier))
                 and identifier not in claim_ids, "INVALID_CLAIM_ID")
@@ -183,6 +189,13 @@ def validate_claim(row: dict, evidence_ids: set[str]) -> None:
 
 
 def verify(path: str | Path) -> dict:
+    from .snapshot import active_case
+    cached = active_case(path)
+    if cached is not None:
+        require(not (cached[0] / ".forge.lock").exists(), "CASE_BUSY")
+        return {"status": "verified", "evidence_count": len(cached[2]), "claim_count": len(cached[3]),
+                "scope": "registered_bytes_and_references", "authenticity": "not_established",
+                "semantic_claim_validation": "not_performed"}
     root, _, evidence, claims = load_case(path)
     require(not (root / ".forge.lock").exists(), "CASE_BUSY")
     return _verify_records(root, evidence, claims)
@@ -197,6 +210,7 @@ def _verify_records(root: Path, evidence: list[dict], claims: list[dict]) -> dic
         actual.add(entry.relative_to(root).as_posix())
     require(actual == indexed, "RAW_INVENTORY_MISMATCH")
     for row in evidence:
+        checkpoint()
         content = read_bytes(root / row["path"])
         require(len(content) == row["size"] and digest(content) == row["sha256"],
                 "EVIDENCE_INTEGRITY_MISMATCH")

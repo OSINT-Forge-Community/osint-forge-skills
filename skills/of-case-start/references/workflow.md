@@ -17,3 +17,12 @@ capabilities already available and authorized, and a step budget. Preserve
 ambiguous input types until the question resolves them. A plan's case state can
 surface conclusions needing review before new collection. Do not repeat intake
 already established or treat a capability declaration as host permission.
+
+## Resume a bounded plan
+
+Use the existing case's review gaps and available inputs before proposing new
+collection. Each ready action needs its required input and an available,
+authorized capability. Preserve blocked/deferred actions, remaining action/time
+budget and the recorded stop reason. The plan remains advisory. Optional host
+parallelism uses independent tasks, minimized context and separate derived
+outputs. A single coordinator appends case records after reviewing results.

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "skills": [
     {
       "name": "of-case-start",
@@ -80,7 +80,7 @@
     {
       "name": "of-agent-artifacts",
       "title": "Review supplied agent events",
-      "description": "Interpret explicitly supplied normalized AI agent event exports. Use for agent trace review, tool-call reconstruction and reported-effect verification; not for live profile collection, credentials or assuming that model text proves execution."
+      "description": "Interpret explicitly supplied normalized agent exports or selected Codex exec JSONL. Use for agent trace review, tool-call reconstruction and reported-effect verification; not for live profile collection, credentials or assuming that model text proves execution."
     }
   ]
 }

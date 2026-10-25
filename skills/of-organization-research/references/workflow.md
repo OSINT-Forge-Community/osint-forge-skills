@@ -12,3 +12,11 @@ State a relation's matching criteria and validity period; distinguish filing,
 publication, acquisition and availability dates. Consult selected source cards
 for the relevant jurisdiction, then verify the actual record. Missing ownership
 records or reporting exceptions remain gaps rather than a clean result.
+
+## Correct a documented relationship
+
+Schema 4 permits complete superseding entity and relation records. Preserve
+the old assertion, supporting pieces and reason for correction. An explicit
+retirement withdraws the assertion from the current graph without deleting
+its historical links. Reassess conclusions whose argument used the withdrawn
+relationship. A recorded correction is not verification of the replacement.

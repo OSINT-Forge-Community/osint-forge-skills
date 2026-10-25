@@ -1,6 +1,6 @@
 # OSINT Forge Skills user documentation
 
-These guides cover the sixteen skills in version **0.2.0**: install the tools,
+These guides cover the sixteen skills in version **0.3.0**: install the tools,
 try a synthetic case, analyze selected evidence, and hand off findings with
 references and limitations. The [main README](../README.md) introduces the
 catalogue and overall workflow. English is the primary documentation language.
@@ -32,7 +32,7 @@ and [security model](../SECURITY.md). Asset notices are in the
 
 ## Private cases and the host environment
 
-The [contract v3](../shared/case-contract.md) describes preservation invariants.
+The [contract v4](../shared/case-contract.md) describes preservation invariants.
 Python helpers work offline on selected files. Assistant permissions, model
 choice and other tools depend on the host client. A hash verifies bytes; it
 does not establish authenticity.

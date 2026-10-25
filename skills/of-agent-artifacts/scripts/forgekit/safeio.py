@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+from contextlib import contextmanager
+from contextvars import ContextVar
 import io
 import json
 import os
@@ -8,11 +10,14 @@ from pathlib import Path, PurePosixPath
 import re
 import stat
 import tempfile
+import time
 
 MAX_FILE = 64 * 1024 * 1024
 MAX_JSON = 4 * 1024 * 1024
 MAX_TOTAL = 256 * 1024 * 1024
 MAX_RECORDS = 5000
+_BUDGET = ContextVar("forge_budget", default=None)
+_READS = ContextVar("forge_reads", default=None)
 
 
 class ForgeError(Exception):
@@ -22,6 +27,62 @@ class ForgeError(Exception):
 def require(condition: bool, code: str) -> None:
     if not condition:
         raise ForgeError(code)
+
+
+@contextmanager
+def operation_budget(seconds=30, max_bytes=512 * 1024 * 1024, cancel=None):
+    require(isinstance(seconds, (int, float)) and 0 < seconds <= 3600
+            and type(max_bytes) is int and 0 < max_bytes <= 4 * 1024**3, "INVALID_OPERATION_BUDGET")
+    token = _BUDGET.set({"deadline": time.monotonic() + seconds, "remaining": max_bytes, "cancel": cancel})
+    try:
+        checkpoint()
+        yield
+    finally:
+        _BUDGET.reset(token)
+
+
+def checkpoint(byte_count=0):
+    budget = _BUDGET.get()
+    if budget is None:
+        return
+    cancel = budget["cancel"]
+    require(cancel is None or not (cancel.is_set() if hasattr(cancel, "is_set") else cancel()),
+            "OPERATION_CANCELLED")
+    budget["remaining"] -= byte_count
+    require(budget["remaining"] >= 0 and time.monotonic() <= budget["deadline"],
+            "OPERATION_BUDGET_EXCEEDED")
+
+
+def file_signature(entry):
+    return (entry.st_dev, entry.st_ino, entry.st_size, entry.st_mtime_ns, entry.st_ctime_ns)
+
+
+@contextmanager
+def read_scope(root, maximum=16 * 1024 * 1024):
+    require(type(maximum) is int and 0 <= maximum <= MAX_TOTAL, "INVALID_READ_SCOPE")
+    previous = _READS.get()
+    if previous is not None and previous["root"] == root:
+        yield previous
+        return
+    scope = {"root": root, "bytes": {}, "signatures": {}, "digests": {}, "size": 0, "maximum": maximum}
+    token = _READS.set(scope)
+    try:
+        yield scope
+        for path, signature in scope["signatures"].items():
+            checkpoint()
+            require(file_signature(safe_path(path).lstat()) == signature, "CASE_CHANGED_DURING_READ")
+        validation = _READS.set(None)
+        try:
+            for path, expected in scope["digests"].items():
+                checkpoint()
+                selected = safe_path(path)
+                actual, signature = _read_file(selected, selected.lstat(), scope["signatures"][path][2], False)
+                require(actual == expected and signature == scope["signatures"][path],
+                        "CASE_CHANGED_DURING_READ")
+        finally:
+            _READS.reset(validation)
+    finally:
+        _READS.reset(token)
 
 
 def safe_path(value: str | Path, *, exists: bool = True) -> Path:
@@ -54,8 +115,35 @@ def relative_path(value: str) -> str:
 
 
 def read_bytes(value: str | Path, limit: int = MAX_FILE) -> bytes:
+    checkpoint()
     path = safe_path(value)
     entry = path.lstat()
+    require(stat.S_ISREG(entry.st_mode), "REGULAR_FILE_REQUIRED")
+    scope = _READS.get()
+    scope = scope if scope is not None and path.is_relative_to(scope["root"]) else None
+    if scope is not None:
+        signature = file_signature(entry)
+        previous = scope["signatures"].get(path)
+        require(previous is None or previous == signature, "CASE_CHANGED_DURING_READ")
+        cached = scope["bytes"].get(path)
+        if cached is not None:
+            require(len(cached) <= limit, "FILE_TOO_LARGE")
+            return cached
+    data, signature = _read_file(path, entry, limit, True)
+    if scope is not None:
+        require(len(scope["signatures"]) < MAX_RECORDS * 4 or path in scope["signatures"], "TOO_MANY_READ_FILES")
+        fingerprint = digest(data)
+        require(path not in scope["digests"] or scope["digests"][path] == fingerprint,
+                "CASE_CHANGED_DURING_READ")
+        scope["signatures"].setdefault(path, signature)
+        scope["digests"].setdefault(path, fingerprint)
+        if len(data) <= scope["maximum"] - scope["size"]:
+            scope["bytes"][path] = data
+            scope["size"] += len(data)
+    return data
+
+
+def _read_file(path, entry, limit, retain):
     require(stat.S_ISREG(entry.st_mode), "REGULAR_FILE_REQUIRED")
     descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
                          | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0))
@@ -65,18 +153,31 @@ def read_bytes(value: str | Path, limit: int = MAX_FILE) -> bytes:
         require((entry.st_dev, entry.st_ino) == (before.st_dev, before.st_ino),
                 "SOURCE_CHANGED")
         require(before.st_size <= limit, "FILE_TOO_LARGE")
-        data = handle.read(limit + 1)
+        chunks, fingerprint, count = [], hashlib.sha256(), 0
+        read_limit = min(limit, before.st_size) + 1
+        while count < read_limit:
+            chunk = handle.read(min(65536, read_limit - count))
+            if not chunk:
+                break
+            if retain:
+                chunks.append(chunk)
+            else:
+                fingerprint.update(chunk)
+            count += len(chunk)
+            checkpoint(len(chunk))
         after = os.fstat(handle.fileno())
-        signature = lambda s: (s.st_dev, s.st_ino, s.st_size,
-                               s.st_mtime_ns, s.st_ctime_ns)
-        require(signature(before) == signature(after), "SOURCE_CHANGED")
-        require(len(data) <= limit and len(data) == before.st_size,
-                "SOURCE_CHANGED")
-    return data
+        require(file_signature(before) == file_signature(after), "SOURCE_CHANGED")
+        require(count <= limit and count == before.st_size, "SOURCE_CHANGED")
+        final_entry = path.lstat()
+        require(file_signature(entry) == file_signature(final_entry), "SOURCE_CHANGED")
+    return b"".join(chunks) if retain else fingerprint.hexdigest(), file_signature(final_entry)
 
 
 def digest(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+    checkpoint()
+    result = hashlib.sha256(data).hexdigest()
+    checkpoint()
+    return result
 
 
 def atomic_write(value: str | Path, data: bytes, *, replace: bool = False) -> None:
@@ -97,17 +198,22 @@ def atomic_write(value: str | Path, data: bytes, *, replace: bool = False) -> No
         if replace:
             os.replace(temporary, path)
         else:
-            out = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL
-                          | getattr(os, "O_NOFOLLOW", 0)
-                          | getattr(os, "O_BINARY", 0), 0o600)
             try:
-                with os.fdopen(out, "wb") as handle:
-                    handle.write(data)
-                    handle.flush()
-                    os.fsync(handle.fileno())
-            except BaseException:
-                path.unlink(missing_ok=True)
-                raise
+                os.link(temporary, path, follow_symlinks=False)
+            except FileExistsError as exc:
+                raise ForgeError("OUTPUT_EXISTS") from exc
+            except (NotImplementedError, OSError):
+                out = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+                              | getattr(os, "O_NOFOLLOW", 0)
+                              | getattr(os, "O_BINARY", 0), 0o600)
+                try:
+                    with os.fdopen(out, "wb") as handle:
+                        handle.write(data)
+                        handle.flush()
+                        os.fsync(handle.fileno())
+                except BaseException:
+                    path.unlink(missing_ok=True)
+                    raise
     finally:
         Path(temporary).unlink(missing_ok=True)
 

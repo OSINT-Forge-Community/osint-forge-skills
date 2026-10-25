@@ -6,6 +6,7 @@ import re
 
 from .safeio import (MAX_JSON, atomic_write, digest, jsonl_bytes, read_bytes,
                      read_json, read_jsonl, relative_path, require)
+from .investigation import KINDS, validate_investigation
 
 REVIEW_ID = re.compile(r"R[0-9]{6}\Z")
 STATUSES = ("not_searched", "no_result", "partial", "unavailable", "completed")
@@ -32,14 +33,14 @@ def checked_analysis(root, name, evidence, expected=None, evidence_id=None):
 
 def validate_review(root, evidence, claims, rows, schema=2):
     from .casefiles import bounded_text
-    known, replaced = {}, set()
+    known, replaced, questions = {}, set(), {}
     evidence_ids = {row["id"] for row in evidence}
     for row in rows:
         identifier = row.get("id")
         require(isinstance(identifier, str) and bool(REVIEW_ID.fullmatch(identifier))
                 and identifier not in known, "INVALID_REVIEW_ID")
         kind = row.get("kind")
-        require(kind in ("research", "entity", "relation", "annotation", "requirement", "analysis_revision"), "INVALID_REVIEW_KIND")
+        require(kind in ("research", "entity", "relation", "annotation", "requirement", "analysis_revision", *KINDS), "INVALID_REVIEW_KIND")
         bounded_text(row.get("recorded_at"), 100, "INVALID_REVIEW_TIME")
         bounded_text(row.get("rationale"), 8000, "INVALID_REVIEW_RATIONALE")
         references = row.get("evidence", [])
@@ -48,7 +49,7 @@ def validate_review(root, evidence, claims, rows, schema=2):
                 and len(set(references)) == len(references), "INVALID_EVIDENCE_REFERENCE")
         previous = row.get("supersedes")
         if previous is not None:
-            require(kind in ("research", "annotation") and isinstance(previous, str)
+            require((kind in ("research", "annotation") or schema >= 4 and kind != "analysis_revision") and isinstance(previous, str)
                     and previous in known and known[previous]["kind"] == kind
                     and previous not in replaced, "INVALID_REVIEW_REVISION")
             replaced.add(previous)
@@ -89,16 +90,21 @@ def validate_review(root, evidence, claims, rows, schema=2):
                             for tag in tags), "INVALID_TAGS")
             bounded_text(row.get("note"), 4000, "INVALID_ANNOTATION")
         from .assurance import validate_review_extensions
-        validate_review_extensions(root, row, known, evidence, schema)
+        validate_review_extensions(root, row, known, evidence, schema, questions)
+        allowed |= validate_investigation(row, known, evidence_ids, claims, schema)
+        if schema >= 4:
+            allowed.add("retired")
         if schema >= 3:
             extra_by_kind = {"research": {"question_id", "source_category"},
                 "entity": {"identifiers", "jurisdiction", "candidate_group"},
                 "relation": {"match_criteria"}, "annotation": set(),
                 "requirement": {"question_id", "question", "source_categories", "priority"},
                 "analysis_revision": {"previous_analysis", "previous_sha256", "replacement_analysis", "replacement_sha256"}}
-            allowed |= extra_by_kind[kind] | {"time_context"}
+            allowed |= extra_by_kind.get(kind, set()) | {"time_context"}
         require(set(row) <= allowed, "UNKNOWN_REVIEW_FIELD")
         known[identifier] = row
+        if kind == "requirement":
+            questions[row["question_id"]] = row
 
 
 def records(root, info):
@@ -107,7 +113,7 @@ def records(root, info):
 
 def current(rows):
     replaced = {row.get("supersedes") for row in rows}
-    return [row for row in rows if row["id"] not in replaced]
+    return [row for row in rows if row["id"] not in replaced and not row.get("retired", False)]
 
 
 def append_review(case, record):

@@ -45,13 +45,21 @@ CARDS = (
 )
 
 
-def source_cards(category=None, jurisdiction=None):
+EU_MEMBERS = frozenset("AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split())
+
+
+def source_cards(category=None, jurisdiction=None, applicable_to=None):
     require(category is None or category in ("organization", "domain", "archive", "imagery"), "INVALID_SOURCE_CATEGORY")
     require(jurisdiction is None or isinstance(jurisdiction, str) and 0 < len(jurisdiction) <= 20, "INVALID_JURISDICTION")
+    require(applicable_to is None or isinstance(applicable_to, str) and 0 < len(applicable_to) <= 20, "INVALID_JURISDICTION")
+    require(jurisdiction is None or applicable_to is None, "AMBIGUOUS_SOURCE_FILTER")
+    target = applicable_to.upper() if applicable_to is not None else None
     cards = []
     for values in CARDS:
         identifier, name, publisher, kind, region, languages, url, accepts, scope, temporal, limits = values
         if category and kind != category or jurisdiction and region != jurisdiction.upper():
+            continue
+        if target and region != target and region != "GLOBAL" and not (region == "EU" and target in EU_MEMBERS):
             continue
         cards.append({"id": identifier, "name": name, "publisher": publisher, "category": kind,
             "jurisdiction": region, "languages": deepcopy(languages), "documentation_url": url,
@@ -63,4 +71,8 @@ def source_cards(category=None, jurisdiction=None):
             "upload_authorized": False, "network_tested": False,
             "synthetic_example": "Harbor Example Ltd is a synthetic name; resolve an exact identifier before drawing a relationship"})
     return {"sources": cards, "network_calls": False, "installation_required": False,
-            "policy": "Static reference cards; neither availability nor authorization is inferred"}
+            "filter": {"mode": "applicable_to" if target else "jurisdiction_exact" if jurisdiction else "all",
+                       "value": target or (jurisdiction.upper() if jurisdiction else None),
+                       "regional_mapping_reviewed_at": "2026-10-25",
+                       "regional_mapping_source": "https://european-union.europa.eu/principles-countries-history/eu-countries_en"},
+            "policy": "Static source applicability is advisory; coverage, availability and authorization are not inferred"}

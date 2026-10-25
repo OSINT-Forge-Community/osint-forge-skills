@@ -23,7 +23,7 @@ PUBLIC_DOCUMENTS = (
 PUBLIC_BENCHMARKS = (
     "results/2026-10-15-assurance-model/results.json",
     "results/2026-10-15-assurance-model/source-manifest.json",
-    "review.py", "results/2026-10-14-review-cli/results.json",
+    "review.py", "mcp_client.py", "results/2026-10-14-review-cli/results.json",
     "results/2026-10-14-review-cli/source-manifest.json",
     "results/2026-10-14-review-integration/results.json",
     "results/2026-10-14-review-model/results.json",
@@ -38,6 +38,11 @@ PUBLIC_BENCHMARKS = (
     "results/2026-10-14-skillsbench/protocol.json",
     "results/2026-10-14-skillsbench/skill-source-manifest.json",
     "results/2026-10-14-skillsbench/requirements.txt",
+)
+SHARED_GUIDES = (
+    "case-contract.md", "tool-workflows.md", "review-workflows.md",
+    "assurance-workflows.md", "source-workflows.md", "research-workflows.md",
+    "quick-reference.md", "recipes.md",
 )
 
 
@@ -64,20 +69,25 @@ def skill_resources() -> dict[str, bytes]:
     files = {"scripts/forgekit/" + name: data
              for name, data in collect(ROOT / "shared" / "forgekit").items()
              if name.endswith(".py")}
-    for name in ("case-contract.md", "tool-workflows.md", "review-workflows.md",
-                 "assurance-workflows.md", "source-workflows.md", "research-workflows.md"):
+    for name in SHARED_GUIDES:
         files["references/" + name] = read_bytes(ROOT / "shared" / name)
     for name in ("LICENSE", "NOTICE"):
         files[name] = read_bytes(ROOT / name)
     return files
 
 
-def skill_sources(check: bool = False) -> tuple[dict[str, bytes], dict[Path, dict[str, bytes]]]:
+def skill_sources(check: bool = False, selected: list[str] | None = None) -> tuple[dict[str, bytes], dict[Path, dict[str, bytes]]]:
     resources = skill_resources()
     sources = {}
     folders = sorted(safe_path(ROOT / "skills").iterdir())
     for folder in folders:
         require(safe_path(folder).is_dir(), "INVALID_SKILL_ENTRY")
+    if selected is not None:
+        require(isinstance(selected, list) and bool(selected)
+                and all(isinstance(name, str) for name in selected), "UNKNOWN_SKILL")
+        chosen = set(selected)
+        require(chosen <= {folder.name for folder in folders}, "UNKNOWN_SKILL")
+        folders = [folder for folder in folders if folder.name in chosen]
     with ThreadPoolExecutor(max_workers=4) as reader:
         for folder, source in zip(folders, reader.map(collect, folders)):
             actual = {name: data for name, data in source.items()
@@ -110,13 +120,23 @@ def sync_skills(check: bool = False) -> dict:
 
 def archive(members: dict[str, bytes]) -> bytes:
     output = io.BytesIO()
-    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as result:
+    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as result:
         for name, content in sorted(members.items()):
             info = zipfile.ZipInfo(name, (2000, 1, 1, 0, 0, 0))
             info.create_system = 3
             info.external_attr = 0o100644 << 16
-            result.writestr(info, content)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            result.writestr(info, content, compresslevel=9)
     return output.getvalue()
+
+
+def installation_files(selected: list[str] | None = None) -> tuple[str, dict[str, bytes]]:
+    _, sources = skill_sources(check=True, selected=selected)
+    identity = json.loads(read_bytes(ROOT / "plugin.json"))
+    version = (ROOT / "VERSION").read_text().strip()
+    require(identity.get("version") == version, "VERSION_MISMATCH")
+    return version, {folder.name + "/" + name: data
+                     for folder, source in sources.items() for name, data in source.items()}
 
 
 def expected_files() -> dict[str, bytes]:
@@ -129,10 +149,6 @@ def expected_files() -> dict[str, bytes]:
     metadata = {key: identity[key] for key in ("name", "version", "description", "author", "license")}
     files[plugin + ".claude-plugin/plugin.json"] = json_bytes(metadata)
     files[plugin + ".codex-plugin/plugin.json"] = json_bytes({**metadata, "skills": "./skills/"})
-    contract = read_bytes(ROOT / "shared" / "case-contract.md")
-    tool_workflows = read_bytes(ROOT / "shared" / "tool-workflows.md")
-    review_workflows = read_bytes(ROOT / "shared" / "review-workflows.md")
-    review_controls = {name: read_bytes(ROOT / "shared" / name) for name in ("assurance-workflows.md", "source-workflows.md", "research-workflows.md")}
     skill_archives = {}
     for folder, source in sources.items():
         for path, content in source.items():
@@ -144,11 +160,8 @@ def expected_files() -> dict[str, bytes]:
         files[plugin + name] = read_bytes(ROOT / name)
     for relative, data in collect(ROOT / "assets").items():
         files[plugin + "assets/" + relative] = data
-    files[plugin + "shared/case-contract.md"] = contract
-    files[plugin + "shared/tool-workflows.md"] = tool_workflows
-    files[plugin + "shared/review-workflows.md"] = review_workflows
-    for name, data in review_controls.items():
-        files[plugin + "shared/" + name] = data
+    for name in SHARED_GUIDES:
+        files[plugin + "shared/" + name] = read_bytes(ROOT / "shared" / name)
     for relative in PUBLIC_DOCUMENTS:
         files[plugin + "docs/" + relative] = read_bytes(ROOT / "docs" / relative)
     for relative in PUBLIC_BENCHMARKS:

@@ -9,6 +9,7 @@ import re
 
 from .safeio import ForgeError, MAX_JSON, MAX_RECORDS, digest, read_bytes, require
 from .timestamps import timestamp
+from .snapshot import read_operation
 
 QUESTION_ID = re.compile(r"Q[1-9][0-9]{0,5}\Z")
 TIME_FIELDS = {"event_time", "published_at", "available_at", "valid_from", "valid_until"}
@@ -41,7 +42,7 @@ def validate_claim_extensions(row, earlier, schema):
         time_context(row["time_context"])
 
 
-def validate_review_extensions(root, row, known, evidence, schema):
+def validate_review_extensions(root, row, known, evidence, schema, questions=None):
     from .review import checked_analysis
     extra = {"time_context", "question_id", "source_category", "identifiers", "jurisdiction",
              "candidate_group", "match_criteria", "priority", "source_categories",
@@ -52,9 +53,12 @@ def validate_review_extensions(root, row, known, evidence, schema):
     if "time_context" in row:
         time_context(row["time_context"])
     if kind == "requirement":
+        previous = known.get(row.get("supersedes"))
+        same_question = questions.get(row.get("question_id")) if questions is not None else next(
+            (item for item in known.values() if item["kind"] == kind and item.get("question_id") == row.get("question_id")), None)
         require(isinstance(row.get("question_id"), str) and bool(QUESTION_ID.fullmatch(row["question_id"]))
-                and not any(item.get("question_id") == row["question_id"] and item["kind"] == kind
-                            for item in known.values()), "INVALID_QUESTION_ID")
+                and (not same_question or schema >= 4 and previous is not None
+                     and previous.get("question_id") == row["question_id"]), "INVALID_QUESTION_ID")
         text(row.get("question"), 4000, "INVALID_REQUIREMENT")
         categories = row.get("source_categories")
         require(isinstance(categories, list) and 0 < len(categories) <= 20, "INVALID_SOURCE_CATEGORIES")
@@ -63,8 +67,11 @@ def validate_review_extensions(root, row, known, evidence, schema):
         require(len(set(categories)) == len(categories), "INVALID_SOURCE_CATEGORIES")
         require(row.get("priority", "supporting") in ("critical", "supporting"), "INVALID_PRIORITY")
     elif kind == "research" and "question_id" in row:
-        requirement = next((item for item in known.values() if item["kind"] == "requirement"
-                            and item["question_id"] == row["question_id"]), None)
+        from .review import current
+        requirement = questions.get(row["question_id"]) if questions is not None else next(
+            (item for item in current(list(known.values())) if item["kind"] == "requirement" and item["question_id"] == row["question_id"]), None)
+        if requirement is not None and requirement.get("retired"):
+            requirement = None
         require(requirement is not None and row.get("source_category") in requirement["source_categories"],
                 "INVALID_REQUIREMENT_REFERENCE")
     elif kind == "research":
@@ -135,17 +142,24 @@ def coverage(rows):
     from .review import current
     active = current(rows)
     searches = [row for row in active if row["kind"] == "research"]
+    positions = {row["id"]: index for index, row in enumerate(rows)}
+    indexed = {}
+    for search in searches:
+        indexed.setdefault((search.get("question_id"), search.get("source_category")), []).append(search)
     requirements = []
     for row in active:
         if row["kind"] != "requirement":
             continue
         categories = []
         for category in row["source_categories"]:
-            matches = [item for item in searches if item.get("question_id") == row["question_id"]
-                       and item.get("source_category") == category]
-            states = [item["status"] for item in matches] or ["not_searched"]
+            matches = indexed.get((row["question_id"], category), [])
+            stale = {item["id"] for item in matches if row.get("supersedes")
+                     and positions[item["id"]] < positions[row["id"]]}
+            states = ["needs_review" if item["id"] in stale else item["status"] for item in matches] or ["not_searched"]
             categories.append({"category": category, "statuses": states,
                                "research_ids": [item["id"] for item in matches],
+                               "recorded_statuses": [item["status"] for item in matches],
+                               "stale_research_ids": sorted(stale),
                                "completed": bool(matches) and all(item == "completed" for item in states)})
         requirements.append({"question_id": row["question_id"], "question": row["question"],
                              "priority": row.get("priority", "supporting"), "categories": categories})
@@ -156,6 +170,7 @@ def coverage(rows):
                             "Separate searches remain visible; one completed query does not erase another partial query."]}
 
 
+@read_operation
 def case_status(case):
     from .casefiles import load_case, verify
     from .review import records
@@ -163,54 +178,73 @@ def case_status(case):
     root, info, _, claims = load_case(case)
     rows = records(root, info)
     statuses = dependency_status(claims, rows)
+    from .investigation import investigation_status
     return {"claims": list(statuses.values()), "needs_review": sum(row["status"] == "needs_review"
-            for row in statuses.values()), "coverage": coverage(rows), "semantic_validation": "not_performed"}
+            for row in statuses.values()), "coverage": coverage(rows), "investigation": investigation_status(rows),
+            "semantic_validation": "not_performed"}
 
 
-def selected_excerpt(data, citation, derived):
+def selected_excerpt(data, citation, derived, cache=None):
+    cache = {} if cache is None else cache
     kind, start, end = (citation[key] for key in ("kind", "start", "end"))
     require(end - start < MAX_RECORDS, "CITATION_RANGE_LIMIT")
-    if kind in ("page", "time_ms"):
+    if kind == "time_ms":
         raise ForgeError("CITATION_FORMAT_UNSUPPORTED")
+    if kind == "page":
+        require(isinstance(derived, dict) and derived.get("analysis_type") == "external_tool"
+                and derived.get("tool", {}).get("name") == "pdftotext"
+                and isinstance(derived.get("result"), str), "CITATION_FORMAT_UNSUPPORTED")
+        coverage = derived.get("coverage", {})
+        first, last = coverage.get("first_page"), coverage.get("last_page")
+        require(type(first) is int and type(last) is int and 1 <= first <= last,
+                "CITATION_FORMAT_UNSUPPORTED")
+        if "pages" not in cache:
+            pages = derived["result"].split("\f")
+            if pages and not pages[-1].strip() and derived["result"].endswith("\f"):
+                pages.pop()
+            require(len(pages) == last - first + 1, "CITATION_PAGE_MAPPING_UNCERTAIN")
+            cache["pages"] = pages
+        require(first <= start <= end <= last, "CITATION_RANGE_MISMATCH")
+        return "\n".join(cache["pages"][start - first:end - first + 1]).replace("\r\n", "\n").replace("\r", "\n")
     if kind == "line":
-        if derived is not None:
-            value = derived.get("text")
-            if value is None and isinstance(derived.get("result"), str):
-                value = derived["result"]
-            require(isinstance(value, str), "CITATION_FORMAT_UNSUPPORTED")
-        else:
-            value = data.decode("utf-8-sig")
-        require("\x00" not in value, "CITATION_FORMAT_UNSUPPORTED")
-        lines = value.splitlines()
+        if "lines" not in cache:
+            if derived is not None:
+                value = derived.get("text")
+                if value is None and isinstance(derived.get("result"), str):
+                    value = derived["result"]
+                require(isinstance(value, str), "CITATION_FORMAT_UNSUPPORTED")
+            else:
+                value = data.decode("utf-8-sig")
+            require("\x00" not in value, "CITATION_FORMAT_UNSUPPORTED")
+            cache["lines"] = value.splitlines()
+        lines = cache["lines"]
         require(end <= len(lines), "CITATION_RANGE_MISMATCH")
         return "\n".join(lines[start - 1:end])
     if derived is not None:
         events = derived.get("events")
         require(isinstance(events, list), "CITATION_FORMAT_UNSUPPORTED")
         require(len(events) <= MAX_RECORDS and all(isinstance(row, dict) for row in events), "CITATION_FORMAT_UNSUPPORTED")
-        indexed = {}
-        for row in events:
-            index = row.get("record_index")
-            if type(index) is int and start <= index <= end:
-                require(index not in indexed, "CITATION_RANGE_MISMATCH")
-                indexed[index] = row
+        if "event_index" not in cache:
+            indexed = {}
+            for row in events:
+                index = row.get("record_index")
+                if type(index) is int:
+                    indexed.setdefault(index, []).append(row)
+            cache["event_index"] = indexed
+        indexed = cache["event_index"]
         selected = []
         for index in range(start, end + 1):
-            require(index in indexed, "CITATION_RANGE_MISMATCH")
-            selected.append(indexed[index])
+            require(index in indexed and len(indexed[index]) == 1, "CITATION_RANGE_MISMATCH")
+            selected.append(indexed[index][0])
         field = citation.get("field", "event")
     else:
         mode = citation.get("format")
         value = data.decode("utf-8-sig")
-        if mode == "csv":
-            reader = csv.DictReader(io.StringIO(value, newline=""), strict=True)
-            headers = reader.fieldnames
-            require(headers is not None and len(headers) == len(set(headers)), "CITATION_FORMAT_UNSUPPORTED")
-            rows = []
-            for row in reader:
-                require(len(rows) < MAX_RECORDS and None not in row
-                        and all(item is not None for item in row.values()), "CITATION_FORMAT_UNSUPPORTED")
-                rows.append(row)
+        if mode in cache:
+            rows = cache[mode]
+        elif mode == "csv":
+            from .csvio import strict_csv
+            _, rows = strict_csv(value, "CITATION_FORMAT_UNSUPPORTED", "CITATION_FORMAT_UNSUPPORTED")
         elif mode in ("json", "jsonl"):
             reject = lambda _: (_ for _ in ()).throw(ValueError())
             if mode == "json":
@@ -223,6 +257,7 @@ def selected_excerpt(data, citation, derived):
             require(isinstance(rows, list) and len(rows) <= MAX_RECORDS, "CITATION_FORMAT_UNSUPPORTED")
         else:
             raise ForgeError("CITATION_FORMAT_UNSUPPORTED")
+        cache[mode] = rows
         require(end < len(rows), "CITATION_RANGE_MISMATCH")
         selected = rows[start:end + 1]
         field = citation.get("field")
@@ -235,6 +270,7 @@ def selected_excerpt(data, citation, derived):
     return "\n".join(pieces)
 
 
+@read_operation
 def check_citations(case):
     from .casefiles import load_case, verify
     from .review import checked_analysis
@@ -242,6 +278,8 @@ def check_citations(case):
     root, _, evidence, claims = load_case(case)
     indexed = {row["id"]: row for row in evidence}
     results = []
+    sources, analyses, parsed = {}, {}, {}
+    cache_bytes = 0
     for claim in claims:
         for index, citation in enumerate(claim.get("citations", [])):
             require(len(results) < MAX_RECORDS, "TOO_MANY_CITATIONS")
@@ -250,12 +288,33 @@ def check_citations(case):
             try:
                 derived = None
                 if "analysis" in citation:
-                    derived, _ = checked_analysis(root, citation["analysis"], evidence,
-                                                   citation["sha256"], citation["evidence_id"])
+                    key = (citation["analysis"], citation["sha256"], citation["evidence_id"])
+                    if key not in analyses:
+                        value = checked_analysis(root, citation["analysis"], evidence,
+                                                 citation["sha256"], citation["evidence_id"])[0]
+                        cost = len(json.dumps(value, ensure_ascii=True).encode())
+                        if cache_bytes + cost > 4 * MAX_JSON or len(parsed) >= 64:
+                            sources.clear()
+                            analyses.clear()
+                            parsed.clear()
+                            cache_bytes = 0
+                        analyses[key] = value
+                        cache_bytes += cost
+                    derived = analyses[key]
                     data = b""
                 else:
-                    data = read_bytes(root / indexed[citation["evidence_id"]]["path"], MAX_JSON)
-                excerpt = selected_excerpt(data, citation, derived)
+                    key = citation["evidence_id"]
+                    if key not in sources:
+                        value = read_bytes(root / indexed[key]["path"], MAX_JSON)
+                        if cache_bytes + len(value) > 4 * MAX_JSON or len(parsed) >= 64:
+                            sources.clear()
+                            analyses.clear()
+                            parsed.clear()
+                            cache_bytes = 0
+                        sources[key] = value
+                        cache_bytes += len(value)
+                    data = sources[key]
+                excerpt = selected_excerpt(data, citation, derived, parsed.setdefault(key, {}))
                 quote = citation.get("quote")
                 matched = quote is None or quote.replace("\r\n", "\n").replace("\r", "\n") == excerpt
                 result.update(status=("excerpt_found" if quote is not None else "locator_found") if matched else "mismatch",
@@ -263,6 +322,8 @@ def check_citations(case):
                               derivation="derived_not_original" if derived is not None else "registered_bytes")
             except ForgeError as exc:
                 code = str(exc)
+                if code in ("OPERATION_CANCELLED", "OPERATION_BUDGET_EXCEEDED", "CASE_CHANGED_DURING_READ"):
+                    raise
                 result.update(status="mismatch" if code in ("CITATION_RANGE_MISMATCH", "CITATION_FIELD_MISMATCH")
                               else "unverifiable", code=code)
             except (UnicodeError, ValueError, csv.Error, RecursionError):

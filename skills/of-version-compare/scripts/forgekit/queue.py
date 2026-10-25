@@ -7,6 +7,7 @@ from .assurance import check_citations, coverage, dependency_status
 from .casefiles import load_case
 from .review import records
 from .safeio import MAX_JSON, digest, read_bytes, require, safe_path
+from .snapshot import read_operation
 
 ACTIONS = {
     "dependency_review": ("of-hypothesis-audit", "Review the revised premise or analysis, then append a corrected claim if warranted."),
@@ -17,6 +18,8 @@ ACTIONS = {
     "coverage_undefined": ("of-case-start", "Declare the questions and source categories needed to assess coverage."),
     "evidence_missing": ("of-case-start", "Register explicitly selected evidence before drawing findings."),
     "claims_missing": ("of-investigation-report", "Record evidence-linked observations or explain why the material supports no finding."),
+    "hypothesis_test": ("of-hypothesis-audit", "Define or complete a discriminating test, preserving observations and unresolved alternatives."),
+    "test_review": ("of-hypothesis-audit", "Review this test against the revised hypothesis before relying on its outcome."),
 }
 
 
@@ -25,6 +28,7 @@ def journal_snapshot(root):
             for name in ("case.json", "evidence.jsonl", "claims.jsonl", "review.jsonl")}
 
 
+@read_operation
 def review_queue(case, limit=20):
     require(type(limit) is int and 1 <= limit <= 100, "INVALID_REVIEW_LIMIT")
     before = journal_snapshot(safe_path(case).absolute())
@@ -34,12 +38,23 @@ def review_queue(case, limit=20):
     statuses = dependency_status(claims, ledger)
     active = {row["id"] for row in claims if statuses[row["id"]]["status"] != "historical"}
     declared = coverage(ledger)
+    from .investigation import investigation_status
+    investigation = investigation_status(ledger)
     counts = Counter({kind: 0 for kind in ACTIONS})
     priorities = Counter({str(level): 0 for level in (1, 2, 3)})
 
     def candidates():
         if not evidence:
             yield 1, "evidence_missing", {}
+        tested = {row["hypothesis"] for row in investigation["tests"]}
+        for hypothesis in investigation["hypotheses"]:
+            if hypothesis["status"] in ("candidate", "unresolved") and hypothesis["id"] not in tested:
+                yield 2, "hypothesis_test", {"hypothesis_id": hypothesis["id"]}
+        for test in investigation["tests"]:
+            if test["needs_review"]:
+                yield 1, "test_review", {"test_id": test["id"], "hypothesis_id": test["hypothesis"]}
+            elif test["status"] != "completed":
+                yield 2, "hypothesis_test", {"test_id": test["id"], "hypothesis_id": test["hypothesis"]}
         for claim in claims:
             identifier = claim["id"]
             if identifier not in active:
@@ -64,7 +79,8 @@ def review_queue(case, limit=20):
                 if not category["completed"]:
                     yield 2 if question["priority"] == "critical" else 3, "coverage_gap", {
                         "question_id": question["question_id"], "category": category["category"],
-                        "research_ids": category["research_ids"], "recorded_statuses": category["statuses"]}
+                        "research_ids": category["research_ids"], "recorded_statuses": category.get("recorded_statuses", category["statuses"]),
+                        "review_statuses": category["statuses"], "stale_research_ids": category.get("stale_research_ids", [])}
 
     def counted():
         for order, (priority, kind, references) in enumerate(candidates()):

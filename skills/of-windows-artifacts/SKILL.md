@@ -4,17 +4,13 @@ description: "Interpret explicitly supplied Windows forensic CSV exports with ev
 license: Apache-2.0
 metadata:
   author: "OSINT Forge"
-  version: "0.2.0"
+  version: "0.3.0"
   requirements: "Python 3.11+; complete skill folder; selected evidence and separately authorized host capabilities."
 ---
 
 # Review Windows artifact exports
 
-Read [the workflow notes](references/workflow.md) for input semantics and
-[review commands](references/review-workflows.md) when recording citations,
-research coverage or relations. The [case contract](references/case-contract.md)
-defines preservation and sharing limits. Use this loaded skill's
-`scripts/forge.py`; its complete folder includes the runtime.
+Read [shared invariants](references/quick-reference.md) once per case and runtime version. Reuse that context when switching skills. Use the [command recipes](references/recipes.md) and [specialized workflow](references/workflow.md) for this task. Run this complete skill folder's `scripts/forge.py`.
 
 ## Workflow
 
