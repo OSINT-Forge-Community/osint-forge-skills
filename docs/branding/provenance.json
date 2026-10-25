@@ -24,7 +24,7 @@
         "width": 2170
       },
       "aspect_ratio": 2.993103,
-      "sha256": "5cfc5d3ac47c33a420f691243e72e225840782339f65859db0a5591e722ca79a",
+      "sha256": "33180c3b2265fe977250bb14e9600f9ae7b6aa53cb98d596edf80fa24d2c60a5",
       "source_asset": "assets/readme-banner.png",
       "source_sha256": "b35213d44b5f194fdbef02d54ea8467639570592ebf9157fed3cc3bc4f9fba02",
       "language": "en",
@@ -33,7 +33,8 @@
         "AI Skills",
         "OSINT · Forensics · Evidence"
       ],
-      "revision": 3,
+      "revision": 4,
+      "updated_on": "2026-10-25",
       "tool": "built-in imagegen",
       "purpose": "synthetic_promotional_illustration_not_investigation_evidence",
       "transparent_background": false,
