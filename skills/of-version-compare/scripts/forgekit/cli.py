@@ -22,7 +22,7 @@ from .timestamps import timestamp
 from .tooling import TOOLS, inventory, run_tool
 
 from .planning import ROUTES, PHASES, INPUTS, MEDIA_GOALS, plan as build_plan
-from .assurance import case_status, check_citations
+from .assurance import case_status, check_citations, prepare_citation
 from .sources import source_cards
 from .agents import agent_events
 from .research import PIVOTS, QUERY_KINDS, pivots, query_templates
@@ -110,6 +110,16 @@ def parser() -> argparse.ArgumentParser:
     for name in ("review-status", "check-citations"):
         child = commands.add_parser(name)
         child.add_argument("--case", required=True)
+    citation = commands.add_parser("prepare-citation", help="Prepare an exact excerpt for analyst review before recording a claim")
+    citation.add_argument("--case", required=True)
+    citation.add_argument("--evidence", required=True)
+    citation.add_argument("--kind", choices=("line", "record", "page", "time_ms"), required=True)
+    citation.add_argument("--start", type=int, required=True)
+    citation.add_argument("--end", type=int, required=True)
+    citation.add_argument("--analysis", help="Case-relative qualified analysis path")
+    citation.add_argument("--format", choices=("text", "csv", "json", "jsonl"))
+    citation.add_argument("--field", help="Exact top-level record field to quote, such as notice or cdx")
+    citation.add_argument("--out", help="Save the claim-ready citation array to a new file inside CASE/analysis")
     agent = commands.add_parser("agent-events", help="Interpret a supplied normalized agent export offline")
     agent.add_argument("--case", required=True)
     agent.add_argument("--evidence", required=True)
@@ -292,6 +302,15 @@ def dispatch(args) -> dict:
         return review_queue(args.case, args.limit)
     if command == "check-citations":
         return check_citations(args.case)
+    if command == "prepare-citation":
+        result = prepare_citation(args.case, args.evidence, args.kind, args.start, args.end,
+                                  args.analysis, args.format, args.field)
+        if args.out:
+            root, _, _, _ = load_case(args.case)
+            destination = safe_path(args.out, exists=False)
+            require(destination.parent == root / "analysis", "ANALYSIS_OUTPUT_REQUIRED")
+            atomic_write(destination, json_bytes(result["citations"]))
+        return result
     if command == "agent-events":
         return save_analysis(args.case, args.out, agent_events(args.case, args.evidence, args.format, args.exporter_version))
     if command == "intake":

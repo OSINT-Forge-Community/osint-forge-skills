@@ -6,6 +6,21 @@ the platform convention; earlier three-part commit titles are not rewritten.
 The first entry advances the existing 0.2.0 product baseline for compatible
 features. Recording an entry does not publish a package or authorize a push.
 
+## 1.2.0.0 - 2026-10-26
+
+Summary: Add exact citation preparation, visible report limitations and portable restore guidance.
+Package SemVer remains 0.3.0 with these additions recorded as Unreleased.
+
+Threat impact: Preserve source bytes, bounded excerpts and analysis hashes.
+Distinguish matching text from semantic support and compatible hypotheses.
+
+Sovereignty impact: All helpers remain offline and standard-library-only.
+No provider, collection, transmission or automatic installation is added.
+
+Validation: Synthetic regression and package checks are recorded locally.
+Further model trials and native client compatibility remain unverified.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 1.1.1.0 - 2026-10-26
 
 Summary: Correct local text comparison prerequisites and distinguish media

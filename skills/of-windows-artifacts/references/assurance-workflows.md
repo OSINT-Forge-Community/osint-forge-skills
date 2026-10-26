@@ -106,6 +106,11 @@ raw piece. Editing an already cited analysis still fails structural integrity.
 
 ## Check excerpts without claiming semantic verification
 
+Use `prepare-citation` from the [recipes](recipes.md#record-a-precise-citation)
+to obtain a supported locator and exact quotation before recording a claim.
+Inspect each detail of the proposed claim against that excerpt. A generic event
+label does not support an identifier, date or ownership relationship by itself.
+
 `check-citations --case CASE` checks registered locators and excerpts. Results:
 
 | Result | Meaning |
@@ -178,3 +183,20 @@ validity bounds automatically only when both have normalized offsets.
 A historical role is not automatically current. Later-acquired evidence may
 revise a conclusion without proving the earlier analyst could have known it.
 Graph JSON and GraphML retain these contexts and identifiers as metadata.
+
+## Review the final report
+
+HTML and Markdown reports summarize missing citations, mismatches, unverifiable
+excerpts and undefined or incomplete coverage before the findings. The HTML
+citation filter includes current claims without a precise citation, including
+unconfirmed claims. Historical issues remain visible separately.
+
+Every current claim still needs semantic review even when all excerpts match.
+The report cannot determine whether an analyst has completed that review.
+Partial-export limits and supplied/total record counts are shown for analyses
+cited by current claims or explicitly selected for the HTML timeline, up to 100
+unique paths. This does not inventory every unselected analysis in the case.
+
+After the last correction, rerun `check-citations`, `review-queue` and `verify`,
+then regenerate the report before exporting. Disclose remaining gaps rather
+than weakening checks to obtain an empty queue.

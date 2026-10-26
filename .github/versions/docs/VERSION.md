@@ -3,6 +3,21 @@
 This independent four-part history starts with the adoption of platform
 versions. Earlier documentation changes have no retroactive platform version.
 
+## 0.3.3.0 - 2026-10-26
+
+Summary: Explain citation preparation, final review and unambiguous export counts.
+Package SemVer remains 0.3.0 with these additions recorded as Unreleased.
+
+Threat impact: Preserve source bytes, bounded excerpts and analysis hashes.
+Distinguish matching text from semantic support and compatible hypotheses.
+
+Sovereignty impact: All helpers remain offline and standard-library-only.
+No provider, collection, transmission or automatic installation is added.
+
+Validation: Synthetic regression and package checks are recorded locally.
+Further model trials and native client compatibility remain unverified.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.3.2.0 - 2026-10-26
 
 Summary: Document explicit media goals, local text comparison prerequisites

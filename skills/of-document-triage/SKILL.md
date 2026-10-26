@@ -34,6 +34,10 @@ Read [shared invariants](references/quick-reference.md) once per case and runtim
 
 6. Record observations with original E IDs and the derived analysis path. Metadata and extracted text do not verify document signatures or sender identity.
 
+An unknown signature family means this detector did not identify a supported
+format. It does not establish the absence of active content or metadata. State
+which examination was not performed.
+
 ## Deliverable
 
 Signature observations, relevant headers, archive risks and unsupported-format gaps.

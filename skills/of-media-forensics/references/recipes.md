@@ -40,17 +40,29 @@ use `add-many --source FIRST --source SECOND`. Verify partial batches before ret
 
 ## Record a precise citation
 
-Save a selected JSON file outside the case, replacing the excerpt and range
-with observations from the actual piece:
-
-```json
-[{"evidence_id":"E000001","kind":"line","start":1,"end":1,"quote":"Exact selected line"}]
-```
+Prepare the exact selected range instead of typing a partial quotation:
 
 ```bash
-python3 scripts/forge.py claim --case /tmp/forge-recipe-01 --text 'The selected passage contains the quoted statement.' --state observed --support E000001 --confidence medium --rationale 'Observation of the supplied passage, without independent factual verification.' --citations /path/to/citations.json
+python3 scripts/forge.py prepare-citation --case /tmp/forge-recipe-01 --evidence E000001 --kind line --start 1 --end 1 --out /tmp/forge-recipe-01/analysis/citations.json
+python3 scripts/forge.py claim --case /tmp/forge-recipe-01 --text 'The selected passage contains the quoted statement.' --state observed --support E000001 --confidence medium --rationale 'Observation of the supplied passage, without independent factual verification.' --citations /tmp/forge-recipe-01/analysis/citations.json
 python3 scripts/forge.py check-citations --case /tmp/forge-recipe-01
 ```
+
+Read the prepared excerpt before recording the claim. The output file is a
+claim-ready JSON array, not an evidence analysis. The command computes the
+original hash and any selected analysis hash. It does not record a claim or
+validate meaning. Quotes must cover the whole selected range, up to 2,000
+characters. Narrow the range or select a record field if it is too long.
+For a single long line, retain a locator without a quote and disclose that
+no exact quotation was compared instead of silently truncating the source.
+
+For an imported BODACC notice use `--kind record --analysis analysis/bodacc.json
+--start 0 --end 0 --field notice`. This includes the notice fields instead of
+only the generic event label. For Wayback use `--field cdx` on its qualified
+analysis. Original `record_index` values remain valid after sorting.
+Raw JSON record citations need `--format json` and index the actual array,
+including its header row when present. JSON envelopes need a qualified import
+or text-line citation. Prepared excerpts never prove authenticity.
 
 A PDF page citation selects a qualified `pdftotext` analysis and its actual
 SHA-256. Original PDF page numbers follow the adapter's selected first/last

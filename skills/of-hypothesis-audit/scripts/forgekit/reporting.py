@@ -12,7 +12,7 @@ from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_TOTAL, atomic_write, di
                      safe_path, visible)
 from .safeio import zip_directory_guard
 from .review import current, records
-from .assurance import check_citations, coverage, dependency_status
+from .assurance import check_citations, coverage, dependency_status, report_review, review_messages
 import json
 import os
 import tempfile
@@ -69,7 +69,10 @@ def render_report(case: str | Path, language: str = "en") -> bytes:
                "independence": "Independence between groups: unknown.", "generated": "Generated with"})
     lines = [f"# {labels['title']}: {markdown(info['title'])}", "",
              f"## {labels['scope']}", "", markdown(info["scope"], 8000), "",
-             f"## {labels['claims']}", ""]
+             "## Points à examiner" if language == "fr" else "## Review before relying on findings", ""]
+    summary = report_review(root, evidence, claims, review, citation_checks)
+    lines.extend("- " + markdown(message, MAX_JSON) for message in review_messages(summary, language))
+    lines.extend(["", f"## {labels['claims']}", ""])
     for claim in claims:
         citations = lambda key: ", ".join(f"[{ref}](../raw/{ref}.bin)" for ref in claim[key]) or "-"
         lines.extend([f"### {claim['id']}: {markdown(claim['text'])}", "",
@@ -212,10 +215,21 @@ def _capture_export(case, output, mode, view, approved_sha256):
                 safe_path(entry)
                 require(entry.is_file(), "UNEXPECTED_DERIVED_ENTRY")
                 members[entry.relative_to(root).as_posix()] = read_bytes(entry, MAX_JSON)
-        members["sharing.json"] = json_bytes({"mode": "private", "contains_originals": True})
+        members["sharing.json"] = json_bytes({"mode": "private", "contains_originals": True,
+            "resume": {"instruction": "Use restore to create a new case. Unzipping alone does not restore required directories.",
+                       "commands": ["python3 scripts/forge.py verify-export --archive ARCHIVE",
+                                    "python3 scripts/forge.py restore --archive ARCHIVE --case NEW_CASE",
+                                    "python3 scripts/forge.py verify --case NEW_CASE",
+                                    "python3 scripts/forge.py review-queue --case NEW_CASE"],
+                       "placeholders": "Use the complete skill runtime, the selected archive and a new case directory."}})
     data = zip_bytes(members)
     verify(root)
-    return destination, data, {"mode": mode, "sha256": digest(data), "member_count": len(members) + 1}
+    result = {"mode": mode, "sha256": digest(data), "member_count": len(members) + 1,
+              "member_count_scope": "archive_including_manifest", "archive_member_count": len(members) + 1,
+              "payload_member_count": len(members), "manifest_member_count": 1}
+    if mode == "private":
+        result["resume"] = json.loads(members["sharing.json"])["resume"]
+    return destination, data, result
 
 
 def inspect_export(path: str | Path) -> dict[str, bytes]:
@@ -266,6 +280,8 @@ def inspect_export(path: str | Path) -> dict[str, bytes]:
 def verify_export(path: str | Path) -> dict:
     members = inspect_export(path)
     return {"status": "verified", "member_count": len(members),
+            "member_count_scope": "payload_excluding_manifest", "archive_member_count": len(members) + 1,
+            "payload_member_count": len(members), "manifest_member_count": 1,
             "scope": "export_member_bytes", "authenticity": "not_established"}
 
 

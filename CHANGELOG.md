@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased - citation preparation and review feedback
+
+- Prepare exact citations and analysis hashes before recording findings.
+- Surface absent citations, semantic-review limits and partial exports in reports.
+- Clarify archive member counts and include private restore instructions.
+- Separate compatible hypotheses and require final checks after corrections.
+
 ## Unreleased - relevant planning actions
 
 - Compare selected local text versions without requiring dated web captures.

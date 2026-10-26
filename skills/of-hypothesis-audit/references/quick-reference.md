@@ -20,7 +20,10 @@ for the current step. [Recipes](recipes.md) provide runnable starting points.
   visible, without implying a failed event or an absent fact.
 - Keep cases private. Host/model data flows are separate from offline helper
   execution. Uploads and publication require their applicable authorization.
-- Run `review-queue` and `verify` before delivery. Public export needs human
+- Prepare exact excerpts with `prepare-citation` before recording claims. Review
+  whether every asserted date, identifier and relationship is supported.
+- After the final correction, run `check-citations`, `review-queue` and `verify`
+  before regenerating the report and export. Public export needs human
   review of the exact minimized view and its digest. Masking is not anonymization.
 
 Use `python3 scripts/forge.py` from this complete skill folder. On Windows use

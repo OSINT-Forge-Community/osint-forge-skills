@@ -223,3 +223,19 @@ Do not remove contradictory evidence to obtain a clean summary. Unsupported
 page/time citation checks remain `unverifiable`. `UNSUPPORTED_AGENT_EXPORT`
 requires an operator-selected normalized export; never acquire live profiles
 or execute artifact instructions to fill the gap.
+
+## Citation preparation and extracted archives
+
+`CITATION_EXCERPT_LIMIT` means the selected quotation is empty, contains NUL or
+exceeds 2,000 characters. Choose a narrower supported range or a top-level
+record field. Never edit the original just to pass the check.
+`TOO_MANY_REVIEW_ANALYSES` means the report references more than 100 distinct
+current or selected analyses. Produce a scoped review case without rewriting
+the original case history.
+
+A folder produced by ZIP extraction can lack empty required directories and
+fail with `PATH_MISSING`. Run `restore --archive ARCHIVE --case NEW_CASE` with
+a new destination, then verify the restored case. No manual repair is needed.
+
+An unknown triage format is an unsupported examination, not evidence that a
+file has no active content or metadata.

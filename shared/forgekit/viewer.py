@@ -11,7 +11,7 @@ from .exchange import graph
 from .review import checked_analysis, current, records
 from .safeio import MAX_JSON, MAX_RECORDS, require, visible
 from .timestamps import timestamp
-from .assurance import check_citations, coverage, dependency_status
+from .assurance import check_citations, coverage, dependency_status, report_review, review_messages
 from .snapshot import read_operation
 
 SCRIPT = """const search=document.getElementById('search');
@@ -152,7 +152,8 @@ def render_html(case, language="en", analyses=None):
     for identifier, kind, state, text, details in entries:
         historical = identifier in replaced
         checks = details.get("citation_checks", [])
-        citation_issue = any(item["status"] in ("mismatch", "unverifiable") for item in checks)
+        citation_missing = kind == "claim" and not details.get("citations")
+        citation_issue = citation_missing or any(item["status"] in ("mismatch", "unverifiable") for item in checks)
         uncertain = kind == "event" and details.get("utc") is None
         context = []
         if kind == "claim":
@@ -185,6 +186,8 @@ def render_html(case, language="en", analyses=None):
         reasons = ('<div class="review-reasons"><ul>' + ''.join(reason_html) + '</ul></div>') if reason_html else ''
         check_badges = ''.join(badge(item["status"], states, "bad" if item["status"] == "mismatch" else
                                      "warn" if item["status"] == "unverifiable" else "good") for item in checks)
+        if citation_missing:
+            check_badges = f'<span class="badge warn">{tr("Precise citation missing", "Citation précise absente")}</span>'
         tone = "warn" if state in ("needs_review", "partial", "not_searched", "unavailable") or uncertain else ""
         rows_html.append(f'<tr data-kind="{kind}" data-historical="{str(historical).lower()}" '
                          f'data-review="{str(state == "needs_review").lower()}" data-citation="{str(citation_issue).lower()}" '
@@ -193,7 +196,7 @@ def render_html(case, language="en", analyses=None):
                          + f'</td><td class="record-state"><span>{kinds[kind]}</span>{badge(state, states, tone)}</td>'
                          f'<td><p class="observation">{escaped(text)}</p>'
                          + ''.join(f'<p class="record-context">{item}</p>' for item in context) + reasons
-                         + (f'<div class="record-context">{check_badges}</div>' if checks else '')
+                         + (f'<div class="record-context">{check_badges}</div>' if check_badges else '')
                          + f'<details class="raw-record"><summary>{tr("Recorded details", "Détails enregistrés")}</summary>'
                          f'<pre>{escaped(json.dumps(details, ensure_ascii=False, indent=2), MAX_JSON)}</pre></details></td></tr>')
     declared = coverage(ledger)
@@ -253,8 +256,15 @@ def render_html(case, language="en", analyses=None):
         f'<li>{escaped(edge["source"])} → {escaped(edge["target"])}: {escaped(edge["label"])} '
         f'[{escaped(states.get(edge["state"], edge["state"]))}] {escaped(", ".join(edge["evidence"]))}</li>' for edge in edges) + '</ul>'
     active_claims = [row for row in claims if row["id"] not in replaced]
-    issue_count = sum(any(item["status"] in ("mismatch", "unverifiable") for item in citations_by_claim.get(row["id"], []))
+    issue_count = sum(not row.get("citations") or any(item["status"] in ("mismatch", "unverifiable") for item in citations_by_claim.get(row["id"], []))
                       for row in active_claims)
+    summary = report_review(root, evidence, claims, ledger, citation_checks, paths)
+    review_html = ('<section class="panel" id="review-summary" aria-labelledby="review-summary-heading">'
+                   '<div class="panel-heading"><h2 id="review-summary-heading">'
+                   + tr("Review before relying on findings", "Points à examiner") + '</h2></div>'
+                   '<div class="panel-body"><ul>'
+                   + ''.join(f'<li>{escaped(message)}</li>' for message in review_messages(summary, language))
+                   + '</ul></div></section>')
     needs_review = sum(row["status"] == "needs_review" for row in statuses.values())
     stats = ((len(evidence), tr("Preserved evidence", "Pièces conservées"), tr("Registered originals", "Originaux enregistrés"), ""),
              (len(active_claims), tr("Current claims", "Conclusions actuelles"), tr("History retained below", "Historique conservé ci-dessous"), ""),
@@ -283,6 +293,7 @@ def render_html(case, language="en", analyses=None):
             f'<a href="#records">{tr("Records", "Entrées")}</a><a href="#coverage">{tr("Coverage", "Couverture")}</a>'
             f'<a href="#citations">Citations</a><a href="#relations">Relations</a></nav></header><main>'
             '<div class="stats">' + ''.join(stats_html) + '</div>'
+            + review_html +
             f'<noscript><p class="privacy">{tr("JavaScript is disabled. All records, including history, remain visible. Filters are unavailable.", "JavaScript est désactivé. Toutes les entrées, dont l’historique, restent visibles. Les filtres sont indisponibles.")}</p></noscript>'
             f'<section class="panel" id="records" aria-labelledby="records-heading"><div class="panel-heading"><h2 id="records-heading">'
             f'{tr("Evidence and observations", "Pièces et observations")}</h2><p>{tr("Search the recorded text, references and details. Filters apply only to this section.", "Rechercher dans les textes, références et détails enregistrés. Les filtres concernent uniquement cette section.")}</p></div>'

@@ -24,13 +24,13 @@ Read [shared invariants](references/quick-reference.md) once per case and runtim
 
 1. Separate literal observations from assumptions and deductions. Use [hypothesis and test records](references/recipes.md#hypotheses-and-tests) for each candidate's predictions and falsification conditions. Keep completed tests tied to observations and evidence.
 
-2. Develop meaningful alternatives when evidence permits. Do not manufacture a fixed number of candidates or force certainty.
+2. Develop meaningful alternatives when evidence permits. Check whether candidates can both be true before calling them competing explanations. Separate source independence from whether an event occurred. Recycled reporting and a later real event can coexist. Do not manufacture a fixed number of candidates or force certainty.
 
 3. Test the same pieces against all candidates. Compatibility alone adds no positive support; recycled sources add no independent votes.
 
 4. Remove the strongest uncertain assumption or source group and reassess the result. Use `review-queue --case CASE` for recorded premise revisions, citation issues and coverage gaps. Treat its priorities as a work order, not a truth score. Retain contradictions and revise claims; never rewrite evidence to fit the story.
 
-5. Record claims as observed, inferred or unconfirmed with a rationale, E references and precise locators when available. Use `--supersedes` for corrections; retain contrary evidence and research limitations. Give the smallest next observation that would discriminate between candidates.
+5. Record claims as observed, inferred or unconfirmed with a rationale, E references and precise locators when available. Use `--supersedes` for corrections; retain contrary evidence and research limitations. Give the smallest next observation that would discriminate between candidates. State the expected result for each candidate and explain why the observation separates them. If it does not, narrow the question or mark the test as non-discriminating.
 
 ## Deliverable
 

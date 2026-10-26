@@ -274,6 +274,96 @@ def selected_excerpt(data, citation, derived, cache=None):
 
 
 @read_operation
+def prepare_citation(case, evidence_id, kind, start, end, analysis=None, format_name=None, field=None):
+    from .casefiles import load_case, validate_claim
+    from .review import checked_analysis
+    root, _, evidence, _ = load_case(case)
+    indexed = {row["id"]: row for row in evidence}
+    require(evidence_id in indexed, "INVALID_CITATION_REFERENCE")
+    citation = {"evidence_id": evidence_id, "kind": kind, "start": start, "end": end}
+    derived = None
+    if analysis is not None:
+        derived, fingerprint = checked_analysis(root, analysis, evidence, evidence_id=evidence_id)
+        citation.update(analysis=analysis, sha256=fingerprint)
+    if format_name is not None:
+        citation["format"] = format_name
+    if field is not None:
+        citation["field"] = field
+    candidate = {"text": "Selected excerpt", "rationale": "Text matching only", "state": "observed",
+                 "confidence": "low", "supports": [evidence_id], "contradicts": [], "citations": [citation]}
+    validate_claim(candidate, set(indexed))
+    data = b"" if derived is not None else read_bytes(root / indexed[evidence_id]["path"], MAX_JSON)
+    excerpt = selected_excerpt(data, citation, derived)
+    require(0 < len(excerpt) <= 2000 and "\x00" not in excerpt, "CITATION_EXCERPT_LIMIT")
+    citation["quote"] = excerpt
+    validate_claim(candidate, set(indexed))
+    return {"citations": [citation], "excerpt_sha256": digest(excerpt.encode("utf-8")),
+            "evidence_sha256": indexed[evidence_id]["sha256"], "status": "prepared",
+            "semantic_validation": "not_performed",
+            "limitations": ["Review whether the selected excerpt supports every detail of the claim.",
+                            "An exact excerpt does not establish truth, authenticity or source independence."]}
+
+
+def report_review(root, evidence, claims, ledger, citation_checks, analyses=None):
+    from .review import checked_analysis
+    statuses = dependency_status(claims, ledger)
+    active = {row["id"] for row in claims if statuses[row["id"]]["status"] != "historical"}
+    missing = [row["id"] for row in claims if row["id"] in active and not row.get("citations")]
+    counts = {key: 0 for key in ("mismatch", "unverifiable", "locator_found", "excerpt_found")}
+    for row in citation_checks["citations"]:
+        if row["claim_id"] in active:
+            counts[row["status"]] += 1
+    selected = set(analyses or [])
+    selected.update(citation["analysis"] for row in claims if row["id"] in active
+                    for citation in row.get("citations", []) if "analysis" in citation)
+    require(len(selected) <= 100, "TOO_MANY_REVIEW_ANALYSES")
+    limits = []
+    for path in sorted(selected):
+        data, fingerprint = checked_analysis(root, path, evidence)
+        if data.get("coverage") in ("partial_export", "supplied_export_only"):
+            limits.append({"analysis": path, "sha256": fingerprint, "coverage": data["coverage"],
+                           "supplied_records": data.get("supplied_records"),
+                           "source_total_count": data.get("source_total_count")})
+    declared = coverage(ledger)
+    return {"current_claims": len(active), "missing_citations": missing, "citation_counts": counts,
+            "coverage_defined": bool(declared["requirements"]),
+            "coverage_complete": bool(declared["requirements"]) and
+                declared["completed_categories"] == declared["defined_categories"],
+            "analysis_limits": limits, "analysis_scope": "current_citations_and_selected_analyses",
+            "semantic_validation": "not_performed"}
+
+
+def review_messages(summary, language):
+    fr = language == "fr"
+    counts = summary["citation_counts"]
+    messages = [
+        (f"Conclusions sans citation précise : {len(summary['missing_citations'])}. "
+         f"Citations discordantes : {counts['mismatch']}. Invérifiables : {counts['unverifiable']}."
+         if fr else f"Claims without precise citations: {len(summary['missing_citations'])}. "
+         f"Mismatched citations: {counts['mismatch']}. Unverifiable: {counts['unverifiable']}."),
+        (f"Appui aux conclusions à examiner : {summary['current_claims']} conclusions actuelles. "
+         "Un extrait exact ne valide pas le raisonnement, les dates ou l'identité."
+         if fr else f"Semantic support requires review for {summary['current_claims']} current claims. "
+         "An exact excerpt does not validate reasoning, dates or identity.")]
+    if not summary["coverage_defined"]:
+        messages.append("Couverture non définie : aucune exhaustivité établie." if fr else
+                        "Coverage undefined: completeness is not established.")
+    elif not summary["coverage_complete"]:
+        messages.append("Couverture déclarée incomplète : des recherches restent ouvertes." if fr else
+                        "Declared coverage incomplete: research gaps remain.")
+    for item in summary["analysis_limits"]:
+        label = ("Export partiel" if fr else "Partial export") if item["coverage"] == "partial_export" else (
+            "Export fourni uniquement" if fr else "Supplied export only")
+        message = f"{label}: {item['analysis']}"
+        supplied, total = item["supplied_records"], item["source_total_count"]
+        if type(supplied) is int:
+            message += f" - {supplied}" + (f" / {total}" if type(total) is int else "")
+            message += " notices fournies" if fr else " supplied records"
+        messages.append(message)
+    return messages
+
+
+@read_operation
 def check_citations(case):
     from .casefiles import load_case, verify
     from .review import checked_analysis

@@ -24,11 +24,11 @@ Read [shared invariants](references/quick-reference.md) once per case and runtim
 
 1. Run `review-queue --case CASE` to check integrity and identify recorded issues. Resolve or disclose relevant items; then review semantic support, independence and alternative hypotheses. An empty queue is not a truth or completeness verdict. Use the private HTML viewer when visual review helps.
 
-2. Record claims with `claim`. Observations need direct support, inferences need rationale and unconfirmed claims remain low confidence.
+2. Prepare locators and exact excerpts with `prepare-citation`. Check that the excerpt supports every asserted identifier, date and relationship, not just a generic event label. Record claims with `claim`. Observations need direct support, inferences need rationale and unconfirmed claims remain low confidence.
 
-3. Run `report --case CASE --lang en|fr`. `--replace` updates only the fixed generated report, never evidence.
+3. After the final correction, rerun `check-citations`, `review-queue` and `verify`. Resolve or disclose remaining gaps, then run `report --case CASE --lang en|fr`. `--replace` updates only the fixed generated report, never evidence.
 
-4. Lead with decision-relevant findings, then observations, contradictions, unknowns and discriminating next steps. Retain material analysis limits.
+4. Lead with decision-relevant findings, then observations, contradictions, unknowns and discriminating next steps. Retain material analysis limits, including supplied versus total records in partial exports. An unknown triage format does not establish the absence of active content or metadata.
 
 5. Keep the report private until exact-view sharing review. For handoff include versions and verification instructions, separating actual execution proof from model narrative.
 

@@ -62,7 +62,7 @@ def review_queue(case, limit=20):
             state = statuses[identifier]
             if state["status"] == "needs_review":
                 yield 1, "dependency_review", {"claim_id": identifier, "reason_count": len(state["reasons"])}
-            if not claim.get("citations") and (claim["supports"] or claim["contradicts"]):
+            if not claim.get("citations"):
                 yield 3, "citation_missing", {"claim_id": identifier}
         for citation in citations["citations"]:
             if citation["claim_id"] not in active or citation["status"] not in ("mismatch", "unverifiable"):

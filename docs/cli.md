@@ -44,6 +44,26 @@ results can contain private metadata: apply the case's data policy.
 immediately after the command; in Bash, read `$?`.
 [Troubleshooting](depannage.md) maps codes to actions.
 
+## Prepare a citation before a claim
+
+```text
+prepare-citation --case CASE --evidence E000001 --kind line --start 1 --end 1 --out CASE/analysis/citations.json
+prepare-citation --case CASE --evidence E000001 --kind record --analysis analysis/bodacc.json --start 0 --end 0 --field notice
+prepare-citation --case CASE --evidence E000003 --kind record --analysis analysis/captures.json --start 1 --end 1 --field cdx
+```
+
+The result includes a `citations` array with the exact excerpt and, for derived
+content, its analysis hash. Optional `--out` saves only that array for
+`claim --citations`, refusing overwrites and destinations outside `CASE/analysis`.
+No claim is recorded. The selected original is verified and its hash returned.
+Supported kinds are `line`, `record`, `page` and `time_ms`, with the same
+qualification rules as `check-citations`. Raw records need `--format
+csv|json|jsonl`. `--field` selects a top-level record field.
+
+Review meaning before recording a claim. Exact matching alone cannot verify
+truth, identity or source independence. Quotes cannot exceed 2,000 characters
+and are never silently truncated. See the [citation recipes](../shared/recipes.md#record-a-precise-citation).
+
 ## Optional local tools
 
 `tools` discovers ExifTool, ffprobe, Poppler `pdftotext` and Tesseract on absolute
@@ -444,3 +464,21 @@ The optional MCP adds bounded work and cancellation without blocking pings.
 Each platform also performs a final streaming byte check, because rapid same-size
 rewrites can retain identical filesystem timestamps. It adds one integrity read
 per selected file without repeating the parse for each citation.
+
+## Final review and portable handoff
+
+HTML and Markdown reports place review limits before the findings. Missing
+citations, mismatches and unverifiable citations are counted separately for
+current claims. The HTML citation filter also finds claims without citations.
+All current claims retain a separate semantic-review limitation. Referenced or
+explicitly selected analyses disclose partial-export coverage and supplied/total
+counts. Other unselected analyses are outside this summary.
+
+Export and verification both return `archive_member_count` (including the
+manifest), `payload_member_count` (excluding it), and `manifest_member_count`.
+Legacy `member_count` remains unchanged for compatibility. Its
+`member_count_scope` states which count it represents.
+
+Private exports include portable restore instructions in `sharing.json` and
+the export response. Use `restore`, not only ZIP extraction, to recreate empty
+case directories. Afterwards run `verify` and `review-queue` on the new case.
