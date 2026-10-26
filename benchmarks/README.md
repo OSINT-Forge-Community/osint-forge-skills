@@ -1,5 +1,35 @@
 # Benchmarks and reproducible results
 
+## Current helper checks - October 26, 2026
+
+The runtime delivery at `271ca22` passed **296 local tests** on Linux/WSL,
+including **22 new tests** for Wayback CDX, BODACC and SRT/WebVTT imports.
+Checks cover original preservation, bounded parsing, malformed input, source
+indexes, date semantics, complete cue citations, hash mismatches and CLI outputs.
+The 16 generated skills and 682 distribution files matched their sources.
+
+The complete synthetic demo passed from an extracted plugin in isolated Python.
+All three new commands also passed from an extracted standalone skill, and
+distribution archive checksums were verified. Run the public example from
+sources or the complete plugin root with a fresh output directory:
+
+```bash
+mkdir -p cases
+python3 examples/public_imports_demo.py --out cases/public-imports-demo
+```
+
+It checks three citations, generates EN/FR private HTML reports and verifies
+export/restoration. Unit-test sources and internal maintenance logs remain
+local by repository policy. The public demo is independently runnable.
+See [input formats](../shared/source-workflows.md#supplied-public-exports-and-timed-transcripts)
+and the dated [compatibility record](../docs/compatibility.json).
+
+These are deterministic helper checks. They do not establish live API
+compatibility, audio accuracy, model quality or complete native-platform coverage.
+The October 25 SDK and selected Windows results remain separate historical
+observations. Earlier benchmark and model results below retain their original
+versions and scope. No result has been submitted to a leaderboard.
+
 ## Optional MCP client qualification
 
 `mcp_client.py` exercises the stdio runtime through an independently installed
@@ -42,7 +72,7 @@ criteria, time metadata and premise review warnings. CSV checks preserved row
 zero and accents, neutralized a leading formula character and counted an omitted
 unknown time. These are library/format checks; no Timesketch, Maltego, Aleph or
 OGI application import was performed. NetworkX is not a runtime dependency.
-The current HTML was checked structurally; the earlier browser trial applies to
+For that October 15 snapshot, HTML was checked structurally. The earlier browser trial applies to
 its October 14 snapshot.
 
 Nine explicitly authorized Codex CLI 0.162.1 sessions used `gpt-6.1-sol`, `xhigh`,
@@ -374,8 +404,9 @@ hostile display text, with no remote page requests. Setup failures are recorded
 separately from the successful browser checks.
 [Qualification record](results/2026-10-14-review-integration/results.json).
 
-Native Windows/macOS and actual imports into Timesketch, Maltego, Aleph or OGI
-remain unperformed. A GraphML parser or documented CSV field layout is not a
+For that October 14 qualification, native Windows/macOS and actual imports
+into Timesketch, Maltego, Aleph or OGI were not performed. Later selected Windows
+checks are recorded separately in the compatibility ledger. A GraphML parser or documented CSV field layout is not a
 real interoperability trial. Model evaluation remains a separate track.
 
 ## Six real review sessions, October 14, 2026

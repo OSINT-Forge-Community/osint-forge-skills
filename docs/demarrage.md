@@ -4,6 +4,40 @@ This walkthrough uses only the original synthetic corpus. No account, token,
 model or network access is needed to try the helpers.
 [Installation in a client](installation.md) is a separate step.
 
+## Try public exports and timed transcripts
+
+From the source repository or complete extracted plugin root, choose a new
+destination. This is the shortest path to a private HTML report with checked
+references and a verified restoration.
+
+```bash
+mkdir -p cases
+python3 examples/public_imports_demo.py --out cases/public-imports-demo
+```
+
+PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force .\cases | Out-Null
+py -3 examples/public_imports_demo.py --out .\cases\public-imports-demo
+```
+
+Open `cases/public-imports-demo/case/reports/report.en.html` or `report.fr.html`.
+The source text stays in English. The demo registers three original synthetic
+exports and checks three citations before private export and restoration.
+
+| Example | What to inspect |
+| --- | --- |
+| Wayback CDX | Capture entries sort by date while retaining their source indexes. No page is downloaded. |
+| BODACC | The selected SIREN has a publication date and a separate act date. The supplied page is explicitly partial. |
+| WebVTT | A passage is cited at its full cue boundaries. Its text matches, while audio remains unverified. |
+
+The restored copy is under `cases/public-imports-demo/restored`. The CLI result
+reports `status: passed`, three citations and verified original/restored cases.
+These scripted findings demonstrate helper behavior, not a model's reasoning.
+To use your own selected exports, first register them with `add`, then follow
+the [public import commands](cli.md#public-exports-and-timed-transcripts).
+
 ## Choose the right environment
 
 | What you have | Available command | Purpose |
@@ -94,6 +128,7 @@ Next steps: [CLI reference](cli.md), [data formats](formats.md),
 From the public checkout or complete extracted plugin, choose a new directory:
 
 ```bash
+mkdir -p cases
 python3 examples/review_demo.py --out cases/review-demo
 ```
 
@@ -104,3 +139,18 @@ a missing timezone and a CSV exchange with one omitted uncertain event.
 The generator also verifies a private export and restores a copy. Everything
 is original synthetic material; no model, account or network is involved.
 [Review command examples](../shared/review-workflows.md).
+
+## Review dependencies and citations
+
+From sources or the complete extracted plugin, choose a new destination:
+
+```bash
+mkdir -p cases
+python3 examples/assurance_demo.py --out cases/assurance-demo
+```
+
+Open its `case/reports/report.en.html` or `report.fr.html`. The synthetic example
+shows dependent conclusions needing review, declared coverage gaps and an
+intentionally mismatched quote. Run `review-queue --case cases/assurance-demo/case`
+through your environment's helper to see the next checks. The
+[planning and review guide](../shared/assurance-workflows.md) explains the results.

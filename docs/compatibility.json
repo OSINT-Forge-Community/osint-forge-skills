@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-25",
+  "as_of": "2026-10-26",
   "skill_version": "0.3.0",
-  "evidence_policy": "Each observation retains its dated source snapshot. Historical client/model observations remain unchanged. Version 0.3.0 source, SDK and native Windows checks are recorded separately. Package validation is not model quality or authenticity proof.",
+  "evidence_policy": "Current source capabilities and dated observations are separate. Historical client, model, SDK and native-platform trials retain their evaluated snapshots. Package validation, excerpt matches and byte hashes do not establish model quality, semantic truth or authenticity.",
   "clients": {
     "claude": {
       "observed_version": "2.1.220",
@@ -25,8 +25,8 @@
       "package_structure": "passed",
       "offline_standalone_installation": "passed_synthetic_workspace",
       "native_manifest": "schema_structure_only",
-      "actual_discovery_and_invocation": "selected_project_skills_read_in_historical_review_and_current_assurance_sessions_native_plugin_discovery_not_qualified",
-      "model_trials": "historical_pilots_and_nine_current_assurance_sessions_completed",
+      "actual_discovery_and_invocation": "selected_project_skills_read_in_dated_historical_sessions_native_plugin_discovery_not_qualified_for_current_snapshot",
+      "model_trials": "historical_pilots_and_nine_2026_10_15_assurance_sessions_completed_no_general_quality_gain",
       "model_trial_evidence": {
         "date": "2026-10-14",
         "model": "gpt-6.1-sol",
@@ -98,8 +98,9 @@
   },
   "platforms": {
     "linux_wsl_python_3_12": "passed_local_checks",
-    "windows_native": "not_run",
-    "macos": "not_run"
+    "windows_native": "selected_suites_passed_on_2026_10_25_snapshot_full_suite_not_run",
+    "macos": "not_run",
+    "windows_native_scope": "Python 3.11.9 and 3.13.7, 56 passed and 2 symlink skips per version. Public-export and transcript additions from October 26 were not tested natively."
   },
   "optional_tools": {
     "adapter_safeguards": "passed_15_synthetic_process_tests_linux_wsl",
@@ -117,16 +118,17 @@
     "observed_on": "2026-10-14",
     "source_snapshot": "historical_0.1.4_development"
   },
-  "recorded_evidence_skill_version": "historical_0.1.0_and_0.1.4_snapshots_plus_current_0.2.0_assurance_snapshot",
+  "recorded_evidence_skill_version": "historical_0.1.0_0.1.4_0.2.0_snapshots_and_dated_0.3.0_source_checks",
   "case_schema": {
-    "new_cases": 3,
+    "new_cases": 4,
     "readable": [
       1,
       2,
-      3
+      3,
+      4
     ],
     "upgrade": "explicit_verified_copy",
-    "older_readers": "reject_v3"
+    "older_readers": "older_schema_readers_reject_v4"
   },
   "html_viewer": {
     "chromium": "155.0.8059.39",
@@ -136,7 +138,7 @@
     "remote_page_requests": 0,
     "native_windows_macos": "not_run",
     "observed_on": "2026-10-14",
-    "source_snapshot": "historical_0.1.4_development_current_0.2.0_browser_visual_trial_not_run"
+    "source_snapshot": "historical_0.1.4_development_no_current_interactive_acceptance_implied"
   },
   "standalone_folder_distribution": {
     "as_of": "2026-10-15",
@@ -241,6 +243,34 @@
       "source_and_extracted_archive_demos": "historical_research_mcp_snapshot_passed_not_rerun_for_dorking",
       "claude_native_manifest": "passed_cli_2.1.220",
       "current_browser_visual_trial": "not_run"
+    },
+    {
+      "date": "2026-10-25",
+      "version": "0.3.0",
+      "case_schema": 4,
+      "source_validation": "passed",
+      "skills": 16,
+      "python_sources": 27,
+      "unit_tests_passed": 274,
+      "unit_tests_elapsed_seconds": 325.802,
+      "skill_format_validation": "passed_16_of_16_skill_creator",
+      "standalone_resources": 512,
+      "resource_drift_files": 0,
+      "public_source_links_checked": 424,
+      "public_source_link_errors": 0,
+      "synthetic_demos": "passed_basic_review_assurance_export_restore",
+      "official_mcp_sdk": "passed_mcp_2.3.0_stdio_5_and_7_tools_24_resources",
+      "native_windows": "passed_selected_suites_python_3.11.9_and_3.13.7",
+      "native_windows_tests_per_version": 58,
+      "native_windows_passed_per_version": 56,
+      "native_windows_skipped_per_version": 2,
+      "native_windows_skips": "symlink_creation_unavailable",
+      "native_windows_full_suite": "not_run",
+      "native_macos": "not_run",
+      "acl_confidentiality_tested": false,
+      "browser_interaction_trial": "not_run",
+      "general_model_quality_gain": "not_established",
+      "post_suite_documentation_delta": "The assurance demo CLI help now describes the current schema; the complete demo passed after this text-only change."
     }
   ],
   "review_queue_verification": {
@@ -330,32 +360,41 @@
     "browser_visual_capture": "passed_1440_desktop_en_768_iframe_en_320_iframe_fr_visible_sections"
   },
   "current_local_verification": {
-    "date": "2026-10-25",
+    "date": "2026-10-26",
     "version": "0.3.0",
+    "release_state": "source_additions_recorded_as_unreleased",
+    "source_commit": "271ca2284c5556f564dece0d1767926f244acf0f",
     "case_schema": 4,
     "source_validation": "passed",
     "skills": 16,
-    "python_sources": 27,
-    "unit_tests_passed": 274,
-    "unit_tests_elapsed_seconds": 325.802,
-    "skill_format_validation": "passed_16_of_16_skill_creator",
-    "standalone_resources": 512,
+    "python_sources": 28,
+    "unit_tests_passed": 296,
+    "unit_tests_elapsed_seconds": 280.194,
+    "new_public_import_tests": 22,
+    "platform": "Linux/WSL Python 3.12",
+    "standalone_resources": 528,
     "resource_drift_files": 0,
-    "public_source_links_checked": 424,
+    "distribution_files_checked": 682,
+    "public_source_links_checked": 449,
     "public_source_link_errors": 0,
-    "synthetic_demos": "passed_basic_review_assurance_export_restore",
-    "official_mcp_sdk": "passed_mcp_2.3.0_stdio_5_and_7_tools_24_resources",
-    "native_windows": "passed_selected_suites_python_3.11.9_and_3.13.7",
-    "native_windows_tests_per_version": 58,
-    "native_windows_passed_per_version": 56,
-    "native_windows_skipped_per_version": 2,
-    "native_windows_skips": "symlink_creation_unavailable",
-    "native_windows_full_suite": "not_run",
-    "native_macos": "not_run",
-    "acl_confidentiality_tested": false,
-    "browser_interaction_trial": "not_run",
+    "link_count_scope": "October 26 runtime delivery snapshot, before subsequent documentation edits",
+    "public_import_demo": "passed_three_citations_private_reports_export_restore",
+    "extracted_plugin_demo": "passed_isolated_python",
+    "extracted_standalone_commands": [
+      "wayback-index",
+      "bodacc-history",
+      "transcript"
+    ],
+    "archive_checksums": "passed",
+    "network_collection": false,
+    "new_model_trials": "not_run",
+    "live_provider_apis": "not_run",
+    "audio_accuracy": "not_verified",
+    "native_windows_macos_for_public_imports": "not_run",
+    "current_browser_interaction": "not_run",
     "general_model_quality_gain": "not_established",
-    "post_suite_documentation_delta": "The assurance demo CLI help now describes the current schema; the complete demo passed after this text-only change."
+    "reproduction": "../examples/public_imports_demo.py",
+    "evidence_scope": "Local maintainer regression records and synthetic archive trials. Test sources and internal logs remain local. Earlier SDK and Windows results are retained in historical_local_verification."
   },
   "mcp_verification_2026_10_25": {
     "default": {
@@ -403,5 +442,13 @@
     "global_client_configuration_changed": false,
     "model_quality": "limited_development_pilot_not_general_gain",
     "comparison_limitation": "Both arms retain MCP method resources; this is not a methods-free baseline."
+  },
+  "current_mcp_configuration": {
+    "default_tools": 5,
+    "with_selected_case_tools": 7,
+    "case_outputs": "status_and_counts_only",
+    "method_resources": "bundled_allowlist",
+    "activation": "explicit_host_configuration",
+    "public_import_parsers": "cli_only_no_remote_collection_tools"
   }
 }

@@ -1,6 +1,6 @@
 # Data formats and semantics
 
-The [contract v3](../shared/case-contract.md) defines the invariants.
+The [contract v4](../shared/case-contract.md) defines the invariants.
 This guide provides fields and examples for reviewing or preparing inputs.
 Journal examples illustrate the format; create records with `init`, `add`
 and `claim`, never by inventing hashes.
@@ -28,7 +28,7 @@ without content conversion.
 
 | Created field | Value or meaning |
 | --- | --- |
-| `schema_version` | Integer `3` for new cases; `1` and `2` remain readable, separate from product version |
+| `schema_version` | Integer `4` for new cases. Versions `1`, `2` and `3` remain readable. This is separate from the product version. |
 | `tool_version` | Tool version at creation |
 | `title` | Investigation title, 1 to 300 characters |
 | `scope` | Objective and limits, 1 to 8,000 characters |
@@ -194,11 +194,11 @@ investigation cases.
 
 ## Contract evolution
 
-Readers accept versions 1, 2 and 3. New cases use 3; other versions are rejected.
+Readers accept versions 1, 2, 3 and 4. New cases use 4. Other versions are rejected.
 Older cases retain their original operations. `upgrade --case OLD --out NEW`
 copies a verified private case and records the old export digest. A v1 copy gains
 a review journal; a v2 copy keeps its journal unchanged. OLD is preserved. Older
-readers reject v3.
+readers that predate schema 4 reject v4.
 Never edit the schema number to bypass compatibility checks.
 
 ## Review extension (schema 2)
@@ -266,7 +266,8 @@ part of the identity. Reproduce untrusted results instead.
 
 The [planning and evidence review guide](../shared/assurance-workflows.md)
 defines earlier-claim dependencies, time context, requirements, analysis revisions
-and entity identifiers. New features require schema 3; migrate old cases by
+and entity identifiers. These extensions require at least schema 3. New
+investigation records described below require schema 4. Upgrade older cases by
 verified copy. Review warnings and excerpt checks are derived assessments, not
 rewrites of the journals or semantic truth validation.
 

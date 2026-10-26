@@ -5,6 +5,15 @@ to a host supporting local `stdio` servers. The runtime uses Python 3.11+ and th
 standard library. It starts no listening port, provider, model or collection.
 The host controls permissions and any transmission of arguments or results.
 
+Use it to **prepare the next investigation step, load a focused method and check
+case integrity or remaining review counts** from your chosen assistant.
+There are five tools by default and seven when a case is selected at startup.
+The two case tools return counts and status, not original evidence text.
+
+The Wayback, BODACC and transcript parsers are [local CLI commands](cli.md#public-exports-and-timed-transcripts).
+Their instructions are available through the bundled methods. They do not add
+remote provider connections or MCP tools that acquire public data.
+
 ## Start from the correct location
 
 From a source checkout:

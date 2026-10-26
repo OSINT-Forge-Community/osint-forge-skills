@@ -1,11 +1,28 @@
 # OSINT Forge Skills user documentation
 
-These guides cover the sixteen skills in version **0.3.0**: install the tools,
-try a synthetic case, analyze selected evidence, and hand off findings with
-references and limitations. The [main README](../README.md) introduces the
-catalogue and overall workflow. English is the primary documentation language.
+Build a case whose evidence, reasoning and open questions can be reviewed by
+someone else. OSINT Forge Skills provides **16 investigation skills**, a local
+Python CLI, an optional MCP server and portable reports. The software and guides
+are free under Apache-2.0. English is the primary documentation language.
 
-## Choose your path
+These guides describe the current source checkout: package **0.3.0**, case schema
+**4**, including the public-export and transcript features listed as Unreleased
+in the [changelog](../CHANGELOG.md). A previously installed 0.3.0 copy may not
+include these additions. [Overview and benefits](../README.md).
+
+## Get a concrete result
+
+| Your goal | Start here | Result |
+| --- | --- | --- |
+| **See the complete workflow** | [Offline public-export demo](demarrage.md#try-public-exports-and-timed-transcripts) | Three checked citations, a private HTML report and a restored case |
+| **Document a company or page history** | [Public-export commands](cli.md#public-exports-and-timed-transcripts) | BODACC notices by SIREN or selected Wayback index entries |
+| **Reference a video passage** | [Timed transcript formats](../shared/source-workflows.md#supplied-public-exports-and-timed-transcripts) | Stored subtitle text linked to complete cue intervals |
+| **Revisit uncertain conclusions** | [Planning and review](cli.md#contextual-planning-and-review) | Prioritized checks, dependencies and explicit evidence gaps |
+| **Work through your assistant** | [Installation](installation.md) · [MCP](mcp.md) | Selected methods and local tools in your chosen host |
+
+<a id="choose-your-path"></a>
+
+## Find a reference
 
 | I want to… | Start here |
 | --- | --- |

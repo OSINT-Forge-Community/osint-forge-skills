@@ -1,7 +1,9 @@
 # Command reference
 
-This reference describes helper version **0.3.0**. The [contract v4](../shared/case-contract.md)
-defines invariants; [data formats](formats.md) describes the records.
+This reference describes the current source checkout, package **0.3.0** including
+the additions marked Unreleased in the [changelog](../CHANGELOG.md).
+The [contract v4](../shared/case-contract.md) defines invariants and
+[data formats](formats.md) describes the records.
 From source, prefix commands with `python3 scripts/forge.py`; on PowerShell,
 use `py -3 scripts/forge.py`. In a package, run a complete skill's
 `scripts/forge.py`.
@@ -15,6 +17,17 @@ python3 scripts/forge.py --version
 Relative paths resolve from the shell's current directory, not the skill
 folder. Quote paths and text. Destination parents must exist. The
 [quick start](demarrage.md) provides a walkthrough with runnable commands.
+
+## Choose a workflow
+
+| I need to… | Commands and guide |
+| --- | --- |
+| Preserve selected files and their provenance | [`init`, `add`, `add-many`, `intake`](#create-and-populate-a-case) |
+| Read archive indexes, company notices or subtitles | [`wayback-index`, `bodacc-history`, `transcript`](#public-exports-and-timed-transcripts) |
+| Compare versions or review file events | [Analysis, comparison and exchange](#review-routing-and-interoperability) |
+| Plan the next check and review conclusions | [`plan`, `review-queue`, `check-citations`](#contextual-planning-and-review) |
+| Record hypotheses, tests and source origins | [Schema 4 investigation workflow](#schema-4-investigation-workflow) |
+| Produce a report and hand off a private case | [Reports](#reports-and-sharing-views) · [Export and restoration](#export-verification-and-restoration) |
 
 ## Results and errors
 
@@ -259,7 +272,7 @@ the fields, indexing, limits and interpretation of these offline commands.
 | `export-events` | `--case`, `--input analysis/events.json`, `--out` | Timesketch-field CSV, normalized times only; reports omissions |
 | `graph` | `--case`, `--out`; optional `--format json or graphml` | Evidence-linked relations and candidate status |
 
-`claim` accepts `--citations FILE` (JSON array) and `--supersedes C_ID` in schema 2 or 3.
+`claim` accepts `--citations FILE` (JSON array) and `--supersedes C_ID` in schema 2, 3 or 4.
 `report --format html` writes the fixed private report path; repeat
 `--input analysis/events.json` for up to 20 selected event analyses (5,000 events
 total). `--lang en` is default; FR translates interface labels, not evidence.

@@ -5,8 +5,8 @@
 <h1 align="center">OSINT Forge Skills</h1>
 
 <p align="center">
- <strong>Des sources aux conclusions. Gardez les preuves.</strong><br>
- 16 skills OSINT et forensic pour les assistants IA.<br>
+ <strong>Enquêtez, vérifiez et transmettez les preuves.</strong><br>
+ 16 skills OSINT et forensic open source avec leurs outils locaux.<br>
  Claude Code · Codex · OpenCode · Gemini CLI
 </p>
 
@@ -22,168 +22,157 @@
  <a href="README.md">English</a> · <a href="#démarrer-en-cinq-minutes">Démarrage</a> · <a href="#les-outils-utilisables">Outils</a> · <a href="#rechercher-avec-google-dorking">Dorking</a> · <a href="#les-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
-Documents, captures de sources, journaux et exports d’historique deviennent un
-dossier portable : pièces conservées, conclusions référencées et inconnues explicites.
-Utilisez les outils web de votre assistant pour rechercher des sources publiques,
-puis conservez et examinez les pièces sélectionnées localement. Vous choisissez
-l’assistant et le modèle ; le runtime Python inclus reste hors ligne.
+Transformez des sources sélectionnées en un dossier que vous pouvez relire,
+reprendre et transmettre. **OSINT Forge Skills réunit des méthodes d'enquête,
+des outils d'analyse locaux et un serveur MCP optionnel** pour les analystes,
+les enquêteurs et les personnes qui apprennent l'OSINT. Conservez les originaux,
+examinez les explications concurrentes et produisez des conclusions dont les
+références peuvent être vérifiées par une autre personne.
+
+Les skills, le runtime Python et la documentation sont **gratuits et open source
+sous Apache-2.0**. Les outils locaux ne demandent ni compte, ni clé API, ni service
+payant. Vous choisissez votre assistant et votre modèle, dont l'accès et les coûts
+restent distincts.
 
 ## Pourquoi utiliser OSINT Forge Skills ?
 
-| Avantage | Apport concret |
+| Votre avantage | Ce que le projet apporte |
 | --- | --- |
-| **Conclusions traçables** | Originaux conservés, contrôle des octets, sources référencées et citations localisables |
-| **Relecture structurée** | Hypothèses concurrentes, contradictions, indépendance des sources et conclusions signalées lorsque leurs prémisses changent |
-| **Reprise guidée** | File de relecture priorisée avec références et skills suggérés ; tableau de bord HTML privé avec recherche, en français ou en anglais |
-| **Recherche ciblée** | Fiches de sources datées, six parcours de rebond et Google dorking pour préparer le prochain contrôle |
-| **Exports exploitables** | Sélection locale d'archives Wayback, chronologies de publications BODACC par SIREN et passages SRT/WebVTT avec contrôle des citations de sous-titres |
-| **Contrôle local** | Bibliothèque standard Python, aucune télémétrie du runtime, aucun service obligatoire ni installation automatique d’outils |
-| **Travail portable** | Skills autonomes, export/restauration de dossiers privés, rapports FR/EN, GraphML et CSV aux champs Timesketch |
-
-Ces fonctions sont implémentées. Les essais de modèles consignés ne démontrent
-pas de gain général en précision, en vitesse ou en coût de tokens. Votre client
-contrôle l’accès du modèle et la transmission des données. [Tests et limites](#benchmarks).
+| **Retrouver chaque élément cité** | Originaux conservés, sources référencées et citations de pages, lignes, enregistrements ou intervalles complets de sous-titres |
+| **Garder les incertitudes visibles** | Hypothèses alternatives, contradictions, examen de l'origine des sources et lacunes explicites |
+| **Reprendre avec une prochaine étape claire** | Plans par phases, file de relecture priorisée et historique des corrections sans effacer les conclusions précédentes |
+| **Choisir vos outils** | Bibliothèque standard Python hors ligne, aucune télémétrie du runtime, aucun fournisseur obligatoire ni installation automatique |
+| **Transmettre un travail exploitable** | Rapports HTML privés avec recherche en français/anglais, export/restauration vérifiés, GraphML et CSV aux champs Timesketch |
 
 ![Conserver les pièces sélectionnées, examiner les sources et contradictions, transmettre un rapport relu.](assets/workflow.fr.svg)
+
+## Ce que vous pouvez faire
+
+| Votre point de départ | Ce que vous pouvez produire |
+| --- | --- |
+| **Un index CDX Wayback** | Une sélection datée d'entrées de captures pour une URL précise, avec les références des lignes sources. Comparez les pages fournies séparément. |
+| **Un export JSON BODACC** | Une chronologie de publications par SIREN, avec dates de publication et d'acte séparées et exports partiels signalés. |
+| **Des sous-titres SRT ou WebVTT** | Des passages référencés avec intervalles, lignes sources et contexte déclaré de transcription ou de traduction. |
+| **Des documents, journaux et exports navigateur ou Windows** | Un tri des fichiers, des chronologies et des observations liées aux pièces, avec les formats non pris en charge signalés. |
+| **Des publications ou traces d'agents fournies** | Des comparaisons de sources, des contradictions documentées et une distinction entre actions déclarées et effets vérifiés. |
+
+Ces parcours analysent localement les fichiers sélectionnés. La récupération
+d'archives, les requêtes de registres et les recherches web utilisent les outils
+autorisés du client. Le contrôle des sous-titres vérifie le texte enregistré,
+pas les paroles prononcées. [Formats et commandes](docs/cli.md).
 
 <a id="démarrer-en-cinq-minutes"></a>
 
 ## Essayer un dossier
 
-Depuis la racine du dépôt source, avec **Python 3.11+**. Aucun compte ni clé API requis.
+Depuis la racine du dépôt source ou du plugin complet extrait, avec
+**Python 3.11+** et un dossier de sortie neuf :
 
 ```bash
 mkdir -p cases
-python3 scripts/demo.py --out cases/demo
+python3 examples/public_imports_demo.py --out cases/public-imports-demo
 ```
 
+Ouvrez **`cases/public-imports-demo/case/reports/report.fr.html`**.
+La démo synthétique contient un index Wayback, un export BODACC et des sous-titres,
+vérifie **trois citations**, puis exporte et restaure le dossier privé.
+Aucun modèle, compte ou accès réseau n'est nécessaire. Les libellés sont français,
+le corpus reste anglais.
+
 <details>
-<summary>Windows / PowerShell</summary>
+<summary>Windows / PowerShell et autres démonstrations</summary>
 
 ```powershell
 New-Item -ItemType Directory -Force .\cases | Out-Null
-py -3 scripts/demo.py --out .\cases\demo
+py -3 examples/public_imports_demo.py --out .\cases\public-imports-demo
 ```
+
+| Démo | Ce qu'elle montre |
+| --- | --- |
+| [Premier dossier](docs/demarrage.md#full-demo-from-source) | Sept pièces, deux conclusions et une origine de publication commune |
+| [Corrections et relecture visuelle](docs/demarrage.md#review-a-corrected-case-visually) | Historique, événements annotés, relations candidates et formats d'échange |
+| [Dépendances et citations](docs/demarrage.md#review-dependencies-and-citations) | Conclusions à réexaminer et citation volontairement incorrecte |
+
+Ces exemples sont préétablis à partir de pièces synthétiques originales.
+Ils ne mesurent pas la qualité d'enquête d'un modèle.
 
 </details>
 
-Utilisez un dossier de sortie **neuf**. Ouvrez `cases/demo/case/reports/report.fr.md`.
-La démo hors ligne enregistre **7 pièces et 2 conclusions**, puis vérifie un export
-et sa restauration. Les libellés sont français, le corpus reste anglais.
-[Guide pas à pas →](docs/demarrage.md)
-
-> **Trois articles. Une seule source initiale.** Dans le cas synthétique Dock 7,
-> trois articles reprennent le même bulletin ; l’heure exacte reste inconnue.
-> Ces conclusions sont préétablies, pas découvertes par un modèle. [Explorer le cas](examples/PROVENANCE.md).
-
-**Relire un dossier corrigé :** lancez
-`python3 examples/review_demo.py --out cases/review-demo`, puis ouvrez
-`cases/review-demo/case/reports/report.fr.html`. L’exemple synthétique présente
-les références précises, l’historique des corrections, les recherches incomplètes,
-les événements annotés et les relations candidates. [Guide de relecture et d’échange](shared/review-workflows.md).
-
-**Revoir les dépendances et citations :** lancer
-`python3 examples/assurance_demo.py --out cases/assurance-demo`, puis ouvrir
-son rapport HTML FR. Lancez `python3 scripts/forge.py review-queue --case cases/assurance-demo/case`
-pour les prochains contrôles priorisés. La démo affiche les conclusions à réexaminer, la couverture
-déclarée et une citation volontairement incorrecte.
-[Planification et revue](shared/assurance-workflows.md) · [Fiches de sources](shared/source-workflows.md).
-
 <a id="les-outils-utilisables"></a>
 
-## Les outils à disposition
+## Ce qui est inclus
 
-| Outil | Utilisation |
+| Composant | Ce que vous obtenez |
 | --- | --- |
-| **Forge · inclus** | Conserver les pièces, trier, créer des chronologies, corréler et exporter |
-| **Google dorking · inclus** | Composer des requêtes ciblées et des URL de recherche ; exécuter avec les outils web autorisés du client |
-| **MCP stdio · inclus, optionnel** | Exposer cinq outils locaux de planification/recherche ; vérifier un dossier choisi en option |
-| **ExifTool · optionnel** | Métadonnées PNG, JPEG et PDF |
-| **pdftotext · optionnel** | Texte d’une sélection de pages PDF |
-| **Tesseract · optionnel** | OCR sur les images PNG/JPEG |
-| **ffprobe · optionnel** | Métadonnées des conteneurs et flux audio/vidéo |
+| **16 skills** | Méthodes d'enquête, parcours spécialisés et règles de traitement des pièces pour votre assistant |
+| **CLI Forge** | Import, analyse, comparaison, relecture, rapports et exports de dossiers portables en local |
+| **MCP stdio optionnel** | Cinq outils de planification/recherche, des ressources méthodologiques et deux outils limités aux compteurs pour un dossier choisi au démarrage |
+| **Quatre adaptateurs optionnels** | ExifTool pour les métadonnées, pdftotext pour les PDF, Tesseract pour l'OCR et ffprobe pour les métadonnées audio/vidéo |
 
-```bash
-python3 scripts/forge.py tools
-python3 scripts/forge.py plan --kind organization
-```
-
-**Suivre une piste :** six fiches de rebond et un générateur de requêtes hors
-ligne précisent le prochain contrôle, ses prérequis et ses conditions d'arrêt.
-[Parcours de recherche](shared/research-workflows.md).
-
-**Utiliser MCP :** activez explicitement le serveur local dans votre client pour
-accéder aux plans, fiches de sources, rebonds, modèles de requêtes et dorks.
-Choisissez un dossier au démarrage pour ajouter un outil de vérification dont
-le retour se limite au statut et aux compteurs. [Configuration MCP](docs/mcp.md).
-
-Les quatre adaptateurs sont inclus ; **vous installez et choisissez les exécutables tiers**.
-Chaque résultat conserve l’empreinte de la pièce, la version de l’outil, ses paramètres et sa sortie.
-L’import groupé garde la provenance de chaque fichier. Analysez les captures
-HTML/MHTML fournies, comparez des versions texte, mappez les colonnes d’un CSV
-forensic et exportez en GraphML ou en CSV aux champs Timesketch.
-La réutilisation explicite d’un résultat reste distincte d’une nouvelle exécution.
-Recherche web, DNS/RDAP et cartes dépendent des outils disponibles et autorisés du client.
-[Commandes et limites](docs/cli.md#optional-local-tools) · [Workflows des outils](shared/tool-workflows.md)
+Chaque dossier de skill complet contient son runtime, ses guides, sa licence et
+sa notice. Vous installez et choisissez les exécutables optionnels. Leurs résultats
+conservent l'empreinte de la pièce, la version de l'outil et les paramètres.
+[Parcours des outils](shared/tool-workflows.md) · [Référence CLI](docs/cli.md)
+· [Configuration MCP](docs/mcp.md).
 
 ## Rechercher avec Google dorking
 
-![Préparer localement, rechercher via les outils web autorisés, puis conserver et vérifier les sources choisies dans un dossier local. Le moteur reçoit les termes de recherche.](assets/search-workflow.fr.svg)
-
-Préparez une requête localement :
+Préparez des requêtes ciblées localement, puis lancez-les avec les outils web
+autorisés de votre assistant. Des fiches de sources datées et six parcours de
+rebond aident à choisir le prochain contrôle. Le runtime ne soumet pas les
+recherches et ne collecte pas de pages.
 
 ```bash
-python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf --after 2024-01-01
+python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf
 ```
 
-Le résultat JSON contient `site:example.org "Harbor Example Ltd" filetype:pdf
-after:2024-01-01` et une URL Google encodée. Ajoutez `--before` ou répétez
-`--exclude` pour affiner. Cet exemple utilise un nom synthétique et un domaine réservé.
+L'exemple utilise une organisation fictive et un domaine réservé.
+[Parcours de recherche et opérateurs](shared/research-workflows.md#google-dorking-with-host-web-tools).
 
-Demandez à l’assistant **d’exécuter la requête avec son outil de recherche ou
-son navigateur autorisé**, de consigner le moteur réel, la requête et la date,
-puis de vérifier les sources originales. L’outil MCP inclus `forge_dorks`
-prépare le même résultat. Un client peut utiliser un autre moteur : il faut
-alors vérifier la prise en charge de la syntaxe Google. Sans outil web,
-la requête et l’URL restent utilisables manuellement.
-[Opérateurs et parcours d’exécution](shared/research-workflows.md#google-dorking-with-host-web-tools).
+<details>
+<summary>Parcours de recherche et composants techniques</summary>
 
-## Ce que nous utilisons
+![Préparer une requête localement, chercher avec les outils autorisés du client, puis conserver les sources sélectionnées.](assets/search-workflow.fr.svg)
 
-![Socle Forge hors ligne, quatre outils locaux optionnels et capacités assistant et web contrôlées par le client. Rapports FR/EN, archives, GraphML et CSV aux champs Timesketch portables.](assets/toolkit.fr.svg)
+## Les briques du projet
 
-Le runtime et les parcours publics sont originaux. La recherche progressive
-et les rebonds s’inspirent d’approches examinées dans `smixs/osint-skill`,
-`frangelbarrera/osint-agent-skills` et OpenOSINT ; leurs codes et services ne
-sont pas des dépendances embarquées. [Références et attribution](shared/research-workflows.md#design-references).
+![Cœur Forge hors ligne, outils locaux optionnels et capacités contrôlées par le client.](assets/toolkit.fr.svg)
+
+Le runtime et les parcours sont originaux. Des approches de recherche examinées
+inspirent certaines méthodes, sans embarquer les runtimes ou services OSINT tiers.
+[Références et attribution](shared/research-workflows.md#design-references).
+
+</details>
 
 <a id="installer-dans-son-assistant-ia"></a>
 
-## Connecter son assistant
+## Connecter votre assistant
 
-Chaque dossier complet dans `skills/` s’installe directement avec son runtime local.
-[Copie d’un skill ou installation avec le CLI Skills →](docs/installation.md#direct-installation-with-the-skills-cli)
-
-Pour les plugins natifs et les archives ZIP, construisez avec `python3 scripts/package.py`, puis installez depuis `dist/` :
+[Copiez un skill complet ou utilisez le CLI Skills](docs/installation.md#direct-installation-with-the-skills-cli).
+Construisez les archives des plugins natifs depuis les sources avec
+`python3 scripts/package.py`.
 
 | Claude Code | Codex | OpenCode · Gemini CLI |
 | :---: | :---: | :---: |
 | [Plugin natif](docs/installation.md#native-claude-code-plugin) | [Plugin natif](docs/installation.md#native-codex-plugin) | [Skills autonomes](docs/installation.md#standalone-skills-all-four-clients) |
 
-> Utilise `of-case-start` sur ces documents, sans requête réseau.
-> Vérifie l’indépendance des sources, examine les contradictions et prépare un rapport référencé.
+> Utilise of-case-start sur ces documents fournis. Conserve les originaux,
+> examine les contradictions et prépare un rapport référencé. Garde les inconnues explicites.
+
+Les modes d'installation et les essais observés dans les clients sont documentés
+séparément. [Registre de compatibilité](docs/compatibility.json).
 
 <a id="les-12-skills"></a>
 <a id="les-skills"></a>
 
-## Choisir son étape d’enquête
+## Choisir une étape d'enquête
 
 | Étape | Skills |
 | --- | --- |
-| **Cadrer** | [Ouvrir un dossier](skills/of-case-start/SKILL.md) |
+| **Cadrer** | [Démarrage du dossier](skills/of-case-start/SKILL.md) |
 | **Vérifier les sources** | [Provenance](skills/of-source-provenance/SKILL.md) · [Domaines](skills/of-domain-infrastructure/SKILL.md) · [Organisations](skills/of-organization-research/SKILL.md) · [Géolocalisation](skills/of-geolocation/SKILL.md) |
-| **Examiner les fichiers** | [Documents](skills/of-document-triage/SKILL.md) · [Médias](skills/of-media-forensics/SKILL.md) · [Historique navigateur](skills/of-browser-artifacts/SKILL.md) · [Exports Windows](skills/of-windows-artifacts/SKILL.md) · [Exports d’agents](skills/of-agent-artifacts/SKILL.md) |
-| **Confronter les explications** | [Chronologie](skills/of-log-timeline/SKILL.md) · [Corrélation](skills/of-evidence-correlate/SKILL.md) · [Hypothèses](skills/of-hypothesis-audit/SKILL.md) · [Comparaison de versions](skills/of-version-compare/SKILL.md) |
+| **Examiner les fichiers** | [Documents](skills/of-document-triage/SKILL.md) · [Médias](skills/of-media-forensics/SKILL.md) · [Historique navigateur](skills/of-browser-artifacts/SKILL.md) · [Exports Windows](skills/of-windows-artifacts/SKILL.md) · [Exports d'agents](skills/of-agent-artifacts/SKILL.md) |
+| **Tester les explications** | [Chronologie](skills/of-log-timeline/SKILL.md) · [Corrélation](skills/of-evidence-correlate/SKILL.md) · [Hypothèses](skills/of-hypothesis-audit/SKILL.md) · [Comparaison de versions](skills/of-version-compare/SKILL.md) |
 | **Transmettre** | [Rapport](skills/of-investigation-report/SKILL.md) · [Export](skills/of-case-export/SKILL.md) |
 
 <a id="ce-qui-est-vérifié-aujourdhui"></a>
@@ -191,43 +180,37 @@ Pour les plugins natifs et les archives ZIP, construisez avec `python3 scripts/p
 
 ## Tests et benchmarks
 
-La version **0.3.0** ajoute les exports cohérents, l'installation ciblée sans
-fabrication d'archives, la planification par actions, les hypothèses/tests/origines
-du schéma 4, les citations PDF par page et la comparaison directe de textes dérivés.
-Le MCP optionnel expose les méthodes statiques, des contrats de sortie validés
-et des opérations de dossier bornées et annulables.
-Voir les [commandes et limites](docs/cli.md#schema-4-investigation-workflow),
-la [qualification MCP](docs/mcp.md) et le [registre daté](docs/compatibility.json).
+**26 octobre 2026, snapshot runtime `271ca22` : 296 tests réussis sous Linux/WSL,
+dont 22 tests sur les exports publics et les transcriptions.** Les 16 skills générés
+et les 682 fichiers de distribution ont été contrôlés. La nouvelle démo fonctionne
+depuis le plugin extrait, et les trois nouvelles commandes depuis un skill autonome
+en Python isolé.
 
-Consigné le **15 octobre 2026** : **166 tests réussis** sous Linux/WSL, dont
-**15 tests synthétiques des adaptateurs**. [Benchmarks et essais réels →](benchmarks/README.md)
+La version du paquet reste **0.3.0**, avec les derniers ajouts dans la section
+**Unreleased** du [changelog](CHANGELOG.md). Les dossiers utilisent le schéma **4**.
 
-<details>
-<summary>Périmètre des contrôles et essais restant à réaliser</summary>
+- Les précédents contrôles avec le SDK MCP officiel ont réussi. Des suites ciblées
+  Windows natives ont aussi réussi sur le snapshot du 25 octobre, avec deux tests
+  de liens symboliques ignorés par version de Python.
+- Les essais historiques de clients et modèles restent consultables avec leur
+  périmètre exact. Ils ne démontrent pas de gain général de précision, de vitesse
+  ou de coût de tokens.
+- Les API réelles, la couverture complète des clients et systèmes, la résistance
+  générale aux injections et l'exactitude audio ne sont pas établies par ces tests locaux.
 
-- 16 runtimes autonomes, 4 adaptateurs d’installation, revue de schéma 3, citations, export et restauration de la démo.
-- Neuf nouvelles sessions Codex terminées sur trois conditions ; critères de contenu acceptés dans les neuf,
-  avec un écart de workspace. Skills lus dans les trois sessions qui en disposaient ; aucun gain général de qualité démontré.
-- GraphML lu et réécrit avec NetworkX 3.7. Les anciens essais de binaires, navigateur et
-  six sessions de revue gardent leurs snapshots du 14 octobre.
-- La composition des dorks et le MCP stdio passent les tests locaux ; efficacité sur un moteur réel et intégration à un client MCP restent à tester.
-- Quatre nouveaux SVG FR/EN rendus et inspectés localement ; affichage GitHub non testé.
-- Les résultats historiques hors ligne et SkillsBench restent disponibles avec leurs limites.
-- La couverture de tous les skills et clients, la qualité générale d’enquête, la résistance aux injections,
-  Windows/macOS natifs et les imports dans des applications tierces restent à valider.
-- Les observations des manifestes sont datées dans le [registre de compatibilité](docs/compatibility.json).
-  Les résultats historiques s’appliquent à leurs snapshots de sources.
+[Reproduire une démo et consulter les résultats](benchmarks/README.md)
+· [Compatibilité datée et limites](docs/compatibility.json).
 
-</details>
-
-**Avant de traiter des pièces réelles :** un assistant distant peut transmettre ce qu’il lit.
-Les empreintes vérifient les octets, pas l’authenticité. Relisez les exports avant partage ;
-le masquage ne garantit pas l’anonymisation. [Sécurité](SECURITY.md) · [Formats et limites](docs/cli.md#capabilities-and-limits)
+**Avant de traiter des pièces réelles :** votre client contrôle ce qu'un modèle
+distant reçoit. Les empreintes vérifient les octets, pas l'authenticité. Relisez les
+exports avant partage. Le masquage seul ne garantit pas l'anonymisation.
+[Sécurité](SECURITY.md).
 
 ## Participer au projet
 
-Avis, bug ou amélioration ? **[Ouvrez une issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)**
-et choisissez un label. [Guide de contribution](CONTRIBUTING.md)
+[Ouvrez une issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)
+pour un retour, un bug reproductible ou une proposition de parcours.
+[Guide de contribution](CONTRIBUTING.md).
 
 Sécurité : [security@osint-forge.com](mailto:security@osint-forge.com)<br>
 Données personnelles : [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
@@ -238,4 +221,4 @@ Données personnelles : [privacy@osint-forge.com](mailto:privacy@osint-forge.com
 
 Logiciel, skills et textes : **[Apache-2.0](LICENSE)** · [NOTICE](NOTICE).<br>
 Visuels © OSINT Forge, tous droits réservés. [Provenance](docs/branding/README.md).<br>
-Silex et Rivet sont des mascottes promotionnelles. Les noms des clients n’impliquent aucune affiliation ni recommandation.
+Silex et Rivet sont des mascottes promotionnelles. Les noms des clients n'impliquent aucune affiliation ni recommandation.

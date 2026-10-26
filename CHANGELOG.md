@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased - product overview and user guides
+
+- Present concrete investigation outcomes, local control, traceable findings
+  and portable handoff in the English and French overviews.
+- Lead with the public-export demo and guide users from their objective to the
+  appropriate command, method, installation route or report.
+- Align schema 4, MCP tool counts and dated verification information while
+  retaining the scope of historical client, model and platform trials.
+
 ## Unreleased - public exports and timed transcripts
 
 - Select supplied Wayback CDX entries by exact URL and capture-date window,

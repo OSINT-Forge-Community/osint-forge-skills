@@ -3,6 +3,25 @@
 This independent four-part history starts with the adoption of platform
 versions. Earlier documentation changes have no retroactive platform version.
 
+## 0.3.1.0 - 2026-10-26
+
+Summary: Refresh the English and French product overviews around concrete
+investigation outcomes, traceable findings, local control and portable reports.
+Make the public-export demo prominent and align user guides, schema descriptions,
+MCP counts and dated validation records with the current source capabilities.
+
+Threat impact: Keep stored subtitle checks distinct from audio verification,
+capture indexes distinct from page content, and helper checks distinct from
+model quality. Preserve historical test scope and sharing limitations.
+
+Sovereignty impact: Clarify free Apache-2.0 software, independently selected
+clients/models, optional external tools and offline helpers without implying
+that a remote assistant becomes local.
+
+Validation: Documentation links, source/package consistency and existing tests
+are checked locally. No runtime behavior or provider configuration changes.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.3.0.0 - 2026-10-26
 
 Summary: Document local public-export and timed-transcript imports, accepted

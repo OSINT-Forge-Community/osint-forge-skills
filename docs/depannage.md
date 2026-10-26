@@ -211,7 +211,8 @@ means a journal changed while assembling the queue; finish concurrent writes
 and rerun. This check does not lock the case or repair its contents.
 
 `INVALID_CLAIM_DEPENDENCY` rejects missing, duplicate, self or forward premises.
-`CASE_UPGRADE_REQUIRED` means use a verified new copy for schema 3 fields.
+`CASE_UPGRADE_REQUIRED` means create a verified new copy before adding fields
+that require a newer schema. Current investigation records require schema 4.
 `INVALID_REQUIREMENT_REFERENCE` means the question/category was not declared.
 Analysis revisions require distinct paths, matching original provenance and
 actual digests; duplicate retirements and cycles are rejected.

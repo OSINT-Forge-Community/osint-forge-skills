@@ -5,6 +5,21 @@ Start with the [main README](../README.md) and
 includes usage and troubleshooting guides. These commands register or copy
 skills; actual discovery/model behavior is tracked separately.
 
+## Choose what you need
+
+| Your goal | Installation needed |
+| --- | --- |
+| Try local analysis and reports | Python 3.11+ and the source checkout or complete plugin archive. No assistant account is required. Start with the [demo](demarrage.md#try-public-exports-and-timed-transcripts). |
+| Use investigation methods in your assistant | Copy complete skill folders or select a documented client installation below. |
+| Expose local methods and helpers through MCP | Explicitly configure the [stdio server](mcp.md) in your chosen host after preparing its runtime. |
+| Extract PDF text, metadata or OCR | Separately install and select the [optional local executables](cli.md#optional-local-tools). |
+
+The package version is 0.3.0. Current sources also include additions marked
+Unreleased in the [changelog](../CHANGELOG.md). Rebuild from the selected source
+snapshot and explicitly update an installed copy when adopting those additions.
+Client CLI examples and trials below retain their observed versions, not a
+claim of compatibility with every future client release.
+
 Every complete folder under `skills/` contains its local runtime, shared guides,
 license and notice. It can be copied directly into a target client's skills
 directory without building the repository. Retain the entire folder.

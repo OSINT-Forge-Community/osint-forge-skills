@@ -5,8 +5,8 @@
 <h1 align="center">OSINT Forge Skills</h1>
 
 <p align="center">
- <strong>From sources to findings. Keep the evidence.</strong><br>
- 16 OSINT &amp; forensic skills for AI assistants.<br>
+ <strong>Investigate, verify and hand off the evidence.</strong><br>
+ 16 open-source OSINT &amp; forensic skills with local tools.<br>
  Claude Code · Codex · OpenCode · Gemini CLI
 </p>
 
@@ -22,152 +22,138 @@
  <a href="README.fr.md">Français</a> · <a href="#start-in-five-minutes">Quick start</a> · <a href="#tools-you-can-use">Tools</a> · <a href="#search-with-google-dorking">Dorking</a> · <a href="#the-skills">16 skills</a> · <a href="#benchmarks">Benchmarks</a>
 </p>
 
-Documents, source captures, logs and browser-history exports become a portable
-case with preserved evidence, referenced findings and explicit unknowns.
-Use your assistant's web tools to research public sources, then preserve and
-review selected evidence locally. You choose the assistant and model; the
-included Python runtime works offline.
+Turn selected sources into a case you can review, resume and hand off.
+**OSINT Forge Skills combines investigation methods, local analysis tools and
+an optional MCP server** for analysts, investigators and people learning OSINT.
+Preserve originals, document competing explanations and produce findings with
+references another person can check.
+
+The skills, Python runtime and documentation are **free and open source under
+Apache-2.0**. Local helpers need no account, API key or paid service. Choose your
+own assistant and model, whose access and costs remain separate.
 
 ## Why use OSINT Forge Skills?
 
-| Advantage | What you get |
+| Your advantage | What the project provides |
 | --- | --- |
-| **Traceable findings** | Preserved originals, byte checks, source references and citation locators you can revisit |
-| **Structured review** | Competing hypotheses, contradictions, source independence and claims flagged when their premises change |
-| **Actionable handoff** | A prioritized review queue with evidence references and suggested skills; a searchable private HTML dashboard in English or French |
-| **Focused research** | Dated source cards, six pivot workflows and Google dorking to prepare the next public-source check |
-| **Usable source exports** | Offline Wayback index selection, BODACC publication histories by SIREN and SRT/WebVTT passages with checked cue citations |
-| **Local control** | Python standard library, no runtime telemetry, no mandatory service and no automatic tool installation |
-| **Portable work** | Self-contained skills, private case export/restore, EN/FR reports, GraphML and Timesketch-field CSV |
-
-These are implemented capabilities. The recorded model trials do not establish
-a general gain in accuracy, speed or token cost. Your host controls model access
-and data transmission. [Tests and limits](#benchmarks).
+| **Revisit every finding** | Preserved originals, source references and citations to pages, lines, records or complete subtitle intervals |
+| **Keep uncertainty visible** | Alternative hypotheses, contradictory evidence, source-origin review and explicit gaps |
+| **Resume with a clear next step** | Phased plans, a prioritized review queue and correction history without erasing earlier findings |
+| **Keep control of your tools** | Offline Python standard library, no runtime telemetry and no mandatory provider or automatic tool installation |
+| **Hand off usable work** | Private searchable HTML reports in English/French, verified case export/restore, GraphML and Timesketch-field CSV |
 
 ![Preserve selected evidence, examine sources and contradictions, share a reviewed report.](assets/workflow.en.svg)
+
+## What you can do
+
+| Your starting point | What you can produce |
+| --- | --- |
+| **A Wayback CDX index** | A dated selection of capture entries for an exact URL, with original row references. Compare separately supplied page captures. |
+| **A BODACC JSON export** | A publication history by SIREN, separating publication dates from declared act dates and identifying partial exports. |
+| **SRT or WebVTT subtitles** | Referenced passages with cue intervals, source lines and declared transcription/translation context. |
+| **Documents, logs and browser or Windows exports** | File triage, timelines and evidence-linked observations with unsupported formats made explicit. |
+| **Supplied publications or agent traces** | Source comparisons, documented contradictions and reported actions separated from verified effects. |
+
+These workflows analyze selected files locally. Archive retrieval, registry
+queries and other web research use separately authorized host tools. Subtitle
+checks verify stored text, not spoken words. [Formats and commands](docs/cli.md).
 
 <a id="start-in-five-minutes"></a>
 
 ## Try a case
 
-From the source repository root, with **Python 3.11+**. No account or API key needed.
+From the source repository or the complete extracted plugin root, with
+**Python 3.11+** and a new output directory:
 
 ```bash
 mkdir -p cases
-python3 scripts/demo.py --out cases/demo
+python3 examples/public_imports_demo.py --out cases/public-imports-demo
 ```
 
+Open **`cases/public-imports-demo/case/reports/report.en.html`**.
+The synthetic demo includes a Wayback index, a BODACC export and subtitles,
+checks **three citations**, then exports and restores the private case.
+No model, account or network access is required.
+
 <details>
-<summary>Windows / PowerShell</summary>
+<summary>Windows / PowerShell and other demos</summary>
 
 ```powershell
 New-Item -ItemType Directory -Force .\cases | Out-Null
-py -3 scripts/demo.py --out .\cases\demo
+py -3 examples/public_imports_demo.py --out .\cases\public-imports-demo
 ```
+
+| Demo | Try it for |
+| --- | --- |
+| [First case](docs/demarrage.md#full-demo-from-source) | Seven evidence items, two claims and a shared publication origin |
+| [Corrections and visual review](docs/demarrage.md#review-a-corrected-case-visually) | History, annotated events, candidate relations and exchange formats |
+| [Dependencies and citations](docs/demarrage.md#review-dependencies-and-citations) | Conclusions needing review and an intentionally mismatched quote |
+
+These are scripted examples made from original synthetic material. They do not
+measure a model's investigation quality.
 
 </details>
 
-Use a **new** output directory. Open `cases/demo/case/reports/report.en.md`.
-The offline demo registers **7 evidence items and 2 claims**, then verifies an
-export and restoration. [Walkthrough →](docs/demarrage.md)
-
-> **Three articles. One original source.** In the synthetic Dock 7 case,
-> three articles repeat the same bulletin; the event's exact time stays unknown.
-> These findings are scripted, not discovered by a model. [Explore the case](examples/PROVENANCE.md).
-
-**Review a corrected case visually:** run
-`python3 examples/review_demo.py --out cases/review-demo`, then open
-`cases/review-demo/case/reports/report.en.html`. The synthetic example includes
-precise references, correction history, research gaps, annotated events and
-candidate relations. [Review and exchange guide](shared/review-workflows.md).
-
-**Review dependencies and citations:** run
-`python3 examples/assurance_demo.py --out cases/assurance-demo` and open its
-EN/FR HTML report. Run `python3 scripts/forge.py review-queue --case cases/assurance-demo/case`
-for prioritized next checks. The demo shows transitive review warnings, declared coverage,
-source-record references and one intentional excerpt mismatch.
-[Planning and review](shared/assurance-workflows.md) · [Dated source cards](shared/source-workflows.md).
-
 <a id="tools-you-can-use"></a>
 
-## Tools at your fingertips
+## What is included
 
-| Tool | Use it for |
+| Component | What you get |
 | --- | --- |
-| **Forge · included** | Preserve evidence, triage files, build timelines, correlate and export |
-| **Google dorking · included** | Compose targeted queries and search URLs; execute with authorized host web tools |
-| **MCP stdio · included, optional** | Expose five local planning/research helpers; optionally verify one selected case |
-| **ExifTool · optional** | PNG, JPEG and PDF metadata |
-| **pdftotext · optional** | Text from selected PDF pages |
-| **Tesseract · optional** | OCR on PNG/JPEG images |
-| **ffprobe · optional** | Audio/video container and stream metadata |
+| **16 skills** | Investigation methods, focused workflows and evidence-handling rules for your assistant |
+| **Forge CLI** | Local intake, parsing, comparison, review, reports and portable case exports |
+| **Optional MCP stdio** | Five planning/research tools, bundled method resources and two count-only tools for a startup-selected case |
+| **Four optional adapters** | ExifTool for metadata, pdftotext for PDF text, Tesseract for OCR and ffprobe for media metadata |
 
-```bash
-python3 scripts/forge.py tools
-python3 scripts/forge.py plan --kind organization
-```
-
-Four adapters are included; **install and select the external executables yourself**.
-Saved results retain the source hash, tool version, arguments and output.
-Batch intake keeps each file's provenance. Review supplied HTML/MHTML, compare
-text versions, map forensic CSV and export GraphML or Timesketch-field CSV.
-Explicit result reuse is labelled separately from a fresh tool execution.
-Web search, DNS/RDAP and maps depend on your client's available, authorized tools.
-[Commands & limits](docs/cli.md#optional-local-tools) · [Tool workflows](shared/tool-workflows.md)
-
-**Follow a lead:** six advisory pivot cards and an offline query generator help
-choose the next check, with prerequisites and stopping conditions.
-[Research workflows](shared/research-workflows.md).
-
-**Use MCP:** enable the local server explicitly in your host to access plans,
-source cards, pivots, query templates and dorks. Select one case at startup for
-an additional count-only verification tool. [MCP setup](docs/mcp.md).
+Each complete skill folder contains its runtime, guides, license and notice.
+Optional executables are installed and selected by you. Their results retain
+the source hash, tool version and arguments. [Tool workflows](shared/tool-workflows.md)
+· [CLI reference](docs/cli.md) · [MCP setup](docs/mcp.md).
 
 ## Search with Google dorking
 
-![Prepare a query locally, search through authorized host web tools, then preserve and verify selected sources in a local case. The engine receives search terms.](assets/search-workflow.en.svg)
-
-Prepare a query locally:
+Prepare targeted queries locally, then run them with your assistant's authorized
+web tools. Dated source cards and six pivot workflows help choose the next check.
+The runtime does not submit searches or collect pages.
 
 ```bash
-python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf --after 2024-01-01
+python3 scripts/forge.py dorks --phrase "Harbor Example Ltd" --site example.org --filetype pdf
 ```
 
-The JSON result includes `site:example.org "Harbor Example Ltd" filetype:pdf
-after:2024-01-01` and an encoded Google URL. Add `--before` or repeat `--exclude`
-to refine it. This example uses a synthetic name and a reserved domain.
+The example uses a fictional organization and a reserved domain.
+[Search workflow and operators](shared/research-workflows.md#google-dorking-with-host-web-tools).
 
-Ask your assistant to **run the query with its authorized search or browser tool**,
-record the actual engine, query and date, then check the original sources.
-The included `forge_dorks` MCP tool prepares the same output. A host may use a
-different engine; Google syntax support must then be checked. Without a web
-tool, the query and URL remain available for manual use.
-[Operator guide and execution workflow](shared/research-workflows.md#google-dorking-with-host-web-tools).
+<details>
+<summary>Research workflow and technical components</summary>
+
+![Prepare a query locally, search through authorized host tools, then preserve selected sources.](assets/search-workflow.en.svg)
 
 ## What powers the project
 
-![Offline Forge core, four optional local analysis tools and host-controlled assistant and web capabilities. Portable EN/FR reports, case archives, GraphML and Timesketch-field CSV.](assets/toolkit.en.svg)
+![Offline Forge core, optional local tools and host-controlled assistant capabilities.](assets/toolkit.en.svg)
 
-The public runtime and workflows are original. Our staged research and pivot
-design draws on reviewed approaches from `smixs/osint-skill`,
-`frangelbarrera/osint-agent-skills` and OpenOSINT; their code and services are
-not bundled dependencies. [References and attribution](shared/research-workflows.md#design-references).
+The runtime and workflows are original. Reviewed research approaches inform
+some methods without bundling third-party OSINT runtimes or services.
+[References and attribution](shared/research-workflows.md#design-references).
+
+</details>
 
 <a id="install-in-your-ai-assistant"></a>
 
 ## Connect your assistant
 
-Each complete folder in `skills/` is directly installable with its local runtime.
-[Copy a skill or use the Skills CLI →](docs/installation.md#direct-installation-with-the-skills-cli)
-
-For native plugins and ZIP archives, build with `python3 scripts/package.py`, then install from `dist/`:
+[Copy a complete skill or use the Skills CLI](docs/installation.md#direct-installation-with-the-skills-cli).
+Build native plugin archives from source with `python3 scripts/package.py`.
 
 | Claude Code | Codex | OpenCode · Gemini CLI |
 | :---: | :---: | :---: |
 | [Native plugin](docs/installation.md#native-claude-code-plugin) | [Native plugin](docs/installation.md#native-codex-plugin) | [Standalone skills](docs/installation.md#standalone-skills-all-four-clients) |
 
-> Use `of-case-start` on these supplied documents, without network requests.
-> Check source independence, examine contradictions and prepare a referenced report.
+> Use of-case-start on these supplied documents. Preserve the originals,
+> examine contradictions and prepare a referenced report. Keep unknowns explicit.
+
+Installation routes and observed client trials are documented separately.
+[Compatibility record](docs/compatibility.json).
 
 <a id="the-12-skills"></a>
 <a id="the-skills"></a>
@@ -187,42 +173,33 @@ For native plugins and ZIP archives, build with `python3 scripts/package.py`, th
 
 ## Tests & benchmarks
 
-Version **0.3.0** adds coherent exports, archive-free selected installation,
-phased planning, schema 4 hypotheses/tests/origins, qualified PDF page citations
-and direct derived-text comparison. The optional MCP exposes static methods,
-validated output contracts and bounded cancellable case operations.
-See [commands and limits](docs/cli.md#schema-4-investigation-workflow),
-[MCP qualification](docs/mcp.md) and the dated [compatibility ledger](docs/compatibility.json).
+**October 26, 2026, runtime snapshot `271ca22`: 296 tests passed on Linux/WSL,
+including 22 public-export and transcript tests.** All 16 generated skills and
+682 distribution files were checked. The new demo ran from the extracted plugin,
+and all three new commands ran from an extracted standalone skill in isolated Python.
 
-Recorded on **October 15, 2026**: **166 tests passed** on Linux/WSL, including
-**15 synthetic adapter tests**. [Benchmarks and real trials →](benchmarks/README.md)
+The package version remains **0.3.0**, with the latest additions listed under
+**Unreleased** in the [changelog](CHANGELOG.md). Cases use schema **4**.
 
-<details>
-<summary>What these checks cover, and what remains untested</summary>
+- Earlier official MCP SDK checks passed. Selected native Windows suites also
+  passed on the October 25 snapshot, with two symlink skips per Python version.
+- Historical client/model pilots remain available with their exact scope.
+  They do not establish a general gain in accuracy, speed or token cost.
+- Live provider APIs, full client/platform coverage, general prompt-injection
+  resistance and audio accuracy are not established by these local tests.
 
-- 16 standalone runtimes, 4 installation adapters, schema 3 review, citation checks, demo export and restoration.
-- Nine new Codex sessions completed across three conditions; content criteria were accepted in all nine,
-  with one workspace deviation. Skills were read in all three sessions using them; no general quality gain is demonstrated.
-- GraphML passed a NetworkX 3.7 round trip. Earlier real-binary, browser and six-session
-  review observations retain their October 14 snapshots.
-- Google dork construction and MCP stdio pass local tests; live engine effectiveness and real MCP host integration remain untested.
-- Four new EN/FR SVG diagrams were rendered and inspected locally; GitHub rendering was not exercised.
-- Historical offline and SkillsBench results remain available with their limitations.
-- Full catalogue/client coverage, general investigation quality, prompt-injection resistance,
-  native Windows/macOS and real third-party application imports remain unvalidated.
-- Manifest observations are dated in the [compatibility ledger](docs/compatibility.json).
-  Historical results apply to their recorded source snapshots.
+[Reproduce a demo and read the results](benchmarks/README.md)
+· [Dated compatibility and limits](docs/compatibility.json).
 
-</details>
-
-**Before using real evidence:** a remote assistant may transmit what it reads.
-Hashes check bytes, not authenticity. Review exports before sharing; masking
-is not guaranteed anonymization. [Security](SECURITY.md) · [Supported formats & limits](docs/cli.md#capabilities-and-limits)
+**Before using real evidence:** your host controls what a remote model receives.
+Hashes check bytes, not authenticity. Review exports before sharing. Masking
+alone does not guarantee anonymization. [Security](SECURITY.md).
 
 ## Help shape the project
 
-Ideas, bugs or improvements? **[Open an issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)**
-and choose a label. [Contribution guide](CONTRIBUTING.md)
+[Open an issue](https://github.com/OSINT-Forge-Community/osint-forge-skills/issues)
+for feedback, a reproducible bug or a proposed workflow.
+[Contribution guide](CONTRIBUTING.md).
 
 Security: [security@osint-forge.com](mailto:security@osint-forge.com)<br>
 Personal data: [privacy@osint-forge.com](mailto:privacy@osint-forge.com)
