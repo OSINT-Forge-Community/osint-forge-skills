@@ -2,7 +2,7 @@
 
 These commands are included in each generated skill. Prefix them with
 `python scripts/forge.py` from the loaded skill. All examples are synthetic.
-New cases use schema 3. Read schema 1 and 2 cases normally; use
+New cases use schema 4. Read schema 1, 2 and 3 cases normally. Use
 `upgrade --case OLD --out NEW` before adding newer record semantics. It preserves OLD.
 
 ## Select a workflow
@@ -10,6 +10,9 @@ New cases use schema 3. Read schema 1 and 2 cases normally; use
 `plan --kind organization` suggests relevant skills without loading or executing
 them. Other kinds: documents, media, domain, versions, windows-export, browser,
 logs, agent-export. Load one skill at a time and only the reference needed at that step.
+For media, set `--media-goal metadata` or `--media-goal geolocation`. Without
+that choice, the comparison asks for clarification. `skill_usage` identifies
+actions and optional method references. See the [planning guide](assurance-workflows.md#plan-the-next-useful-check).
 The plan is a suggestion, not authorization for network activity or installation.
 Record missing capabilities and stop when further evidence would not discriminate
 the hypotheses or the authorized scope is exhausted.

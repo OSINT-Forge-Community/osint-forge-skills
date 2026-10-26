@@ -6,6 +6,24 @@ the platform convention; earlier three-part commit titles are not rewritten.
 The first entry advances the existing 0.2.0 product baseline for compatible
 features. Recording an entry does not publish a package or authorize a push.
 
+## 1.1.1.0 - 2026-10-26
+
+Summary: Correct local text comparison prerequisites and distinguish media
+metadata examination from geolocation with an explicit objective. Identify
+optional routed methods and actions consistently through the CLI and MCP.
+Package SemVer remains 0.3.0 with these corrections recorded as Unreleased.
+
+Threat impact: Keep missing objectives, inputs and prerequisites visible.
+Assignments and declared completion never establish execution or authenticity.
+Preserve bounded read-only planning and existing case privacy controls.
+
+Sovereignty impact: Keep planning offline and standard-library-only with no
+model calls, collection, provider setup or automatic tool execution.
+
+Validation: Synthetic planner, CLI, MCP and distribution checks are recorded
+with their observed scope in the local verification log.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 1.1.0.0 - 2026-10-26
 
 Summary: Add bounded offline Wayback CDX selection, BODACC publication histories

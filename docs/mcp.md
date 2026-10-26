@@ -81,6 +81,20 @@ selected material type. `max_steps` limits returned actions to 1-20. The planner
 alternates selected materials within each phase and records omitted action IDs.
 It does not infer that an earlier action has been executed.
 
+For a `media` kind, set `media_goal` to `metadata` or `geolocation`. The goal is
+explicit, not inferred from the question. Without it, `requires_media_goal` is
+true and media comparison returns `objective_gap`. Metadata and geolocation
+have distinct actions, with `of-geolocation` assigned to visible-cue and scene
+comparison work. Declared media comparison inputs require `selected_originals`,
+plus `dated_captures` for geolocation. Local text version comparison requires
+`selected_originals` without dated captures. The operator still checks the
+actual inputs, including both unchanged versions and their derivation context.
+
+`selected_skills` lists routed methods. `skill_usage` distinguishes methods with
+returned `action_ids` from `optional_reference` methods. These are suggestions,
+not evidence that a method was loaded or an action executed. Reassess completed
+steps when changing the goal. The CLI and MCP use the same goal and input rules.
+
 ```json
 {
   "question": "Which supplied filing supports the synthetic finding?",

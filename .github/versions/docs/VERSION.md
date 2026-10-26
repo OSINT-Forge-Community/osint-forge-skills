@@ -3,6 +3,22 @@
 This independent four-part history starts with the adoption of platform
 versions. Earlier documentation changes have no retroactive platform version.
 
+## 0.3.2.0 - 2026-10-26
+
+Summary: Document explicit media goals, local text comparison prerequisites
+and optional method references. Align shared review guidance with schema 4
+and clarify the scope of declared completion and recomputed review tasks.
+
+Threat impact: Distinguish declared inputs and method assignments from verified
+files or executed work. Preserve dated historical validation results.
+
+Sovereignty impact: Keep methods portable and planning local, without selecting
+a provider or authorizing external collection or transmission.
+
+Validation: Documentation and package checks accompany synthetic planner,
+CLI and MCP tests. User and model quality trials remain separate.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.3.1.0 - 2026-10-26
 
 Summary: Refresh the English and French product overviews around concrete

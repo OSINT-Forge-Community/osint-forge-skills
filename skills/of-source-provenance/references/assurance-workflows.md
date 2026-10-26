@@ -1,9 +1,9 @@
 # Planning and evidence review
 
 Read the section needed for the current task. Commands are relative to the
-loaded skill's `scripts/forge.py`. New cases use schema 3. Schema 1 and 2 remain
+loaded skill's `scripts/forge.py`. New cases use schema 4. Schemas 1, 2 and 3 remain
 readable; `upgrade --case OLD --out NEW` makes a verified copy. Keep OLD intact.
-Older readers reject schema 3. No migration or collection runs automatically.
+Older readers reject unsupported schemas. No migration or collection runs automatically.
 
 ## Prioritize the remaining review work
 
@@ -51,6 +51,31 @@ budget; the helper cannot enforce the host agent's tools or permissions.
 Availability never authorizes installation, transmission or a broader question.
 Stop when the question is answered, the budget is exhausted or no remaining
 observation can distinguish the alternatives. Do not repeat established intake.
+
+For media, choose `--media-goal metadata` or `--media-goal geolocation`, or set
+`"media_goal":"metadata"` / `"media_goal":"geolocation"` in the JSON request.
+This field requires `media` among the kinds. The question is retained as context,
+not interpreted to choose a goal. Without a goal, `requires_media_goal` is true
+and the media comparison has an `objective_gap` until the operator clarifies it.
+Metadata actions examine supplied fields and extraction limits. Geolocation
+actions use `of-geolocation` to examine visible cues and competing scenes.
+Any new extraction or collection remains a separately authorized host action.
+
+When `available_inputs` is supplied, media comparison requires
+`selected_originals`, plus `dated_captures` for geolocation. Local version
+comparison requires `selected_originals` without demanding dated captures.
+The operator must check that both unchanged versions and any derivation context
+are actually available. Input declarations do not verify files or their count.
+
+`selected_skills` retains the material route's method suggestions. `skill_usage`
+distinguishes methods assigned to returned actions (`role: action`, with
+`action_ids`) from `optional_reference` methods with no returned action.
+A budget or resume point can leave a method optional in the current response.
+Load it only when the task requires it. An assignment does not mean execution.
+Keep completed steps scoped to the same goal. When changing the media goal,
+reassess prior work rather than reusing completion declarations automatically.
+Recorded case review tasks are recomputed from the case. Their `review:...` IDs
+are not accepted in `completed_steps`, which only accepts `KIND:PHASE` IDs.
 
 ## Conclusions that depend on other conclusions
 

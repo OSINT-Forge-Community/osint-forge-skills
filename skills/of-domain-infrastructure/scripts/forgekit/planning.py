@@ -14,9 +14,10 @@ ROUTES = {
     "agent-export": ["of-agent-artifacts", "of-evidence-correlate"],
 }
 CAPABILITIES = ("local", "search", "fetch", "maps", "image_upload", "exiftool", "pdftotext", "tesseract", "ffprobe")
+MEDIA_GOALS = ("metadata", "geolocation")
 STEPS = {
     "documents": ("Compare the selected passage with its original and extraction context", "Which exact passage supports the claim?", "Selected pages or text export"),
-    "media": ("Test the strongest plausible competing scene and viewpoint", "Which visible feature would distinguish the candidates?", "Selected image and dated independent map or scene captures"),
+    "media": ("Choose metadata examination or scene geolocation before comparing", "Which media goal answers the recorded question?", "Selected image and an explicit media goal"),
     "domain": ("Compare registry, DNS and certificate roles at their observation dates", "Does a recorded identifier establish the proposed relationship?", "Exact domain and dated DNS/RDAP/certificate captures"),
     "organization": ("Compare legal identifiers, jurisdictions and effective periods", "Can namesakes be distinguished using a registry identifier?", "Selected registry extracts and dated filings"),
     "versions": ("Compare the same passage in both versions and inspect extraction differences", "Is this a content change or an extraction difference?", "Two unchanged versions with derivation context"),
@@ -51,13 +52,16 @@ def _plan(kinds=None, request=None, case=None):
     from .assurance import case_status, text
     request = {} if request is None else request
     require(isinstance(request, dict) and set(request) <= {"question", "kinds", "available", "authorized", "max_steps", "deferred_leads",
-            "resume_from", "completed_steps", "available_inputs", "stop_reason", "specialize"}, "INVALID_PLAN_REQUEST")
+            "resume_from", "completed_steps", "available_inputs", "stop_reason", "specialize", "media_goal"}, "INVALID_PLAN_REQUEST")
     raw_selected = kinds if kinds is not None else request.get("kinds", [])
     require(isinstance(raw_selected, (list, tuple)), "INVALID_PLAN_KINDS")
     selected = list(raw_selected)
     require(0 < len(selected) <= 4 and all(isinstance(kind, str) and kind in ROUTES for kind in selected)
             and len(set(selected)) == len(selected), "INVALID_PLAN_KINDS")
     require(kinds is None or "kinds" not in request, "AMBIGUOUS_PLAN_INPUT")
+    media_goal = request.get("media_goal")
+    require("media_goal" not in request or isinstance(media_goal, str) and media_goal in MEDIA_GOALS
+            and "media" in selected, "INVALID_PLAN_MEDIA_GOAL")
     question = request.get("question")
     if question is not None:
         text(question, 4000, "INVALID_PLAN_QUESTION")
@@ -96,20 +100,40 @@ def _plan(kinds=None, request=None, case=None):
                 continue
             action, skill, deliverable = PHASE_ACTIONS[phase]
             comparison, discriminant, inputs = STEPS[kind]
+            material_skill = ROUTES[kind][0]
+            if kind == "media" and media_goal == "geolocation":
+                material_skill = "of-geolocation"
+                comparison = "Test the strongest plausible competing scene and viewpoint"
+                discriminant = "Which visible feature would distinguish the candidates?"
+                inputs = "Selected image and dated independent map or scene captures"
+                if phase == "extract":
+                    action = "Record visible geographic cues and retain their image locations and uncertainty"
+            elif kind == "media" and media_goal == "metadata":
+                comparison = "Compare supplied metadata fields with their extraction context and record inconsistencies"
+                discriminant = "Which fields are present, missing or inconsistent without establishing authenticity?"
+                inputs = "Selected original image and supplied metadata or a separately authorized local extraction"
+                if phase == "extract":
+                    action = "Inspect supplied metadata fields and retain extraction limits without inferring a location"
             previous = [] if phase == "intake" else [kind + ":" + PHASES[PHASES.index(phase) - 1]]
             needed = ["selected_originals"] if phase == "intake" else ["precise_locators"] if phase == "cite" else []
             if phase == "extract" and kind in ("browser", "windows-export", "logs", "agent-export"):
                 needed = ["coherent_copy", "clock_context"]
-            if phase == "compare" and kind in ("media", "domain", "organization", "versions"):
+            if phase == "compare" and kind in ("domain", "organization"):
                 needed = ["dated_captures"]
+            if phase == "compare" and kind in ("versions", "media"):
+                needed = ["selected_originals"]
+                if kind == "media" and media_goal == "geolocation":
+                    needed.append("dated_captures")
             missing_inputs = [item for item in needed if supplied is not None and item not in supplied]
             state = "capability_gap" if "local" not in runnable else "input_gap" if missing_inputs else "planned"
+            if state == "planned" and kind == "media" and phase == "compare" and media_goal is None:
+                state = "objective_gap"
             candidates.append({"id": identifier, "kind": kind, "phase": phase, "question": question,
                 "action": action or comparison, "discriminating_check": discriminant,
                 "required_input": inputs, "required_inputs": needed, "missing_inputs": missing_inputs,
                 "prerequisites": previous, "prerequisites_completed": all(item in completed for item in previous),
                 "input_status": "operator_check_required" if supplied is None else "declared",
-                "required_capabilities": ["local"], "skill": skill or ROUTES[kind][0],
+                "required_capabilities": ["local"], "skill": skill or material_skill,
                 "deliverable": deliverable, "state": state})
     steps = [] if stop else candidates[:limit]
     prior = {}
@@ -153,7 +177,8 @@ def _plan(kinds=None, request=None, case=None):
     if specialize and not stop:
         for kind in chosen:
             tasks.append({"id": "inspect:" + kind, "role": "material_specialist", "kind": kind,
-                          "skill": ROUTES[kind][0], "access": "read_only", "may_write_case": False,
+                          "skill": "of-geolocation" if kind == "media" and media_goal == "geolocation" else ROUTES[kind][0],
+                          "access": "read_only", "may_write_case": False,
                           "depends_on": [], "deliverable": "Evidence-linked observations and conflicting explanations"})
         tasks.append({"id": "challenge", "role": "independent_reviewer", "skill": "of-hypothesis-audit",
                       "access": "read_only", "may_write_case": False, "depends_on": [],
@@ -163,10 +188,16 @@ def _plan(kinds=None, request=None, case=None):
                       "depends_on": [row["id"] for row in tasks],
                       "deliverable": "Review proposed findings, then append only operator-authorized records"})
     omitted = candidates if stop else candidates[len(steps):]
+    selected_skills = list(dict.fromkeys(skill for kind in chosen for skill in ROUTES[kind]))
+    skill_usage = []
+    for skill in dict.fromkeys(selected_skills + [row["skill"] for row in steps]):
+        action_ids = [row["id"] for row in steps if row["skill"] == skill]
+        skill_usage.append({"skill": skill, "role": "action" if action_ids else "optional_reference", "action_ids": action_ids})
     return {"kind": selected[0] if len(selected) == 1 else None, "candidate_kinds": selected,
+            "media_goal": media_goal, "requires_media_goal": "media" in selected and media_goal is None,
             "question": question, "requires_scope_question": question is None,
             "ambiguity": "Keep all proposed readings; resolve against the recorded question before collection" if len(selected) > 1 else None,
-            "start": "of-case-start", "selected_skills": list(dict.fromkeys(skill for kind in chosen for skill in ROUTES[kind])),
+            "start": "of-case-start", "selected_skills": selected_skills, "skill_usage": skill_usage,
             "review": ["of-hypothesis-audit", "of-investigation-report"], "steps": steps,
             "deferred_kinds": [kind for kind in selected if kind not in chosen], "deferred_leads": deferred,
             "deferred_steps": [row["id"] for row in omitted], "completed_steps_as_declared": completed,

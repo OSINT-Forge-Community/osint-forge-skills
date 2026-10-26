@@ -8,7 +8,7 @@ import threading
 from . import VERSION
 from .casefiles import verify
 from .dorking import FILETYPES, dorks
-from .planning import CAPABILITIES, INPUTS, PHASES, ROUTES, STOP_REASONS, plan
+from .planning import CAPABILITIES, INPUTS, MEDIA_GOALS, PHASES, ROUTES, STOP_REASONS, plan
 from .research import PIVOTS, QUERY_KINDS, pivots, query_templates
 from .queue import review_summary
 from .safeio import ForgeError, read_bytes, require, safe_path
@@ -72,6 +72,7 @@ def tool_definitions(with_case=False):
     plan_properties = {
         "question": string_schema(4000),
         "kinds": array_schema(string_schema(values=ROUTES), 4, 1, True),
+        "media_goal": {**string_schema(values=MEDIA_GOALS), "description": "Explicit media objective, valid only when kinds includes media"},
         "max_steps": {"type": "integer", "minimum": 1, "maximum": 20, "description": "Maximum concrete actions returned"},
         "available": array_schema(string_schema(values=CAPABILITIES), len(CAPABILITIES), unique=True),
         "authorized": array_schema(string_schema(values=CAPABILITIES), len(CAPABILITIES), unique=True),

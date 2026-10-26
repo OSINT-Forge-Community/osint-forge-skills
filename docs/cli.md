@@ -300,6 +300,8 @@ authorized host web tools; the Python command stays offline.
 
 ```text
 plan --kind organization
+plan --kind media --media-goal metadata
+plan --kind media --media-goal geolocation
 plan --request selected-plan.json [--case CASE]
 sources [--category organization|domain|archive|imagery] [--jurisdiction FR]
 claim ... [--depends-on C000001] [--time-context dates.json]
@@ -351,6 +353,25 @@ review tasks before generic material checks. `--specialize` returns advisory
 read-only host tasks and one case writer. It launches no agents or collection.
 The JSON request also supports bounded `available`, `authorized` and
 `deferred_leads`. Missing input/capability/prerequisite states remain visible.
+
+For `media`, supply `--media-goal metadata|geolocation` or the JSON `media_goal`
+field. The planner preserves the question without inferring an objective from
+its wording. Omitting the goal returns `requires_media_goal: true` and an
+`objective_gap` at media comparison. Metadata examination uses supplied fields
+and extraction context. Geolocation assigns visible-cue and scene comparison
+actions to `of-geolocation`. Neither action extracts or collects anything.
+
+Declared inputs for media comparison require `selected_originals`, plus
+`dated_captures` for geolocation. Comparing two local text versions requires
+`selected_originals`, without dated captures. The operator checks that both
+versions and their derivation context are present. Omitted `available_inputs`
+leaves checks to the operator, and declarations do not verify the actual files.
+
+`selected_skills` lists routed methods. `skill_usage` marks each suggested method
+as assigned to returned `action_ids` or as an `optional_reference`. Budgeted or
+deferred work is not execution. Reassess completed steps when changing objectives.
+Case review tasks are recomputed from recorded gaps. Their `review:...` IDs
+cannot be passed as `--completed-step` or in JSON `completed_steps`.
 
 `sources --applicable-to FR` includes bundled global and applicable regional
 cards. `--jurisdiction FR` retains its exact-match behavior. These modes cannot

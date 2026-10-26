@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased - relevant planning actions
+
+- Compare selected local text versions without requiring dated web captures.
+- Distinguish metadata examination from geolocation through an explicit media
+  goal, relevant prerequisites and actions assigned to the appropriate method.
+- Ask for a missing media goal and identify optional method references separately
+  from returned actions. Keep plans advisory in both the CLI and optional MCP.
+- Align shared review guides with schema 4 and explain declared completion limits.
+
 ## Unreleased - product overview and user guides
 
 - Present concrete investigation outcomes, local control, traceable findings

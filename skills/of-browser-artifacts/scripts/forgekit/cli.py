@@ -21,7 +21,7 @@ from .safeio import (ForgeError, MAX_FILE, MAX_JSON, MAX_RECORDS, MAX_TOTAL,
 from .timestamps import timestamp
 from .tooling import TOOLS, inventory, run_tool
 
-from .planning import ROUTES, PHASES, INPUTS, plan as build_plan
+from .planning import ROUTES, PHASES, INPUTS, MEDIA_GOALS, plan as build_plan
 from .assurance import case_status, check_citations
 from .sources import source_cards
 from .agents import agent_events
@@ -76,6 +76,7 @@ def parser() -> argparse.ArgumentParser:
     upgrade.add_argument("--out", required=True)
     plan = commands.add_parser("plan", help="Suggest a bounded workflow without running it")
     plan.add_argument("--kind", choices=tuple(ROUTES), action="append")
+    plan.add_argument("--media-goal", choices=MEDIA_GOALS, help="Choose metadata examination or scene geolocation for media")
     plan.add_argument("--request", help="Selected JSON question, kinds, declared capabilities and budget")
     plan.add_argument("--case", help="Optional case whose review state should inform the plan")
     plan.add_argument("--max-steps", type=int)
@@ -269,7 +270,7 @@ def dispatch(args) -> dict:
     if command == "plan":
         request = read_json(args.request) if args.request else {}
         require(isinstance(request, dict), "INVALID_PLAN_REQUEST")
-        for key, value in (("max_steps", args.max_steps), ("resume_from", args.resume_from),
+        for key, value in (("max_steps", args.max_steps), ("media_goal", args.media_goal), ("resume_from", args.resume_from),
                            ("completed_steps", args.completed_step), ("available_inputs", args.available_input),
                            ("stop_reason", args.stop_reason)):
             if value is not None:
