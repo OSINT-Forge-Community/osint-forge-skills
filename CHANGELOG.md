@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased - public exports and timed transcripts
+
+- Select supplied Wayback CDX entries by exact URL and capture-date window,
+  retaining original row references and index coverage limits.
+- Build BODACC publication chronologies by SIREN from supplied JSON exports,
+  separating publication and declared event dates and identifying partial pages.
+- Parse supplied SRT/WebVTT cues offline with original line references and
+  declared transcription/translation context. Check complete cue interval
+  citations against stored text without claiming audio verification.
+- Include an original synthetic demo with citations, reports and export/restore.
+  No provider, remote MCP, acquisition or automatic transcription is added.
+
 ## 0.3.0 - 2026-10-25
 
 - Capture coherent private exports and reject ambiguous CSV headers and rows.

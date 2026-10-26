@@ -6,6 +6,24 @@ the platform convention; earlier three-part commit titles are not rewritten.
 The first entry advances the existing 0.2.0 product baseline for compatible
 features. Recording an entry does not publish a package or authorize a push.
 
+## 1.1.0.0 - 2026-10-26
+
+Summary: Add bounded offline Wayback CDX selection, BODACC publication histories
+by SIREN and SRT/WebVTT cue imports. Preserve source indexes and check complete
+transcript interval citations. Include a synthetic report and export/restore demo.
+Package SemVer remains 0.3.0 with these additions recorded as Unreleased.
+
+Threat impact: Reject ambiguous JSON, malformed dates, unsafe URL schemes,
+invalid cue intervals and oversized inputs. Preserve originals and bind citations
+to analysis hashes without inferring page contents, ownership or spoken words.
+
+Sovereignty impact: Keep all imports offline and standard-library-only. Add no
+provider, remote MCP, network collection, transcription or installation.
+
+Validation: Synthetic parser, citation, CLI and distribution checks are recorded
+in the local verification log with their observed scope.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 1.0.0.0 - 2026-10-25
 
 Summary: Add coherent case exports, strict CSV intake, operation-scoped integrity

@@ -143,7 +143,10 @@ folder. Caches expire after each operation and never replace integrity checks.
 Page citations can reference qualified `pdftotext` analyses with an exact hash,
 tool identity and first/last page coverage. Page separators and empty pages must
 map exactly to that range. Ambiguous mappings remain unverifiable. Millisecond
-citations still require analyst review. Matching an excerpt is not semantic proof.
+citations can check stored `timed_transcript` cue text when their boundaries
+exactly enclose complete intersecting cues. They do not verify audio or word
+timing. Other millisecond locators require analyst review. Matching an excerpt
+is not semantic proof.
 
 Claims may add precise `citations` and `supersedes`. Citations locate pages,
 lines, source records or milliseconds; analysis citations bind a case-relative

@@ -17,6 +17,7 @@ catalogue and overall workflow. English is the primary documentation language.
 | **Plan a question, review dependencies or check excerpts** | [Planning and evidence review](../shared/assurance-workflows.md) |
 | **Resume unresolved review work** | [Prioritized review queue](../shared/assurance-workflows.md#prioritize-the-remaining-review-work) |
 | **Select a public source or forensic export profile** | [Dated sources and profiles](../shared/source-workflows.md) |
+| **Read a Wayback index, BODACC export or timed transcript** | [Offline imports](cli.md#public-exports-and-timed-transcripts) |
 | **Follow a lead or prepare search terms** | [Research workflows](../shared/research-workflows.md) |
 | **Search with Google operators through host tools** | [Google dorking](../shared/research-workflows.md#google-dorking-with-host-web-tools) |
 | **Connect offline helpers through MCP** | [Optional local server](mcp.md) |

@@ -34,6 +34,12 @@ Read [shared invariants](references/quick-reference.md) once per case and runtim
 
 ## Deliverable
 
+For supplied SRT/WebVTT subtitles, use `transcript` and read
+[timed transcript limits](references/source-workflows.md#supplied-public-exports-and-timed-transcripts).
+Declare automatic/manual origin and translation only when known. Cite complete
+cue intervals or source records and check the media separately. Stored subtitle
+text does not verify spoken words, speaker identity or word-level timing.
+
 A media observation log, provenance/transformation hypotheses and authenticity limitations.
 
 If evidence, a parser or verification is missing, describe the gap and the smallest useful export/acquisition request. Do not invent a result or expand collection to compensate.

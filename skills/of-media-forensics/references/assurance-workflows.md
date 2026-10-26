@@ -109,8 +109,10 @@ with no blank-line skipping. CSV headers must be unique and rows complete.
 Derived `events` use their original `record_index` and default to field `event`.
 Text analyses use `text`, or a string `result` from a qualified tool adapter.
 Keep their case-relative analysis path and actual digest in the citation.
-PDF pages and millisecond locators remain structurally checked but automatically
-unverifiable here. An exact OCR match validates the derived text only. Reports
+Qualified `pdftotext` pages can be checked with exact page coverage. Millisecond
+locators can check `timed_transcript` analyses at complete intersecting cue
+boundaries. Other page/time formats remain unverifiable. An exact OCR or
+transcript match validates the derived text only, never the image or audio. Reports
 show the outcomes separately from semantic review; no excerpt text is echoed
 by the check command. An analyst must still assess meaning and independence.
 

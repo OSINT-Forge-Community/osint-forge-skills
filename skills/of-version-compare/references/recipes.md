@@ -5,6 +5,25 @@ Run from the complete loaded skill folder. Examples use `python3`, an existing
 parent. Replace paths and use the E/R/C identifiers actually returned by commands.
 The snippets below assume a new case populated in the shown order.
 
+## Read a supplied archive index, company export or transcript
+
+After registering each original with `add`, use the returned evidence ID.
+These examples use three separately registered pieces in one existing case.
+No command acquires public data or verifies audio.
+
+```bash
+python3 scripts/forge.py wayback-index --case /tmp/forge-recipe-01 --evidence E000001 --url https://example.org/notice --after 2026-01-01 --before 2026-12-31 --out /tmp/forge-recipe-01/analysis/captures.json
+python3 scripts/forge.py bodacc-history --case /tmp/forge-recipe-01 --evidence E000002 --siren 000000000 --out /tmp/forge-recipe-01/analysis/notices.json
+python3 scripts/forge.py transcript --case /tmp/forge-recipe-01 --evidence E000003 --format vtt --method automatic --translation unknown --language fr --out /tmp/forge-recipe-01/analysis/transcript.json
+```
+
+The all-zero SIREN is a synthetic fixture selector, not a real company example.
+Read [accepted formats and limits](source-workflows.md#supplied-public-exports-and-timed-transcripts).
+Reference a derived `record` using its preserved `record_index`, analysis path
+and SHA-256. For transcripts, a `time_ms` citation must cover complete intersecting
+cues with exact outer start/end boundaries. The excerpt check validates stored
+cue text, never spoken words or their exact timing.
+
 ## Start with one selected piece
 
 ```bash

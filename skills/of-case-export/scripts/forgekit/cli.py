@@ -8,6 +8,7 @@ import sys
 
 from . import VERSION
 from .analysis import browser, save_analysis, timeline, timeline_csv, triage
+from .public_imports import bodacc_history, transcript, wayback_index
 from .casefiles import (add_claim, add_evidence, add_many, evidence_bytes, initialize,
                         load_case, provenance, verify)
 from .reporting import (export_case, prepare_share, render_report, restore_case,
@@ -114,6 +115,25 @@ def parser() -> argparse.ArgumentParser:
     agent.add_argument("--format", choices=("json", "jsonl", "codex-exec-jsonl"), required=True)
     agent.add_argument("--exporter-version")
     agent.add_argument("--out", required=True)
+    for name, help_text in (("wayback-index", "Select captures from a supplied CDX JSON index offline"),
+                            ("bodacc-history", "Read supplied BODACC JSON notices for one SIREN offline"),
+                            ("transcript", "Read supplied SRT or WebVTT cues without media acquisition")):
+        child = commands.add_parser(name, help=help_text)
+        child.add_argument("--case", required=True)
+        child.add_argument("--evidence", required=True)
+        child.add_argument("--out", required=True, help="A new file inside CASE/analysis")
+        if name == "wayback-index":
+            child.add_argument("--url", required=True, help="Exact original URL to select from the index")
+            child.add_argument("--after", help="Inclusive capture date YYYY-MM-DD")
+            child.add_argument("--before", help="Inclusive capture date YYYY-MM-DD")
+        elif name == "bodacc-history":
+            child.add_argument("--siren", required=True)
+            child.add_argument("--event-date-field", help="Explicit top-level YYYY-MM-DD field, separate from dateparution")
+        else:
+            child.add_argument("--format", choices=("srt", "vtt"), required=True)
+            child.add_argument("--method", choices=("unknown", "manual", "automatic"), default="unknown")
+            child.add_argument("--translation", choices=("unknown", "original", "translated"), default="unknown")
+            child.add_argument("--language", help="Analyst-declared language, not automatically detected")
     imported = commands.add_parser("import-events", help="Map two columns of a supplied forensic CSV")
     imported.add_argument("--case", required=True)
     imported.add_argument("--evidence", required=True)
@@ -282,6 +302,15 @@ def dispatch(args) -> dict:
     if command == "import-events":
         return save_analysis(args.case, args.out, import_events(args.case, args.evidence,
                                                                args.time_field, args.event_field))
+    if command in ("wayback-index", "bodacc-history", "transcript"):
+        if command == "wayback-index":
+            result = wayback_index(args.case, args.evidence, args.url, args.after, args.before)
+        elif command == "bodacc-history":
+            result = bodacc_history(args.case, args.evidence, args.siren, args.event_date_field)
+        else:
+            result = transcript(args.case, args.evidence, args.format, args.method, args.translation, args.language)
+        saved = save_analysis(args.case, args.out, result)
+        return {**saved, "evidence_id": args.evidence, "event_count": result["event_count"]}
     if command == "capture":
         return save_analysis(args.case, args.out, capture(args.case, args.evidence, args.format))
     if command == "compare":
@@ -356,7 +385,8 @@ def dispatch(args) -> dict:
             "limits": {"file_bytes": MAX_FILE, "case_bytes": MAX_TOTAL,
                        "structured_bytes": MAX_JSON, "records": MAX_RECORDS},
             "formats": ["json", "jsonl", "csv", "chromium_history", "firefox_history",
-                        "file_signatures", "email_headers", "png_dimensions"],
+                        "file_signatures", "email_headers", "png_dimensions",
+                        "wayback_cdx_json", "bodacc_json", "srt", "webvtt"],
             "unsupported": ["disk_acquisition", "memory_acquisition", "evtx_binary",
                             "pdf_text", "exif_extraction", "media_authenticity_classification"],
             "host_agent_permissions": "not_controlled_by_these_helpers"}

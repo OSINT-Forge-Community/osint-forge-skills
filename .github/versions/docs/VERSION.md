@@ -3,6 +3,22 @@
 This independent four-part history starts with the adoption of platform
 versions. Earlier documentation changes have no retroactive platform version.
 
+## 0.3.0.0 - 2026-10-26
+
+Summary: Document local public-export and timed-transcript imports, accepted
+input shapes, precise source references and complete cue citation boundaries.
+Provide executable recipes and a synthetic offline demonstration.
+
+Threat impact: Distinguish archive indexes from captures, publication dates from
+act dates, and stored subtitles from verified audio. Explain bounded parsing,
+partial exports, uncertain coverage and refusal of ambiguous formats.
+
+Sovereignty impact: Keep acquisition separately selected and all supplied-export
+analysis local, portable and independent of a provider or model.
+
+Validation: Source and package documentation checks accompany the local tests.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 0.2.0.0 - 2026-10-25
 
 Summary: Document schema 4 investigation records and verified-copy upgrades,

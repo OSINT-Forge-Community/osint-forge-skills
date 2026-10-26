@@ -36,6 +36,59 @@ For example, a synthetic Harbor Example Ltd name match leads to a registry
 identifier and jurisdiction check. It does not establish a relationship. If the
 record is unavailable, log that state and ask for the smallest useful extract.
 
+## Supplied public exports and timed transcripts
+
+Register the selected original with `add` before parsing it. The three commands
+below read registered bytes and write a new analysis under the case. They never
+contact a provider, fetch a capture, transcribe media or install another MCP.
+Each output retains the evidence ID and SHA-256, source record indexes and
+explicit coverage limits. An empty selection describes only the supplied export.
+
+| Command | Accepted input | Interpretation |
+| --- | --- | --- |
+| `wayback-index` | CDX JSON table with a header row including `original` and `timestamp`, or `[]` | Select an exact URL and optional inclusive capture-date window. Sort captures by their declared UTC timestamp. Preserve redirects, duplicates and other CDX columns. |
+| `bodacc-history` | Flat BODACC JSON object array, or Explore API v2 `results` with optional `total_count` | Select an exact nine-digit SIREN in `registre` and order by `dateparution`. Preserve each selected notice and its ID. A provider total larger than the export is marked partial. |
+| `transcript` | UTF-8 SRT or a bounded WebVTT cue subset | Preserve cue text, source line ranges and millisecond start/end offsets. Declare the transcription method and translation status without claiming verification. |
+
+For CDX, `record_index` starts at zero after the header. `source_row` is the
+zero-based position in the original JSON table including its header. Do not
+infer page contents from the index. Acquire any selected capture separately,
+register it, use `capture` for supplied HTML and `compare` for its derived text.
+Document how the supplied capture maps to the selected index entry.
+
+BODACC rows use `id`, `registre` and `dateparution`. `registre` accepts one
+string or an array of nine-digit strings, optionally containing ordinary or
+nonbreaking spaces. Missing registers are counted as unmatchable. Other formats,
+including legacy v1 wrappers, CSV and nested/XML notices, need an explicit
+separate conversion with its provenance. No company is matched by name.
+An optional `--event-date-field` reads a named top-level ISO date independently
+of publication. Nested act/judgment dates are not inferred. This is a chronology
+of supplied publications, not a complete corporate history or ownership verdict.
+
+SRT cues require numeric identifiers, `HH:MM:SS,mmm` times and blank separators.
+WebVTT requires a `WEBVTT` header, a blank separator and `MM:SS.mmm` or
+`HH:MM:SS.mmm` times. Cue IDs and settings are retained, not interpreted.
+NOTE/STYLE/REGION blocks are counted and skipped. Header metadata is not
+interpreted. Cue markup remains inert verbatim text, including speaker labels
+and inline timestamps. No word-level timing or speaker identity is derived.
+Overlapping and out-of-order cues remain in source order. Empty transcripts,
+invalid intervals and unsupported structures fail explicitly.
+
+Use `--method unknown|manual|automatic`, `--translation unknown|original|translated`
+and optional `--language` for analyst declarations. Defaults are unknown.
+Compare a cited passage with the actual media before asserting what was said.
+
+All inputs are limited to 4 MiB and 5,000 records/cues, with derived JSON limited
+to 4 MiB. Cue payloads have at most 4,000 characters and hour fields at most
+9,999 hours. Oversized or malformed input is refused without partial output.
+Original files stay unchanged. A hash checks bytes, not authenticity.
+
+Source documentation: [CDX JSON](https://github.com/internetarchive/wayback/blob/master/wayback-cdx-server/README.md),
+[DILA BODACC](https://www.bodacc.fr/pages/api-bodacc/),
+[BODACC dataset](https://bodacc-datadila.opendatasoft.com/explore/dataset/annonces-commerciales/api/)
+and [WebVTT](https://www.w3.org/TR/webvtt1/). Documentation was consulted on
+26 October 2026. Local synthetic tests do not qualify a provider or a live API.
+
 ## Forensic export profiles
 
 Profiles describe selected exports, not native parsers or proof that a particular

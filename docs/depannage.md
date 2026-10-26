@@ -31,6 +31,22 @@ and `verify-export` are the first read-only checks. Never resolve a preservation
 error by deleting the journal or original evidence. The helper performs no
 automatic recovery.
 
+## Supplied public exports and transcripts
+
+| Code | Meaning and next step |
+| --- | --- |
+| `DUPLICATE_JSON_KEY` / `INVALID_IMPORT_JSON` | Ambiguous or invalid JSON. Preserve the original and obtain a valid export. |
+| `INVALID_CDX_HEADERS` / `INVALID_CDX_ROW` / `INVALID_CDX_TIMESTAMP` | Expected a CDX JSON header table with exact row widths and 14-digit calendar timestamps. Do not substitute a provider error response. |
+| `INVALID_IMPORT_URL` / `INVALID_DATE_WINDOW` | Select an HTTP(S) URL without credentials or whitespace and a chronological ISO date window. |
+| `INVALID_BODACC_ROWS` / `INVALID_BODACC_REGISTER` / `INVALID_SIREN` | Check the documented flat/v2 JSON shape and nine-digit string identifiers. Names are not fallback selectors. |
+| `INVALID_IMPORT_DATE` / `INVALID_EVENT_DATE_FIELD` | Use a valid ISO date and keep the selected act-date field distinct from `dateparution`. |
+| `INVALID_WEBVTT_HEADER` / `INVALID_TRANSCRIPT_CUE` / `INVALID_CUE_TIME` / `INVALID_CUE_INTERVAL` | Check the original subtitle format, blank separators and strictly increasing start/end within each cue. Request a separate corrected export. |
+| `EMPTY_TRANSCRIPT` / `INVALID_CUE_TEXT` | No supported cues, an oversized payload or an ambiguous cue boundary. Do not treat this as an empty verified transcript. |
+| `STRUCTURED_INPUT_TOO_LARGE` / `TOO_MANY_RECORDS` / `ANALYSIS_OUTPUT_TOO_LARGE` | Supply a bounded export with its selection context. No partial analysis was saved. |
+| `CITATION_RANGE_MISMATCH` | For transcript intervals, select exact outer boundaries enclosing every intersecting cue. Partial words cannot be timed from cue-level data. |
+
+See [accepted shapes and limits](../shared/source-workflows.md#supplied-public-exports-and-timed-transcripts).
+
 ## Installation and builds
 
 | Code or symptom | Cause to check | Action |

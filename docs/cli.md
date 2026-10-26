@@ -356,6 +356,33 @@ exporter version, omitted/unknown fields and reported statuses. Requests without
 results and duplicate or ambiguous calls remain gaps. A reported completion
 does not prove execution or an external effect.
 
+## Public exports and timed transcripts
+
+Register each selected original using `add`, then run one of these offline commands.
+Outputs must be new files under `CASE/analysis`.
+
+| Command | Required selection | Optional context |
+| --- | --- | --- |
+| `wayback-index --case CASE --evidence E_ID --url URL --out FILE` | Exact original URL from a CDX JSON table | `--after` and `--before`, inclusive ISO capture dates |
+| `bodacc-history --case CASE --evidence E_ID --siren SIREN --out FILE` | Nine-digit identifier from a BODACC JSON export | `--event-date-field FIELD`, an explicit top-level ISO date distinct from publication |
+| `transcript --case CASE --evidence E_ID --format srt\|vtt --out FILE` | Supplied UTF-8 subtitle file | `--method unknown\|manual\|automatic`, `--translation unknown\|original\|translated`, `--language TEXT` |
+
+Use [command recipes](../shared/recipes.md#read-a-supplied-archive-index-company-export-or-transcript)
+and [accepted formats](../shared/source-workflows.md#supplied-public-exports-and-timed-transcripts).
+Each analysis carries original provenance, source indexes and interpretation
+limits. BODACC publication dates have no invented time or timezone. Transcript
+offsets are media-relative and are omitted from wall-clock Timesketch exports.
+The commands do not retrieve archives, call registries or transcribe media.
+
+To replay an original synthetic case from sources or the full plugin archive:
+
+```bash
+python3 examples/public_imports_demo.py --out /tmp/forge-public-imports-demo
+```
+
+Use a new destination. The demo checks citations and creates local HTML reports
+and a private export with restoration. It does not call a model or the network.
+
 ## Qualified derived text and PDF pages
 
 `compare` accepts one original E selector or one qualified analysis selector

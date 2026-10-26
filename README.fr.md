@@ -36,6 +36,7 @@ l’assistant et le modèle ; le runtime Python inclus reste hors ligne.
 | **Relecture structurée** | Hypothèses concurrentes, contradictions, indépendance des sources et conclusions signalées lorsque leurs prémisses changent |
 | **Reprise guidée** | File de relecture priorisée avec références et skills suggérés ; tableau de bord HTML privé avec recherche, en français ou en anglais |
 | **Recherche ciblée** | Fiches de sources datées, six parcours de rebond et Google dorking pour préparer le prochain contrôle |
+| **Exports exploitables** | Sélection locale d'archives Wayback, chronologies de publications BODACC par SIREN et passages SRT/WebVTT avec contrôle des citations de sous-titres |
 | **Contrôle local** | Bibliothèque standard Python, aucune télémétrie du runtime, aucun service obligatoire ni installation automatique d’outils |
 | **Travail portable** | Skills autonomes, export/restauration de dossiers privés, rapports FR/EN, GraphML et CSV aux champs Timesketch |
 

@@ -36,6 +36,7 @@ included Python runtime works offline.
 | **Structured review** | Competing hypotheses, contradictions, source independence and claims flagged when their premises change |
 | **Actionable handoff** | A prioritized review queue with evidence references and suggested skills; a searchable private HTML dashboard in English or French |
 | **Focused research** | Dated source cards, six pivot workflows and Google dorking to prepare the next public-source check |
+| **Usable source exports** | Offline Wayback index selection, BODACC publication histories by SIREN and SRT/WebVTT passages with checked cue citations |
 | **Local control** | Python standard library, no runtime telemetry, no mandatory service and no automatic tool installation |
 | **Portable work** | Self-contained skills, private case export/restore, EN/FR reports, GraphML and Timesketch-field CSV |
 

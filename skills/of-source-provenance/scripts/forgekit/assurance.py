@@ -187,9 +187,12 @@ def case_status(case):
 def selected_excerpt(data, citation, derived, cache=None):
     cache = {} if cache is None else cache
     kind, start, end = (citation[key] for key in ("kind", "start", "end"))
-    require(end - start < MAX_RECORDS, "CITATION_RANGE_LIMIT")
     if kind == "time_ms":
-        raise ForgeError("CITATION_FORMAT_UNSUPPORTED")
+        require(isinstance(derived, dict) and derived.get("analysis_type") == "timed_transcript",
+                "CITATION_FORMAT_UNSUPPORTED")
+        from .public_imports import transcript_excerpt
+        return transcript_excerpt(derived, start, end)
+    require(end - start < MAX_RECORDS, "CITATION_RANGE_LIMIT")
     if kind == "page":
         require(isinstance(derived, dict) and derived.get("analysis_type") == "external_tool"
                 and derived.get("tool", {}).get("name") == "pdftotext"

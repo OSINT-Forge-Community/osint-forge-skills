@@ -224,6 +224,30 @@ that a conclusion follows from its citations.
 
 ## New derived formats
 
+`wayback_cdx`, `bodacc_history` and `timed_transcript` analyses use the existing
+`input` provenance object and `events` array. No case schema migration is needed.
+Each event retains its source `record_index` even when publication/capture rows
+are sorted. CDX indexes exclude the header from record numbering. BODACC indexes
+refer to the original object array or `results` array, before SIREN selection.
+Transcripts number cues from zero, excluding metadata blocks, and also store
+one-based inclusive source line ranges.
+
+CDX events retain original columns in `cdx`, plus a declared UTC capture time.
+BODACC events retain the complete supplied row in `notice`, `notice_id`,
+`publication_date` and a separately selected `event_date` or null. Their `utc`
+is null. Transcript events retain the verbatim cue payload in `event`, start/end
+milliseconds, original time strings, cue ID and uninterpreted settings. They
+have no wall-clock timestamp. Method, language and translation are declarations.
+
+A `time_ms` citation on a `timed_transcript` analysis can be checked against
+stored cue text. Its start/end must exactly enclose all intersecting cues.
+Cue intervals are treated as start-inclusive and end-exclusive for overlap
+selection. Partial cue boundaries are rejected because word timing is unknown.
+Bind the analysis path and hash, as with record citations. This check cannot
+verify audio, translations, speakers or the semantic support for a claim.
+
+See [accepted input shapes and bounds](../shared/source-workflows.md#supplied-public-exports-and-timed-transcripts).
+
 Mapped CSV analyses retain original record_index, normalized or uncertain time,
 selected event text and unmapped column names. HTML/MHTML capture analyses retain
 text and untrusted declared locations, never execute scripts or fetch resources.
