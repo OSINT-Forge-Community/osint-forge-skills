@@ -6,6 +6,21 @@ the platform convention; earlier three-part commit titles are not rewritten.
 The first entry advances the existing 0.2.0 product baseline for compatible
 features. Recording an entry does not publish a package or authorize a push.
 
+## 1.2.1.0 - 2026-10-27
+
+Summary: Keep campaign drafts and generated promotional artwork local by
+ignoring campaign directories. Product package SemVer remains 0.3.0.
+
+Threat impact: Reduce accidental publication of campaign drafts and creative
+working files. Product evidence-handling behavior is unchanged.
+
+Sovereignty impact: Campaign files remain available locally without adding
+tracking, publication automation or a runtime service.
+
+Validation: Ignore rules, exact commit scope and distribution checks are
+recorded locally. No campaign publication or deployment was performed.
+Local commit status: `verification-pending` until complete pre-push checks pass.
+
 ## 1.2.0.0 - 2026-10-26
 
 Summary: Add exact citation preparation, visible report limitations and portable restore guidance.
